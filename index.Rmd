@@ -6,8 +6,6 @@ output:
     toc: true
     toc_depth: 4
     theme: united
-bibliography: bfastSpatial.bib
-cls: nature-no-superscript.csl
 ---
 
 
@@ -28,15 +26,11 @@ At the end of the lecture, you should be able to:
 # Reminder on overall system architecture
 
 ## fIGURE HERE
-\centering
-\fbox{\includegraphics[height=0.6\textwidth]{figs/system_overview_2.png}}
-\caption [Caption for LOF]{System architecture overview}
-
-\label{overview}
+<center><img src="figs/system_overview_2.png" alt="Drawing" style="width: 700px"/></center>
 
 
 
-In a previous lecture you saw the overall system architecture (Figure~\ref{overview}) and you saw how to read and write vector data from/to file into you R environment. These vector read/write operations were made possible thanks to the OGR library. The OGR library is interfaced with R thanks to the rgdal package/binding. By analogy, raster data can be read/written thanks to the GDAL library. Figure~\ref{overview} provides an overview of the connections between these elements. GDAL stands for Geospatial Data Abstraction Library. You can check the project home page at [http://www.gdal.org/] and you will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL. (i.e.: ArcGIS, QGIS, GRASS, etc). In this lesson, we will use GDAL indirectly via the raster package, which uses rgdal extensively. However, it is possible to call GDAL functionalities directly through the command line (a shell is usually provided with the GDAL binary distribution you installed on your system), which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it should facilitate the building of the expression that have to be passed to GDAL.\\
+In a previous lectures you saw the overall system architecture (See figure above) and you saw how to read and write vector data from/to file into you R environment. These vector read/write operations were made possible thanks to the OGR library. The OGR library is interfaced with R thanks to the rgdal package/binding. By analogy, raster data can be read/written thanks to the GDAL library. The figure above provides an overview of the connections between these elements. GDAL stands for Geospatial Data Abstraction Library. You can check the project home page at [http://www.gdal.org/] and you will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL. (i.e.: ArcGIS, QGIS, GRASS, etc). In this lesson, we will use GDAL indirectly via the raster package, which uses rgdal extensively. However, it is possible to call GDAL functionalities directly through the command line (a shell is usually provided with the GDAL binary distribution you installed on your system), which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it should facilitate the building of the expression that have to be passed to GDAL.
 
 
 Perform system setup checks.
@@ -63,7 +57,7 @@ The introduction of the raster package to R has been a revolution for geo proces
 Check the home page of the raster package ([http://cran.r-project.org/web/packages/raster/]), the package is extremely well documented, including vignettes and demos.
 
 ## Explore the raster objects
-The raster package produces and uses R objects of three different classes. The \textbf{RasterLayer}, the \textbf{RasterStack} and the \textbf{RasterBrick}. A RasterLayer is the equivalent of a single layer raster, as an R workspace variable. The data themselves, depending on the size of the grid can be loaded in memory or on disk. The same stands for RasterBrick and RasterStack objects, which are the equivalent of multi-layer RasterLayer objects. RasterStack and RasterBrick are very similar, the difference being in the virtual characteristic of the RasterStack. While a RasterBrick has to refer to one multi-layer file or is in itself a multi-layer object with data loaded in memory, a RasterStack may ''virtually'' connect several raster objects written to different files or in memory. Processing will be more efficient for a RasterBrick than for a RasterStack, but RasterStack has the advantage of facilitating pixel based calculations on separate raster layers.
+The raster package produces and uses R objects of three different classes. The **RasterLayer**, the **RasterStack** and the **RasterBrick**. A RasterLayer is the equivalent of a single layer raster, as an R workspace variable. The data themselves, depending on the size of the grid can be loaded in memory or on disk. The same stands for RasterBrick and RasterStack objects, which are the equivalent of multi-layer RasterLayer objects. RasterStack and RasterBrick are very similar, the difference being in the virtual characteristic of the RasterStack. While a RasterBrick has to refer to one multi-layer file or is in itself a multi-layer object with data loaded in memory, a RasterStack may ''virtually'' connect several raster objects written to different files or in memory. Processing will be more efficient for a RasterBrick than for a RasterStack, but RasterStack has the advantage of facilitating pixel based calculations on separate raster layers.
 
 Let's take a look into the structure of these objects.
 ```{r, }
@@ -76,7 +70,7 @@ r
 ```
 From the metadata displayed above, we can see that the RasterLayer object contains all the properties that geo-data should have; that is to say a projection, an extent and a pixel resolution.
 
-RasterBrick and RasterStack objects can also fairly easily be generated directly in to R, as shown in the example below. Being able to generate such objects without reading them from files is particularly important for the generation of ''reproducible examples'' which was covered in general terms in Lesson 2.
+RasterBrick and RasterStack objects can also fairly easily be generated directly in to R, as shown in the example below. Being able to generate such objects without reading them from files is particularly important for the generation of ''reproducible examples'' which was covered in general terms in Lesson 3.
 
 ```{r, }
 # Using the previously generated RasterLAyer object
@@ -95,24 +89,41 @@ The RasterBrick metadata displayed above are mostly similar to what we saw earli
 ## Reading and writing from/to file
 The actual data used in geo processing projects often comes as geo-data, stored on files such as GeoTiff or other comonly used file formats. Reading data directly from these files into the R working environment (as objects belonging to one of the 3 raster objects classes), is made possible thanks to the raster package. The three main commands for reading raster objects from file are the `raster()`, `stack()`, and `brick()` functions, refering to RasterLayer, RasterStack and RasterBrick objects respectively.
 Writing one of the three raster objects classes to file is achieved with the `writeRaster()` function.
-To illustrate the reading and writing of raster files, we will use the data stored in the /inst/extdata/ directory within the rasta package. The `system.file()` command is used to access these ''external'' data saved into packages.
+
+To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, make sure your working directory is set properly and run the following line; it will handle the download:
+
+```{r, echo=FALSE}
+# start by making sure that your working directory is properly set
+# If not you can set it using setwd()
+getwd()
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif', destfile = 'LE71700552001036SGS00_SR_Gewata_INT1U.tif', method = 'wget')
+```
+
+
 Gewata is the name of the data set added, it is a multi Layer tiff object, its file name is LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif, informing us that this is a subset from a scene acquired by the Landsat 7 sensor. Let's not worry about the region that the data cover for now, we will find a  nice way to discover that later on in that tutorial.
 See the example below.
 
-```{r, }
-# Reading a multilayer raster object
-gewata <- brick(system.file("extdata/LE71700552001036SGS00_SR_Gewata_INT1U.tif",
-                    package="rasta"))
+Now that we have downloaded the geoTiff file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the `list.files()` function.
+
+```{r}
+# When passed without arguments, list.files() returns a list, listing the content of the working directory
+list.files()
 ```
+
+We can now load this object in R, since it is a multi-layer raster object, we need to use the `brick()` function to do that.
+
+```{r, echo=FALSE}
+gewata <- brick('LE71700552001036SGS00_SR_Gewata_INT1U.tif')
+```
+
 Let's take a look at the structure of this object.
-```{r, }
+```{r}
 gewata
 ```
 The metadata above informs us that the gewata object is a relatively small (593x653 pixels) RasterBrick with 6 layers.
 Similarly, single layer objects can be read using the `raster()` function. Or if you try using the `raster()` function on a multi layer object, by default the first layer only will be read.
-```{r, eval=FALSE}
-gewataB1 <- raster(system.file("extdata/LE71700552001036SGS00_SR_Gewata_INT1U.tif",
-                       package="rasta"))
+```{r}
+gewataB1 <- raster('LE71700552001036SGS00_SR_Gewata_INT1U.tif')
 gewataB1
 ```
 
@@ -142,13 +153,14 @@ plot(gewataSub, 1)
 You should see on the resulting plot that the orinal image has been cropped. 
 
 ## Creating layer stacks
-To end this section on general files and raster objects manipulations, we will see how multi layer objects can be created from single layer objects. The object created as part of the example below is the same that we will use in Lesson 6 to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landat acquisitions at different dates. The objective is therefore to create a multi layer NDVI object, for which each layer corresponds to a different date.
-But first we need to fetch the data, since they were a bit too big to be kept into the rasta package, we left them online.
+To end this section on general files and raster objects manipulations, we will see how multi layer objects can be created from single layer objects. The object created as part of the example below is the same that we will use in Lesson 7 to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landat acquisitions at different dates. The objective is therefore to create a multi layer NDVI object, for which each layer corresponds to a different date.
+But first we need to fetch the data, similarly to how we did it for the gewata brick, the data need to be downloaded from the repository where we put them.
+
 ```{r, eval=FALSE}
-# start by making sure that your working directory is properly set
-# If not you can set it using setwd()
+# Again, make sure that your working directory is properly set
 getwd()
-download.file(url='http://rasta.r-forge.r-project.org/tura.zip', destfile='tura.zip')
+# Download the data
+download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/tura.zip', destfile='tura.zip', method='wget')
 unzip(zipfile='tura.zip')
 # Retrieve the content of the tura sub-directory
 list <- list.files(path='tura/', full.names=TRUE)
@@ -187,36 +199,36 @@ with NIR and R being band 4 and 3 of Landsat respectively.
 ndvi <- (gewata[[4]] - gewata[[3]]) / (gewata[[4]] + gewata[[3]])
 ```
 The `plot()` function automatically recognises the objects of raster classes and returns an appropriate spatial plot.
-```{r, ndvi, echo=TRUE, fig=TRUE, include=FALSE}
+```{r, ndvi, echo=TRUE, fig=TRUE}
 plot(ndvi)
 ```
 
 
-The resulting NDVI can be viewed in Figure~\ref{ndvi}. As expected the NDVI ranges from about 0.2, which corresponds to nearly bare soils, to 0.9 which means that there is some dense vegetation in the area.
+The resulting NDVI can be viewed in the above figure. As expected the NDVI ranges from about 0.2, which corresponds to nearly bare soils, to 0.9 which means that there is some dense vegetation in the area.
 
 Although this is a quick way to perform the calculation, directly adding, substracting, multiplying, etc, the layers of big raster objects is not recommended. When working with big objects, it is advisable to use the `calc()` function to perform these types of calculaions. The reason is that R needs to load all the data first into its internal memory beform performing the calculation and then runs everything in one block. It is really easy to ''flood'' the RAM when doing that. A big advantage of the `calc()` function is that it has a built-in block processing option for any vectorized function, allowing such calculations to be fully ''RAM friendly''. The example below illustrates how to calculate NDVI from the same date set using the `calc()` function.
 
-```{r, }
+```{r}
 # Define the function to calculate NDVI from 
 ndvCalc <- function(x) {
-ndvi <- (x[[4]] - x[[3]]) / (x[[4]] + x[[3]])
-return(ndvi)
+    ndvi <- (x[[4]] - x[[3]]) / (x[[4]] + x[[3]])
+    return(ndvi)
 }
 ndvi2 <- calc(x=gewata, fun=ndvCalc)
 
 ```
 Note that `overlay()` can also be used in that case to obtain the same result, with the same level of RAM friendlyness. The advantage of overlay being that the number of input RasterLayers is less limiting. As a consequence specifying the layers does not happen in the function call but in the `overlay()` call instead. 
 
-```{r, }
+```{r}
 ndvOver <- function(x, y) {
-ndvi <- (y - x) / (x + y)
-return(ndvi)
+    ndvi <- (y - x) / (x + y)
+    return(ndvi)
 }
 ndvi3 <- overlay(x=gewata[[3]], y=gewata[[4]], fun=ndvOver)
 ```
 
 We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the raster package. 
-```{r, }
+```{r}
 all.equal(ndvi, ndvi2)
 all.equal(ndvi, ndvi3)
 ```
@@ -224,15 +236,15 @@ all.equal(ndvi, ndvi3)
 In the simple case of calculating NDVI, we were easily able to produce the same result with `calc()` and `overlay()`, however, it is often the case that one function is preferable to the other. As a general rule, a calculation that needs to refer to multiple individual layers separately will be easier to set up in `overlay()` than in `calc()`.
 
 ## Re-projections
-By the way, we still don't know where this area is. In order to investigate that, we are going to try projecting it in Google Earth. As you know Google Earth is all in Lat/Long, so we have to get our data re-projected to lat/long first. The `projectRaster()` function allows re-projection of raster objects to any projection one can think of. As the function uses the PROJ.4 \footnote{PROJ.4 ([https://trac.osgeo.org/proj/]) is the reference library (external to R) that handles cartographic projections and performs projections transformations. The rgdal package is the interface between that library and R} library to perform that operation, the `crs=` argument should receive a ''proj4'' expression. ''proj4'' expressions are strings that provide the projection parameters of cartographic projections. A central place to search for projections is the spatial reference website ([http://spatialreference.org/]), from this database you will be able to query almost any reference and retrieve it in any format, including its Proj4 expression.
+By the way, we still don't know where this area is. In order to investigate that, we are going to try projecting it in Google Earth. As you know Google Earth is all in Lat/Long, so we have to get our data re-projected to lat/long first. The `projectRaster()` function allows re-projection of raster objects to any projection one can think of. As the function uses the (PROJ.4)[https://trac.osgeo.org/proj/] library (PROJ.4 is the reference library (external to R) that handles cartographic projections and performs projections transformations; the rgdal package is the interface between that library and R) to perform that operation, the `crs=` argument should receive a ''proj4'' expression. ''proj4'' expressions are strings that provide the projection parameters of cartographic projections. A central place to search for projections is the spatial reference website ([http://spatialreference.org/]), from this database you will be able to query almost any reference and retrieve it in any format, including its Proj4 expression.
 
-```{r, }
+```{r}
 # One single line is sufficient to project any raster to any projection
 ndviLL <- projectRaster(ndvi, crs='+proj=longlat')
 ```
 
 
-Note that if re-projecting and mosaicking is really a large part of your project, you may want to consider using directly the `gdalwarp` command line utility ([http://www.gdal.org/gdalwarp.html]). Although there is no R interface to `gdalwarp`, the string handling capabilities of R can be of great help when building `gdalwarp` expressions.
+Note that if re-projecting and mosaicking is really a large part of your project, you may want to consider using directly the `gdalwarp` command line utility ([http://www.gdal.org/gdalwarp.html]). The `gdalUtils` R package provides utilities to run GDAL commands from R, including gdalwarp, for reprojection, resampling and mosaicking.
 
 Now that we have our ndvi layer in lat/long, let's write it to a kml file, which is one of the two Google Earth formats.
 
@@ -241,23 +253,26 @@ Now that we have our ndvi layer in lat/long, let's write it to a kml file, which
 # you want to make sure that it is set where you want the file to be written
 # It can be changed using setwd()
 getwd()
-# Note that we are using the filename argument, contained in the elypsis of 
+# Note that we are using the filename argument, contained in the elypsis (...) of 
 # the function, since we want to write the output directly to file.
 KML(x=ndviLL, filename='gewataNDVI.kml')
 ```
 Note that you need to have Google Earth installed on your system in order to perform the following step.
 Now let's find that file that we have just written and double click it, and watch how Google Earth brings us all the way to ... Ethiopia. More information will come in Lesson 6 about that specific area.
 
-
 We are done with this data set for this lesson. So let's explore another data set, from the newly launched Landsat 8 sensor. This dataset will allow us to find other interesting raster operations to perform.  
 
 ## More raster arythmetics, perform simple replacements
+<!---
+OKay, that needs to be adapted as well
+-->
+
 The Landsat 8 data delivered up to now come with a Quality Assessment (QA) band; it is an extra layer, matching the extent and the resolution of the other bands, and containing information about the quality of the data. Such extra QA layers are becomming increasingly common (Landsat 8, most moderate resolution sensors) and are very valuable information. In the following section we will use that QA layer to mask out remaining clouds in the scene.
 ### About the area
 The area selected for this exercise is located in Tahiti, French Polynesia. It is located right in the middle of the island, where the two volcanoes forming the island intersect (on the isthmus). According to wikipedia, about 5000 people live in the municipality of Afaahiti-Taravao.
 For convenience, this scene subset has been added as a build in data set of the rasta package. Therefore it can simply be loaded using the `data()` command. Let's load it.
 
-```{r, }
+```{r, eval=FALSE}
 library(rasta)
 data(taravao)
 taravao
@@ -265,7 +280,7 @@ taravao
 
 The 9th band has the suffixe QA, which means that it is the one containing the quality information. The information contained in this layer is codded bitwise (see [http://landsat.usgs.gov/L8QualityAssessmentBand.php] for further details), which means that we need an extra step to extract this information into something we can simply use and understand.
 This step will be automatically performed using the `QA2cloud\{rasta\}` function since the details of that step are slightly beyond the scope of this course. When applied to the QA layer, the function returns for each pixel, either the value 1 or the value 0. 1 meaning presence and 0 absence of cloud. As seen earlier, applying a pixel based function to a RasterLayer is what the `calc()` function does well; so let's do it.
-```{r, }
+```{r, eval=FALSE}
 # Generate the cloud mask using QA2cloud wrapped into calc()
 cloud <- calc(taravao[[9]], fun=QA2cloud) 
 # Replace 0s by NAs (to improve visual display)
@@ -273,7 +288,7 @@ cloud[cloud == 0] <- NA
 ```
 
 A nice preview of the result can be achived using the `plotRGB()` function. The resulting plot is presented in figure~\ref{rgb}.
-```{r, rgb, echo=TRUE, fig=TRUE, include=FALSE}
+```{r, eval=FALSE}
 # Display data and the cloud mask 
 plotRGB(taravao, 5, 3, 4) 
 # Note the clouds at the top and bottom of the image.
@@ -281,15 +296,17 @@ plotRGB(taravao, 5, 3, 4)
 plot(cloud, add=TRUE, legend=FALSE)
 ```
 
-## FIGURE 
-RGB colour composite of the Taravao area with cloud mask overlay, the band combination used is 5, 3, 4 (Landsat 8)
+<!--
+Figure here -- RGB colour composite of the Taravao area with cloud mask overlay, the band combination used is 5, 3, 4 (Landsat 8)
+-->
+
 
 
 
 
 These cloudy pixels are not really usefull to us, therefore we will exclude them from the RasterBrick. But first, we do not need that band 9 anymore, so let's drop it from the brick. We use the `dropLayer()` function for that, which returns a RasterStack object. 
 
-```{r, }
+```{r, eval=FALSE}
 taravao8 <- dropLayer(x=taravao, i=9)
 # Let's duplicate that RasterStack and save it for later
 taravao8_2 <- taravao8
@@ -297,11 +314,11 @@ taravao8_2 <- taravao8
 
 Excluding data from a raster object using a mask can be done either by directly performing vector replacement operations, or with the `calc()` function. The same considerations of data size and RAM management than above apply when selecting one method or the other. For the purpose of the example, the two methods are illustrated below. The dataset is small enough to be safely handled in memory.
 What we want to do is replace the cloudy pixels by a NA.
-```{r, }
+```{r, eval=FALSE}
 taravao8[cloud == 1] <- NA
 ```
 
-```{r, }
+```{r, eval=FALSE}
 cloud2NA <- function(x, y){
 x[y == 1] <- NA
 return(x)
@@ -320,18 +337,13 @@ The rgdal package does not include hdf drivers in its pre-built binary. Data can
 One easy way to do that is by calling it directly from R, via the command line utility.
 
 ```{r, eval=FALSE}
-library(MODIS)
+library(gdalUtils)
 # Get a list of sds names
-sds <- getSds('full/path/filename.hdf')
+sds <- get_subdatasets('full/path/filename.hdf')
 # Isolate the name of the first sds
-name <- sds$SDS4gdal[1]
-# Optional: In case a sds name contains spaces, these 2 steps remove them
-name <- gsub("\"", "", name)
-name <- sprintf('\"%s\"', name)
-# Define output filename and create gdal_translate command
+name <- sds[1]
 filename <- 'name/of/output/file.tif'
-translate <- sprintf('gdal_translate %s %s', name, filename)
-system(translate)
+gdal_translate(sds[1], dst_dataset = filename)
 # Load the Geotiff created into R
 r <- raster(filename)
 ```
@@ -339,11 +351,11 @@ r <- raster(filename)
 
 ## Linux
 ```{r, eval=FALSE}
-library(MODIS)
+library(gdalUtils)
 # Get a list of sds names
-sds <- getSds('full/path/filename.hdf')
+sds <- get_subdatasets('full/path/filename.hdf')
 # Any sds can then be read directly using the raster function
-r <- raster(sds$SDS4gdal[1])
+r <- raster(sds[1])
 ```
 
 
@@ -353,6 +365,10 @@ r <- raster(sds$SDS4gdal[1])
 The newly released [gdalUtils](https://r-forge.r-project.org/projects/gdalutils/) package should provide interesting wrappers facilitating the use of gdal functions from within R.
 
 # Exercise: write a compositing function
+<!--
+That section has to adapted a bit as well
+-->
+
 ## Context
 Taravao2 is a Landsat 8 image covering the same area than taravao, but acquired at a different date. We saw earlier that taravao has residual clouds; the same is true for taravao2. However, since the clouds are not at the same location on the two images, it should be possible to create a composite image, maximizing the number of observations.
 
@@ -395,6 +411,8 @@ plotRGB(taravaoComposit, 4, 5, 3)
 ```
 And finally, do not forget to put your name at the top of the function file. The resulting composit is depicted in Figure~\ref{composit}.
 
-### FIGURE HERE
+<!--
+Figure here
+-->
 Result of an average value composit using to dates for the taravao area, the band combination used is 4, 5, 3 (Landsat 8)
 
