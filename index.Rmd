@@ -98,7 +98,7 @@ To illustrate the reading and writing of raster files, we will use data subsets 
 # start by making sure that your working directory is properly set
 # If not you can set it using setwd()
 getwd()
-download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif', destfile = 'LE71700552001036SGS00_SR_Gewata_INT1U.tif', method = 'wget')
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif', destfile = 'LE71700552001036SGS00_SR_Gewata_INT1U.tif', method = 'auto')
 ```
 
 
@@ -162,7 +162,7 @@ But first we need to fetch the data, similarly to how we did it for the gewata b
 # Again, make sure that your working directory is properly set
 getwd()
 # Download the data
-download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/tura.zip', destfile='tura.zip', method='wget')
+download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/tura.zip', destfile='tura.zip', method='auto')
 unzip(zipfile='tura.zip')
 # Retrieve the content of the tura sub-directory
 list <- list.files(path='tura/', full.names=TRUE)
@@ -269,21 +269,33 @@ We are done with this data set for this lesson. So let's explore another data se
 OKay, that needs to be adapted as well
 -->
 Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This mean that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance. Additionaly, they provide with this product a cloud mask, which is an extra raster layer, at the same resolution than the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named cfmask, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://code.google.com/p/fmask/), and the publication by @zhu2012object.
+In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
 
-In the following section we will use that QA layer to mask out remaining clouds in the scene.
 
-The Landsat 8 data delivered up to now come with a Quality Assessment (QA) band; it is an extra layer, matching the extent and the resolution of the other bands, and containing information about the quality of the data. Such extra QA layers are becomming increasingly common (Landsat 8, most moderate resolution sensors) and are very valuable information. In the following section we will use that QA layer to mask out remaining clouds in the scene.
 ### About the area
-The area selected for this exercise is located in Tahiti, French Polynesia. It is located right in the middle of the island, where the two volcanoes forming the island intersect (on the isthmus). According to wikipedia, about 5000 people live in the municipality of Afaahiti-Taravao.
-For convenience, this scene subset has been added as a build in data set of the rasta package. Therefore it can simply be loaded using the `data()` command. Let's load it.
+The area selected for this exercise covers most of the South Pacific island of Tahiti, French Polynesia. It is a mountaneous, volcanic island, and according to Wikipedia about 180,000 people live on the island. For convenience, the Landsat scene was subsetted to cover only the area of interest and is stored online.
 
 ```{r, eval=FALSE}
-library(rasta)
-data(taravao)
-taravao
+# Download the data
+download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE70530722000126_sub.gri', destfile='LE70530722000126_sub.gri', method='auto')
+download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE70530722000126_sub.grd', destfile='LE70530722000126_sub.grd', method='auto')
+
+# Load the data as a rasterBrick object and investigate its content
+tahiti <- brick('LE70530722000126_sub.grd')
+tahiti
+
+# Display names of each individual layers
+names(tahiti)
+
+# Visualize the data
+plotRGB(tahiti, 3,4,5)
 ```
 
-The 9th band has the suffixe QA, which means that it is the one containing the quality information. The information contained in this layer is codded bitwise (see [http://landsat.usgs.gov/L8QualityAssessmentBand.php] for further details), which means that we need an extra step to extract this information into something we can simply use and understand.
+<!--
+Continue from here 26-11-2014
+-->
+
+The 8th band of the brick has the suffixe `cfmask`, which means that it is the one containing the cloud mask. 
 This step will be automatically performed using the `QA2cloud\{rasta\}` function since the details of that step are slightly beyond the scope of this course. When applied to the QA layer, the function returns for each pixel, either the value 1 or the value 0. 1 meaning presence and 0 absence of cloud. As seen earlier, applying a pixel based function to a RasterLayer is what the `calc()` function does well; so let's do it.
 ```{r, eval=FALSE}
 # Generate the cloud mask using QA2cloud wrapped into calc()
