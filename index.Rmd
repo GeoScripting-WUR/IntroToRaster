@@ -6,6 +6,8 @@ output:
     toc: true
     toc_depth: 4
     theme: united
+    bibliography: refs.bib
+cls: nature-no-superscript.csl
 ---
 
 
@@ -262,10 +264,13 @@ Now let's find that file that we have just written and double click it, and watc
 
 We are done with this data set for this lesson. So let's explore another data set, from the newly launched Landsat 8 sensor. This dataset will allow us to find other interesting raster operations to perform.  
 
-## More raster arythmetics, perform simple replacements
+## More raster arythmetics, perform simple value replacements
 <!---
 OKay, that needs to be adapted as well
 -->
+Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This mean that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance. Additionaly, they provide with this product a cloud mask, which is an extra raster layer, at the same resolution than the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named cfmask, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://code.google.com/p/fmask/), and the publication by @zhu2012object.
+
+In the following section we will use that QA layer to mask out remaining clouds in the scene.
 
 The Landsat 8 data delivered up to now come with a Quality Assessment (QA) band; it is an extra layer, matching the extent and the resolution of the other bands, and containing information about the quality of the data. Such extra QA layers are becomming increasingly common (Landsat 8, most moderate resolution sensors) and are very valuable information. In the following section we will use that QA layer to mask out remaining clouds in the scene.
 ### About the area
