@@ -94,7 +94,7 @@ Writing one of the three raster objects classes to file is achieved with the `wr
 
 To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, make sure your working directory is set properly and run the following line; it will handle the download:
 
-```{r, echo=FALSE}
+```{r, eval=FALSE}
 # start by making sure that your working directory is properly set
 # If not you can set it using setwd()
 getwd()
@@ -107,24 +107,31 @@ See the example below.
 
 Now that we have downloaded the geoTiff file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the `list.files()` function.
 
-```{r}
+```{r, eval=FALSE}
 # When passed without arguments, list.files() returns a list, listing the content of the working directory
 list.files()
 ```
 
 We can now load this object in R, since it is a multi-layer raster object, we need to use the `brick()` function to do that.
 
-```{r, echo=FALSE}
+```{r, eval=FALSE}
 gewata <- brick('LE71700552001036SGS00_SR_Gewata_INT1U.tif')
 ```
-
+```{r, echo=FALSE}
+gewata <- brick('data/LE71700552001036SGS00_SR_Gewata_INT1U.tif')
+```
 Let's take a look at the structure of this object.
 ```{r}
 gewata
 ```
 The metadata above informs us that the gewata object is a relatively small (593x653 pixels) RasterBrick with 6 layers.
 Similarly, single layer objects can be read using the `raster()` function. Or if you try using the `raster()` function on a multi layer object, by default the first layer only will be read.
-```{r}
+```{r, echo=FALSE}
+gewataB1 <- raster('data/LE71700552001036SGS00_SR_Gewata_INT1U.tif')
+gewataB1
+```
+
+```{r, eval=FALSE}
 gewataB1 <- raster('LE71700552001036SGS00_SR_Gewata_INT1U.tif')
 gewataB1
 ```
@@ -361,11 +368,12 @@ There are holes in the image, but at least the clouds are gone. You will have to
 
 
 
-# Hdf files (Not part of the course)
-A file format that is getting increasingly common with geo-spatial gridded data is the hdf format. Hdf stands for hierarchical data format. For instance MODIS data have been delivered in hdf format since its beginning, Landsat has adopted the hdf format for delivering its Level 2 surface reflectance data recently. This data format has an architecture that makes it very convenient to store data of different kind in one file, but requires slightly more effort from the scientist to work with conveniently.
+# Hdf files
+*The information below, about handling HDF4 format files with R is additional to the lesson content, however, it will be usefull for you in the future; particularly if you plan to work with MODIS data*
+A file format that is getting increasingly common with geo-spatial gridded data is the hdf format. Hdf stands for hierarchical data format. For instance MODIS data have been delivered in hdf format since its beginning, Landsat has adopted the hdf format for delivering some of its Level 2 surface reflectance data recently. This data format has an architecture that makes it very convenient to store data of different kind in one file, but requires slightly more effort from the scientist to work with conveniently.
 
 ## Windows
-The rgdal package does not include hdf drivers in its pre-built binary. Data can therefore not be read directly from hdf into R (as object of class rasterLayer). A workaround is to convert the files externally to a different data format. Since you probably have gdal installed on your system (either via FWTools or OSGeo4W), you can use the command line utility gdal\_translate to perform this operation.
+The rgdal package does not include hdf drivers in its pre-built binary. Data can therefore not be read directly from hdf into R (as object of class rasterLayer). A workaround is to convert the files externally to a different data format. Since you probably have gdal installed on your system (either via FWTools or OSGeo4W), you can use the command line utility gdal_translate to perform this operation.
 One easy way to do that is by calling it directly from R, via the command line utility.
 
 ```{r, eval=FALSE}
@@ -378,6 +386,13 @@ filename <- 'name/of/output/file.tif'
 gdal_translate(sds[1], dst_dataset = filename)
 # Load the Geotiff created into R
 r <- raster(filename)
+```
+
+And if you want the filename argument to be generated in a more automated fashion, you can use
+
+```{r, eval=FALSE}
+filename <- rasterTmpFile()
+extension(filename) <- 'tif'
 ```
 
 
