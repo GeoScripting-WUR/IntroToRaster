@@ -27,7 +27,7 @@ At the end of the lecture, you should be able to:
 
 # Reminder on overall system architecture
 
-## fIGURE HERE
+
 <center><img src="figs/system_overview_2.png" alt="Drawing" style="width: 700px"/></center>
 
 
@@ -36,7 +36,7 @@ In a previous lectures you saw the overall system architecture (See figure above
 
 
 Perform system setup checks.
-```{r, }
+```{r}
 # Example to perform system set-up checks
 library(rgdal)
 getGDALVersionInfo()
@@ -62,7 +62,7 @@ Check the home page of the raster package ([http://cran.r-project.org/web/packag
 The raster package produces and uses R objects of three different classes. The **RasterLayer**, the **RasterStack** and the **RasterBrick**. A RasterLayer is the equivalent of a single layer raster, as an R workspace variable. The data themselves, depending on the size of the grid can be loaded in memory or on disk. The same stands for RasterBrick and RasterStack objects, which are the equivalent of multi-layer RasterLayer objects. RasterStack and RasterBrick are very similar, the difference being in the virtual characteristic of the RasterStack. While a RasterBrick has to refer to one multi-layer file or is in itself a multi-layer object with data loaded in memory, a RasterStack may ''virtually'' connect several raster objects written to different files or in memory. Processing will be more efficient for a RasterBrick than for a RasterStack, but RasterStack has the advantage of facilitating pixel based calculations on separate raster layers.
 
 Let's take a look into the structure of these objects.
-```{r, }
+```{r}
 library(raster)
 # Generate a RasterLAyer object
 r <- raster(ncol=40, nrow=20)
@@ -74,7 +74,7 @@ From the metadata displayed above, we can see that the RasterLayer object contai
 
 RasterBrick and RasterStack objects can also fairly easily be generated directly in to R, as shown in the example below. Being able to generate such objects without reading them from files is particularly important for the generation of ''reproducible examples'' which was covered in general terms in Lesson 3.
 
-```{r, }
+```{r}
 # Using the previously generated RasterLAyer object
 # Let's first put some values in the cells of the layer
 r[] <- rnorm(n=ncell(r))
@@ -197,7 +197,7 @@ $$
 
 with NIR and R being band 4 and 3 of Landsat respectively.
 
-```{r, }
+```{r}
 ndvi <- (gewata[[4]] - gewata[[3]]) / (gewata[[4]] + gewata[[3]])
 ```
 The `plot()` function automatically recognises the objects of raster classes and returns an appropriate spatial plot.
@@ -265,9 +265,7 @@ Now let's find that file that we have just written and double click it, and watc
 We are done with this data set for this lesson. So let's explore another data set, from the newly launched Landsat 8 sensor. This dataset will allow us to find other interesting raster operations to perform.  
 
 ## More raster arythmetics, perform simple value replacements
-<!---
-OKay, that needs to be adapted as well
--->
+
 Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This mean that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance. Additionaly, they provide with this product a cloud mask, which is an extra raster layer, at the same resolution than the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named cfmask, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://code.google.com/p/fmask/), and the publication by @zhu2012object.
 In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
 
@@ -292,57 +290,74 @@ plotRGB(tahiti, 3,4,5)
 ```
 
 <!--
-Continue from here 26-11-2014
+In linux the argument 'auto' does not work for https download. Can be replaced by 'wget'. What about macOS
 -->
 
-The 8th band of the brick has the suffixe `cfmask`, which means that it is the one containing the cloud mask. 
-This step will be automatically performed using the `QA2cloud\{rasta\}` function since the details of that step are slightly beyond the scope of this course. When applied to the QA layer, the function returns for each pixel, either the value 1 or the value 0. 1 meaning presence and 0 absence of cloud. As seen earlier, applying a pixel based function to a RasterLayer is what the `calc()` function does well; so let's do it.
-```{r, eval=FALSE}
-# Generate the cloud mask using QA2cloud wrapped into calc()
-cloud <- calc(taravao[[9]], fun=QA2cloud) 
-# Replace 0s by NAs (to improve visual display)
-cloud[cloud == 0] <- NA 
+```{r, echo=FALSE}
+tahiti <- brick('data/LE70530722000126_sub.grd')
+plotRGB(tahiti, 3,4,5)
 ```
 
-A nice preview of the result can be achived using the `plotRGB()` function. The resulting plot is presented in figure~\ref{rgb}.
-```{r, eval=FALSE}
-# Display data and the cloud mask 
-plotRGB(taravao, 5, 3, 4) 
-# Note the clouds at the top and bottom of the image.
-# Let's plot the cloud mask over them and see how they match
-plot(cloud, add=TRUE, legend=FALSE)
+We can also visualize the cloud mask layer (layer 7).
+```{r}
+plot(tahiti, 7)
+```
+According to the [algorithm description](https://code.google.com/p/fmask/), water is coded as 1, cloud as 4 and cloud shadow as 2. Does the cloud mask fit with the visual interpretation of the RGB image we plotted before?
+
+We can also plot the two on top of each others, but before that we need to assign no values to the 'clear land pixels' so that they appear transparent on the overlay plot.
+
+```{r}
+# Extract cloud layer from the brick
+cloud <- tahiti[[7]]
+
+# Replace 'clear Land by NA'
+cloud[cloud == 0] <- NA
+
+# Plot the stack and the cloud mask on top of each others
+plotRGB(tahiti, 3,4,5)
+plot(cloud, add = TRUE, legend = FALSE)
 ```
 
-<!--
-Figure here -- RGB colour composite of the Taravao area with cloud mask overlay, the band combination used is 5, 3, 4 (Landsat 8)
--->
+Applying a cloud mask to a dataset simply consists in performing value replacement. In this case, a condition on the 7th layer of the stack (the fmask layer) will determine whether values in the other layers are kept, or replaced by NA, which is equivalent to masking them.
+It is more convenient to work on the cloud mask as a separate rasterLayer, we will therefore split the rasterBrick using the `dropLayer` function.
 
-
-
-
-
-These cloudy pixels are not really usefull to us, therefore we will exclude them from the RasterBrick. But first, we do not need that band 9 anymore, so let's drop it from the brick. We use the `dropLayer()` function for that, which returns a RasterStack object. 
-
-```{r, eval=FALSE}
-taravao8 <- dropLayer(x=taravao, i=9)
-# Let's duplicate that RasterStack and save it for later
-taravao8_2 <- taravao8
+```{r}
+# Extract cloud Mask rasterLayer
+fmask <- tahiti[[7]]
+# Remove fmask layer from the Landsat stack
+tahiti6 <- dropLayer(tahiti, 7)
 ```
 
-Excluding data from a raster object using a mask can be done either by directly performing vector replacement operations, or with the `calc()` function. The same considerations of data size and RAM management than above apply when selecting one method or the other. For the purpose of the example, the two methods are illustrated below. The dataset is small enough to be safely handled in memory.
-What we want to do is replace the cloudy pixels by a NA.
-```{r, eval=FALSE}
-taravao8[cloud == 1] <- NA
+We will first do the masking using simple vector arithmetic, as if tahiti6 and fmask were simple vectors. We want to want to keep any value with a 'clean land pixel flag' in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel diffent from 0. This can be done in one line of code.
+
+```{r}
+# Perform value replacement
+tahiti6[fmask != 0] <- NA
 ```
 
-```{r, eval=FALSE}
+However, this is possible here because both objects are relatively small and the values can all be loaded in the computer memory without any risk of overloading it. When working with very large raster objects, you will very likely run into problems if you do that. It is then preferable, as presented earlier in this tutorial to use `calc` or `overlay`. `overlay` in this case is the appropriate function, since we are working with two distinct raster objects.
+
+```{r}
+# First define a value replacement function
 cloud2NA <- function(x, y){
-x[y == 1] <- NA
-return(x)
+    x[y != 0] <- NA
+    return(x)
 }
-taravao8_3 <- overlay(taravao8_2, cloud, fun=cloud2NA)
 ```
 
+The value replacement function takes two arguments, x and y. Similarly to what we did earlier, x corresponds to the cloud mask, and y to the rasterBrick.
+
+```{r}
+# Let's create a new 6 layers object since tahiti6 has been masked already
+tahiti6_2 <- dropLayer(tahiti, 7)
+
+# Apply the function on the two raster objects using overlay
+tahitiCloudFree <- overlay(x = tahiti6_2, y = fmask, fun = cloud2NA)
+
+# Visualize the output
+plotRGB(tahitiCloudFree, 3,4,5)
+```
+There are holes in the image, but at least the clouds are gone. You will have to fill these holes in the exercise following this tutorial.
 
 
 
