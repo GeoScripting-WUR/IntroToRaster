@@ -459,10 +459,39 @@ Today you got a general introduction to the raster package, its basic functions,
 # Packages you should know about
 The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of gdal functions from within R.
 
-# Exercise: write a compositing function
+
+# Exercise: *Design a pre-processing chain to assess change in NDVI over time*
+
+I would like to know if Wageningen and its surrounding has changed with respect to its spring NDVI over the past 30 years. For that I would need to do a bi-temporal comparison of two NDVI images, acquired in spring. Simply substracting the images should work, but unfortunately these haven't been pre-processed yet. I managed to download two Landsat raw surface reflectance products covering the area. They were acquired around the same period of the year at about 30 years interval, but I don't know how to compare them. Can you please help me?
+
+## More details
+
+* Data can be found here and here. (still need to add the links)
+* Can you tell when the scene were acquired ? (hint: look in file names)
+* Product details are [here](http://landsat.usgs.gov/documents/provisional_l8sr_product_guide.pdf) (Landsat 8) and [here](http://landsat.usgs.gov/documents/cdr_sr_product_guide.pdf) (Landsat 5)
+* Cloud mask from the fmask algorithm is contained in both archives
+* The two scenes have different extents
+
+
+Note: Landsat 8 does not use the same band numbers as its predecessors. So that RED and NIR correspond to band3 and band4 respectively for ETM+ and TM (Landsat 7 and 5 respectively), while for OLI (Landsat 8), RED is band4 and NIR band5.
+
+## Hints
+
+* `list.files()` with `pattern =` argument. For example, `list.files('data/', pattern = glob2rx('*.tif'), full.names = TRUE)` will return only the files that have the `.tif` extension.
+* You should always use `full.names = TRUE` in `list.files()` to be able to use the output.
+* `?intersect`
+* `untar()` to programmatically extract the files from the archive.
+
+## How to submit
+Create a well structured reproducible R project showing in the `main.R`.
+
+* The workflow to pre-process the data
+* Some visualization of the intermediary outputs
+* How to produce and visualize the final output
+
+
 <!--
-That section has to adapted a bit as well
--->
+# Exercise: write a compositing function
 
 ## Context
 We would really like to have a cloud free image of Tahiti, unfortunately as we saw earlier the first image we downloaded and filtered for cloud contamination discarded a lot of pixels. Luckily there is another image available for the same area, acquired around the same time as the first one. This second image is also partially contaminated by clouds, but they appear to be at different locations. Can you create a composited image that uses the two images of tahiti?
@@ -488,6 +517,8 @@ VRandomFunction <- function(a, b) {
 ```
 
 * Wrap all that into a clean, nicely written and documented function.
+
+-->
 
 
 ## How to submit

@@ -92,11 +92,11 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </ul></li>
 <li><a href="#hdf-files"><span class="toc-section-number">9</span> Hdf files</a></li>
 <li><a href="#packages-you-should-know-about"><span class="toc-section-number">10</span> Packages you should know about</a></li>
-<li><a href="#exercise-write-a-compositing-function"><span class="toc-section-number">11</span> Exercise: write a compositing function</a><ul>
-<li><a href="#context"><span class="toc-section-number">11.1</span> Context</a></li>
-<li><a href="#expected-output"><span class="toc-section-number">11.2</span> Expected output</a></li>
-<li><a href="#hints"><span class="toc-section-number">11.3</span> Hints</a></li>
-<li><a href="#how-to-submit"><span class="toc-section-number">11.4</span> How to submit</a></li>
+<li><a href="#exercise-design-a-pre-processing-chain-to"><span class="toc-section-number">11</span> Exercise: <em>Design a pre-processing chain to </em></a><ul>
+<li><a href="#more-details"><span class="toc-section-number">11.1</span> More details</a></li>
+<li><a href="#hints"><span class="toc-section-number">11.2</span> Hints</a></li>
+<li><a href="#how-to-submit"><span class="toc-section-number">11.3</span> How to submit</a></li>
+<li><a href="#how-to-submit-1"><span class="toc-section-number">11.4</span> How to submit</a></li>
 </ul></li>
 </ul>
 </div>
@@ -121,7 +121,6 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li>Explanation of the exercise</li>
 </ul></li>
 <li>Rest of the afternoon: Do the exercise</li>
-<li></li>
 </ul>
 </div>
 <div id="assumed-knowledge-from-previous-lectures" class="section level1">
@@ -202,8 +201,8 @@ b</code></pre>
 ## coord. ref. : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
 ## data source : in memory
 ## names       : layer.1, layer.2, layer.3 
-## min values  :  -3.063,  -6.127,  -3.063 
-## max values  :   3.147,   6.293,   3.147</code></pre>
+## min values  :  -3.103,  -6.205,  -3.103 
+## max values  :   3.049,   6.098,   3.049</code></pre>
 <p>The RasterBrick metadata displayed above are mostly similar to what we saw earlier for the RasterLayer object, with the exception that these are multi-layer objects.</p>
 </div>
 </div>
@@ -475,41 +474,71 @@ plotRGB(tahitiCloudFree, 3,4,5)</code></pre>
 <h1><span class="header-section-number">10</span> Packages you should know about</h1>
 <p>The <a href="http://cran.r-project.org/web/packages/gdalUtils/index.html">gdalUtils</a> package provides interesting wrappers facilitating the use of gdal functions from within R.</p>
 </div>
-<div id="exercise-write-a-compositing-function" class="section level1">
-<h1><span class="header-section-number">11</span> Exercise: write a compositing function</h1>
-<!--
-That section has to adapted a bit as well
--->
-
-<div id="context" class="section level2">
-<h2><span class="header-section-number">11.1</span> Context</h2>
-<p>We would really like to have a cloud free image of Tahiti, unfortunately as we saw earlier the first image we downloaded and filtered for cloud contamination discarded a lot of pixels. Luckily there is another image available for the same area, acquired around the same time as the first one. This second image is also partially contaminated by clouds, but they appear to be at different locations. Can you create a composited image that uses the two images of tahiti?</p>
-</div>
-<div id="expected-output" class="section level2">
-<h2><span class="header-section-number">11.2</span> Expected output</h2>
-<p>Using the two tahiti images, write a mean value compositing function. The function should accepts 2 <code>RasterBrick</code> or <code>RasterStack</code> objects - containing 7 bands and band 7 being the ’fmask layer - and return a 6 layers <code>RasterStack</code> or <code>RasterBrick</code> object. In case of cloud occurence at both dates, pixel value should be NA, if both dates are cloud free, the mean value will be returned.</p>
+<div id="exercise-design-a-pre-processing-chain-to" class="section level1">
+<h1><span class="header-section-number">11</span> Exercise: <em>Design a pre-processing chain to </em></h1>
+<p>I would like to know if Wageningen and its surrounding has changed with respect to its spring NDVI over the past 30 years. For that I would need to do a bi-temporal comparison of two NDVI images, acquired in spring. Simply substracting the images should work, but unfortunately these haven’t been pre-processed yet. I managed to download two Landsat raw surface reflectance products covering the area. They were acquired around the same period of the year at about 30 years interval, but I don’t know how to compare them. Can you please help me?</p>
+<div id="more-details" class="section level2">
+<h2><span class="header-section-number">11.1</span> More details</h2>
+<ul>
+<li>Data can be found here and here. (still need to add the links)</li>
+<li>Can you tell when the scene were acquired ? (hint: look in file names)</li>
+<li>Product details are <a href="http://landsat.usgs.gov/documents/provisional_l8sr_product_guide.pdf">here</a> (Landsat 8) and <a href="http://landsat.usgs.gov/documents/cdr_sr_product_guide.pdf">here</a> (Landsat 5)</li>
+<li>Cloud mask from the fmask algorithm is contained in both archives</li>
+<li>The two scenes have different extents</li>
+</ul>
+<p>Note: Landsat 8 does not use the same band numbers as its predecessors. So that RED and NIR correspond to band3 and band4 respectively for ETM+ and TM (Landsat 7 and 5 respectively), while for OLI (Landsat 8), RED is band4 and NIR band5.</p>
 </div>
 <div id="hints" class="section level2">
-<h2><span class="header-section-number">11.3</span> Hints</h2>
-<p>There are many ways to create such function, one fast way would be to:</p>
+<h2><span class="header-section-number">11.2</span> Hints</h2>
 <ul>
-<li>Remove band 7 from both RasterStack objects</li>
-<li>Replace cloud contaminated pixels by NAs</li>
-<li>Write a micro function that performs the averaging, as described in the exercise definition (take a look at the <code>na.rm=</code> argument in the <code>mean()</code> function).</li>
-<li>Apply the function to the RasterStack objects using <code>calc()</code> or <code>overlay()</code>. Depending on how you wrote the it, it is possible that <code>overlay()</code> complains about the function not being vectorized. One quick way to vectorize a function that has multiple input arguments is by using <code>mapply()</code>. See the example below.</li>
-</ul>
-<pre class="r"><code># Considering a non vectorised function, with 2 input arguments (a, b)
-# called RandomFunction()
-# The vectorized version (VRandomFunction()) can be created as follows
-VRandomFunction &lt;- function(a, b) {
-    out &lt;- mapply(FUN=RandomFunction, a, b)
-    return(out)
-}</code></pre>
-<ul>
-<li>Wrap all that into a clean, nicely written and documented function.</li>
+<li><code>list.files()</code> with <code>pattern =</code> argument. For example, <code>list.files('data/', pattern = glob2rx('*.tif'), full.names = TRUE)</code> will return only the files that have the <code>.tif</code> extension.</li>
+<li>You should always use <code>full.names = TRUE</code> in <code>list.files()</code> to be able to use the output.</li>
+<li><code>?intersect</code></li>
+<li><code>untar()</code> to programmatically extract the files from the archive.</li>
 </ul>
 </div>
 <div id="how-to-submit" class="section level2">
+<h2><span class="header-section-number">11.3</span> How to submit</h2>
+<p>Create a well structured reproducible R project showing in the <code>main.R</code>.</p>
+<ul>
+<li>The workflow to pre-process the data</li>
+<li>Some visualization of the intermediary outputs</li>
+<li>How to produce and visualize the final output</li>
+</ul>
+<!--
+# Exercise: write a compositing function
+
+## Context
+We would really like to have a cloud free image of Tahiti, unfortunately as we saw earlier the first image we downloaded and filtered for cloud contamination discarded a lot of pixels. Luckily there is another image available for the same area, acquired around the same time as the first one. This second image is also partially contaminated by clouds, but they appear to be at different locations. Can you create a composited image that uses the two images of tahiti?
+
+## Expected output
+Using the two tahiti images, write a mean value compositing function. The function should accepts 2 `RasterBrick` or `RasterStack` objects - containing 7 bands and band 7 being the 'fmask layer - and return a 6 layers `RasterStack` or `RasterBrick` object. In case of cloud occurence at both dates, pixel value should be NA, if both dates are cloud free, the mean value will be returned.
+
+## Hints
+There are many ways to create such function, one fast way would be to:
+
+* Remove band 7 from both RasterStack objects
+* Replace cloud contaminated pixels by NAs
+* Write a micro function that performs the averaging, as described in the exercise definition (take a look at the `na.rm=` argument in the `mean()` function).
+* Apply the function to the RasterStack objects using `calc()` or `overlay()`. Depending on how you wrote the it, it is possible that `overlay()` complains about the function not being vectorized. One quick way to vectorize a function that has multiple input arguments is by using `mapply()`. See the example below.
+
+```r
+# Considering a non vectorised function, with 2 input arguments (a, b)
+# called RandomFunction()
+# The vectorized version (VRandomFunction()) can be created as follows
+VRandomFunction <- function(a, b) {
+    out <- mapply(FUN=RandomFunction, a, b)
+    return(out)
+}
+```
+
+* Wrap all that into a clean, nicely written and documented function.
+
+-->
+
+
+</div>
+<div id="how-to-submit-1" class="section level2">
 <h2><span class="header-section-number">11.4</span> How to submit</h2>
 <p>You should submit the function via GitHub. Either put the function file in a sub-directory of your ‘’GeoScriptingExercises’‘repository, or in a new repository (i.e.:’‘Exercise3’’). Send the clone url of that repository to me. In addition, add a few lines to run the function and visualize the results at the end of the function file.</p>
 <p>And finally, do not forget to put your name at the top of the function file. You should obtain something like in the figure below.</p>
