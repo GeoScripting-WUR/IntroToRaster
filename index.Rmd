@@ -17,12 +17,21 @@ At the end of the lecture, you should be able to:
 
 * Read/write raster data 
 * Perform basic raster file operations/conversions
-* Perform simple raster calculations 
+* Perform simple raster calculations
+
+# ToDo today
+
+* Morning: Read the following tutorial
+* 1.30 pm to 2.30 pm:
+    * Feedback on yesterday's exercise,
+    * clarifications about today's tutorial
+    * Explanation of the exercise
+
+* Rest of the afternoon: Do the exercise
 
 # Assumed knowledge from previous lectures
 
 * Understand system architecture (R, R packages, libraries, drivers, bindings)
-* Read and write vector data
 * Good scripting habits
 
 
