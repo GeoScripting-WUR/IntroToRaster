@@ -43,7 +43,7 @@ library(rgdal)
 getGDALVersionInfo()
 ```
 
-The previous function should return the version number of the current version of GDAL installed on your machine. 1.10.1 is the most recent stable release. In case the function above returns an error, or if you cannot install rgdal at all, you should verify that all required software and libraries are properly installed. Please refer to the system setup vignette in that same package.
+The previous function should return the version number of the current version of GDAL installed on your machine. 1.10.1 is the most recent stable release. In case the function above returns an error, or if you cannot install rgdal at all, you should verify that all required software and libraries are properly installed. Please refer to the [system setup page](http://geoscripting-wur.github.io/system_setup/).
 
 
 # Overview of the raster package
@@ -73,7 +73,7 @@ r
 ```
 From the metadata displayed above, we can see that the RasterLayer object contains all the properties that geo-data should have; that is to say a projection, an extent and a pixel resolution.
 
-RasterBrick and RasterStack objects can also fairly easily be generated directly in to R, as shown in the example below. Being able to generate such objects without reading them from files is particularly important for the generation of ''reproducible examples'' which was covered in general terms in Lesson 3.
+RasterBrick and RasterStack objects can also fairly easily be generated directly into R, as shown in the example below. Being able to generate such objects without reading them from files is particularly important for the generation of ''reproducible examples'' which was covered in general terms in Lesson 3.
 
 ```{r}
 # Using the previously generated RasterLAyer object
@@ -100,6 +100,7 @@ To illustrate the reading and writing of raster files, we will use data subsets 
 # If not you can set it using setwd()
 getwd()
 download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif', destfile = 'LE71700552001036SGS00_SR_Gewata_INT1U.tif', method = 'auto')
+# In case the download code doesn't work (mac, linux?), use method = 'wget'
 ```
 
 
@@ -142,6 +143,22 @@ Note that in addition to supporting most commonly used geodata formats, the rast
 ## Geo processing, in memory Vs. on disk
 When looking at the documentation of most functions of the raster package, you will notice that the list of arguments is almost always ended by `...`. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the `writeRaster()` function; meaning that most geo-processing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.
 
+## Data type is (still) important
+When writing files to disk using `writeRaster()` or the `filename =` argument in most raster processing function, you should set an appropriate data type. Use the `datatype =` argument, it will save some precious disk space, and increase read and writting speed.
+
+See details in `?dataType`.
+
+```{r, echo=FALSE, results='asis', eval=FALSE}
+# Need to finish this table
+library(knitr)
+df <- data.frame(Fullname = c('Logical', 'Unsigned Integer 1', 'Signed Integer 1', 'Unsigned integer 2', 'Signed integer 2', 'Unsigned integer 4', 'Signed integer 4', 'Float 32', 'Float 64'),
+                 'Raster Package Name' = c('LOG1S', 'INT1U', 'INT1S', 'INT2U', 'INT2S', 'INT4U', 'INT4S', 'FLT4S', 'FLT8S'),
+                 'Minimum value' = c('FALSE (0)', '0', '-127', '0'))
+kable(df)
+```
+
+
+ 
 
 ## Croping a raster object
 `crop()` is the raster package function that allows you to crop data to smaller spatial extents. A great advantage of the crop function is that it acceps almost all spatial object class of R as its ''extent'' input argument. But the ''extent'' argument also simply accepts objects of class ''extent''. One way of obtaining such an extent object interactively is by using the `drawExtent()` function. In the example below, we will manually draw a regular extent that we will use later to crop the gewata RasterBrick.
@@ -151,6 +168,7 @@ When looking at the documentation of most functions of the raster package, you w
 plot(gewata, 1)
 e <- drawExtent(show=TRUE)
 ```
+
 Now you have to define a rectangular bounding box that will define the spatial extent of the extent object. Click twice, for the two opposite corners of the rectangle.
 Now we can crop the data following the boundaries of this extent.
 
@@ -160,6 +178,7 @@ gewataSub <- crop(gewata, e)
 # Now visualize the new cropped object
 plot(gewataSub, 1)
 ```
+
 You should see on the resulting plot that the orinal image has been cropped. 
 
 ## Creating layer stacks
@@ -175,25 +194,32 @@ unzip(zipfile='tura.zip')
 # Retrieve the content of the tura sub-directory
 list <- list.files(path='tura/', full.names=TRUE)
 ```
+
 The object `list` contains the file names of all the single layers we have to stack. Let's open the first one to visualize it.
+
 ```{r, eval=FALSE}
 plot(raster(list[1]))
 ```
+
 We see a NDVI layer, with the cloud masked out. Let's now create the stack, the function for doing that is called `stack()`. Looking at the help page of the function , you can see that it can accep a list of file names as argument, which is exactly what the object ''list'' is. So we can very simply create the layer stack by running the function.
+
 ```{r, eval=FALSE}
 turaStack <- stack(list)
 turaStack
 ```
+
 Now that we have our 166 layers RasterStack in memory, let's write it to disk using the `writeRaster()` function. Note that we decide here to save it as .grd file (the native format of the raster package); the reason for that is that this file format conserves original file names (in which information on dates is written) in the individual band names. The data range is comprised between -10000 and +10000, therefore such a file can be stored as signed double integer (INT2S).
+
 ```{r, eval=FALSE}
 # Write this file at the root of the working directory
 writeRaster(x=turaStack, filename='turaStack.grd', datatype='INT2S')
 ```
+
 Now this object is stored on your computer, ready to be archived for later use.
 
 # Simple raster arithmetic
 ## Adding, substracting, multiplying and dividing RasterLayers
-Performing simple raster operations with raster objects is fairly easy. For instance, if you want to substract two RasterLayers of same extent, r1 and r2; simply doing r1 - r2 will give the expected output, which is, every pixel value of r2 will be substracted to the matching pixel value of r1. These types of pixel based operations almost always require a set of conditions to be met in order to be executed; the two RasterLayers need to be identical in term of extent, resolution , projection, etc.
+Performing simple raster operations with raster objects is fairly easy. For instance, if you want to substract two RasterLayers of same extent, r1 and r2; simply doing `r1 - r2` will give the expected output, which is, every pixel value of r2 will be substracted to the matching pixel value of r1. These types of pixel based operations almost always require a set of conditions to be met in order to be executed; the two RasterLayers need to be identical in term of extent, resolution , projection, etc.
 
 ## Subsetting layers from from RasterStack and RasterBrick
 Different spectral bands of a same satellite image scene are often stored in multi layers objects. This means that you will very likely import them in you R working environment as RasterBrick or RasterStack objects. As a consequence, to perform calculations between these bands, you will have to write an expression refering to individual layers of the object. Referring to individual layers in a RasterBrick or RasterStack object is done by using double square brackets `[[]]`.
@@ -208,7 +234,9 @@ with NIR and R being band 4 and 3 of Landsat respectively.
 ```{r}
 ndvi <- (gewata[[4]] - gewata[[3]]) / (gewata[[4]] + gewata[[3]])
 ```
+
 The `plot()` function automatically recognises the objects of raster classes and returns an appropriate spatial plot.
+
 ```{r, ndvi, echo=TRUE, fig=TRUE, fig.align='center'}
 plot(ndvi)
 ```
@@ -227,6 +255,7 @@ ndvCalc <- function(x) {
 ndvi2 <- calc(x=gewata, fun=ndvCalc)
 
 ```
+
 Note that `overlay()` can also be used in that case to obtain the same result, with the same level of RAM friendlyness. The advantage of overlay being that the number of input RasterLayers is less limiting. As a consequence specifying the layers does not happen in the function call but in the `overlay()` call instead. 
 
 ```{r}
@@ -238,6 +267,7 @@ ndvi3 <- overlay(x=gewata[[3]], y=gewata[[4]], fun=ndvOver)
 ```
 
 We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the raster package. 
+
 ```{r}
 all.equal(ndvi, ndvi2)
 all.equal(ndvi, ndvi3)
@@ -267,6 +297,7 @@ getwd()
 # the function, since we want to write the output directly to file.
 KML(x=ndviLL, filename='gewataNDVI.kml')
 ```
+
 Note that you need to have Google Earth installed on your system in order to perform the following step.
 Now let's find that file that we have just written and double click it, and watch how Google Earth brings us all the way to ... Ethiopia. More information will come later in the course about that specific area.
 
@@ -311,7 +342,9 @@ We can also visualize the cloud mask layer (layer 7).
 plot(tahiti, 7)
 ```
 
-According to the [algorithm description](https://code.google.com/p/fmask/), water is coded as 1, cloud as 4 and cloud shadow as 2. Does the cloud mask fit with the visual interpretation of the RGB image we plotted before?
+According to the [algorithm description](https://code.google.com/p/fmask/), water is coded as 1, cloud as 4 and cloud shadow as 2.
+
+Does the cloud mask fit with the visual interpretation of the RGB image we plotted before?
 
 We can also plot the two on top of each others, but before that we need to assign no values to the 'clear land pixels' so that they appear transparent on the overlay plot.
 
@@ -337,7 +370,7 @@ fmask <- tahiti[[7]]
 tahiti6 <- dropLayer(tahiti, 7)
 ```
 
-We will first do the masking using simple vector arithmetic, as if tahiti6 and fmask were simple vectors. We want to want to keep any value with a 'clean land pixel flag' in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel diffent from 0. This can be done in one line of code.
+We will first do the masking using simple vector arithmetic, as if `tahiti6` and `fmask` were simple vectors. We want to keep any value with a 'clean land pixel flag' in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel diffent from 0. This can be done in one line of code.
 
 ```{r}
 # Perform value replacement
@@ -368,50 +401,51 @@ plotRGB(tahitiCloudFree, 3,4,5)
 ```
 
 
-There are holes in the image, but at least the clouds are gone. You will have to fill these holes in the exercise following this tutorial.
+There are holes in the image, but at least the clouds are gone. We could use another image from another date, to create a composited image, but that is little bit too much for today.
 
+# Summary
+Today you got a general introduction to the raster package, its basic functions, its object classes and methods. The can be categorized as follows:
+
+## Raster classes
+
+* `RasterLayer`: Single layer object
+* `RasterStack` and `RasterBrick`: Multi-layer raster objects
+
+## Functions
+
+### Read data
+
+* `raster()`: Read a single layer raster object written on disk, or read the first layer of a multi-layer object.
+* `brick()`: Read a multi-layer raster object written on disk.
+
+### Write data
+
+* `writeRaster()`: Write a `RasterLayer`, `RasterBrick` or `RasterStack` to disk.
+* `filename =` argument: Available for most functions of the raster package that produce raster objects, write directly the output of the function to disk.
+
+### Reformat data
+
+* `crop()`: modify the extent of a raster object based on another spatial object or an extent object.
+* `projectRaster()`: Re-project (and resample) a raster object to a desired coordinate reference system.
+* `stack()`: Assemble RasterLayers in a multilayer object.
+* `dropLayer()`: Remove a layer from a multi-layer object (RasterStack or RasterBrick).
+
+### Simple visualization
+
+* `plot()`: Plot a raster object, use `add = TRUE` to overlay several objects.
+* `plotRGB()`: Plot a RGB color composite
+
+### Raster calculations
+
+* First of all, raster objects work just like vectors of numerics (`c(1,2,3)`). They can be subsetted, added, substracted, etc
+* `calc()`: Apply a function to every pixel independently of a single raster object (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
+* `overlay()`: Apply a function that takes values from multiple raster objects. (similar to `calc()` but for multiple objects).
 
 
 # Hdf files
-*The information below, about handling HDF4 format files with R is additional to the lesson content, however, it will be usefull for you in the future; particularly if you plan to work with MODIS data*
-
-A file format that is getting increasingly common with geo-spatial gridded data is the hdf format. Hdf stands for hierarchical data format. For instance MODIS data have been delivered in hdf format since its beginning, Landsat has adopted the hdf format for delivering some of its Level 2 surface reflectance data recently. This data format has an architecture that makes it very convenient to store data of different kind in one file, but requires slightly more effort from the scientist to work with conveniently.
-
-## Windows
-The rgdal package does not include hdf drivers in its pre-built binary. Data can therefore not be read directly from hdf into R (as object of class rasterLayer). A workaround is to convert the files externally to a different data format. Since you probably have gdal installed on your system (either via FWTools or OSGeo4W), you can use the command line utility gdal_translate to perform this operation.
-One easy way to do that is by calling it directly from R, via the command line utility.
-
-```{r, eval=FALSE}
-library(gdalUtils)
-# Get a list of sds names
-sds <- get_subdatasets('full/path/filename.hdf')
-# Isolate the name of the first sds
-name <- sds[1]
-filename <- 'name/of/output/file.tif'
-gdal_translate(sds[1], dst_dataset = filename)
-# Load the Geotiff created into R
-r <- raster(filename)
-```
-
-And if you want the filename argument to be generated in a more automated fashion, you can use
-
-```{r, eval=FALSE}
-filename <- rasterTmpFile()
-extension(filename) <- 'tif'
-```
+*The information [here](hdf.html), about handling HDF4 format files with R is additional to the lesson content, however, it will be usefull for you in the future; particularly if you plan to work with MODIS data*
 
 
-## Linux
-```{r, eval=FALSE}
-library(gdalUtils)
-# Get a list of sds names
-sds <- get_subdatasets('full/path/filename.hdf')
-# Any sds can then be read directly using the raster function
-r <- raster(sds[1])
-```
-
-
-# Further reading
 
 # Packages you should know about
 The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of gdal functions from within R.
