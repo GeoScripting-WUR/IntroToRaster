@@ -466,7 +466,7 @@ I would like to know if Wageningen and its surrounding has changed with respect 
 
 ## More details
 
-* Data can be found here and here. (still need to add the links)
+* Data can be found [here](https://www.dropbox.com/s/s25unypnywquscl/LT51970241985109-SC20150107035640.tar.gz?dl=0) and [here](https://www.dropbox.com/s/i1ylsft80ox6a32/LC81970242014109-SC20141230042441.tar.gz?dl=0).
 * Can you tell when the scene were acquired ? (hint: look in file names)
 * Product details are [here](http://landsat.usgs.gov/documents/provisional_l8sr_product_guide.pdf) (Landsat 8) and [here](http://landsat.usgs.gov/documents/cdr_sr_product_guide.pdf) (Landsat 5)
 * Cloud mask from the fmask algorithm is contained in both archives
