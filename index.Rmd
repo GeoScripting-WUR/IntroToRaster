@@ -1,12 +1,13 @@
 ---
 title: "Introduction to raster based analysis in R"
 author: "Loïc Dutrieux, Ben DeVries, Jan Verbesselt"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
-    number_sections: true
-    toc: true
+    theme: "cosmo"
+    toc: yes
     toc_depth: 4
-    theme: united
+    number_sections: true
 cls: nature-no-superscript.csl
 bibliography: refs.bib
 ---
@@ -462,11 +463,11 @@ The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) pac
 
 # Exercise: *Design a pre-processing chain to assess change in NDVI over time*
 
-I would like to know if Wageningen and its surrounding has changed with respect to its spring NDVI over the past 30 years. For that I would need to do a bi-temporal comparison of two NDVI images, acquired in spring. Simply substracting the images should work, but unfortunately these haven't been pre-processed yet. I managed to download two Landsat raw surface reflectance products covering the area. They were acquired around the same period of the year at about 30 years interval, but I don't know how to compare them. Can you please help me?
+I would like to know if Wageningen and its surrounding has changed with respect to its spring NDVI over the past 15 years. For that I would need to do a bi-temporal comparison of two NDVI images, acquired in spring. Simply substracting the images should work, but unfortunately these haven't been pre-processed yet. I managed to download two Landsat raw surface reflectance products covering the area. They were acquired around the same period of the year at about 30 years interval, but I don't know how to compare them. Can you please help me?
 
 ## More details
 
-* Data can be found [here](https://www.dropbox.com/s/s25unypnywquscl/LT51970241985109-SC20150107035640.tar.gz?dl=0) and [here](https://www.dropbox.com/s/i1ylsft80ox6a32/LC81970242014109-SC20141230042441.tar.gz?dl=0).
+* Data can be found [here](https://www.dropbox.com/s/i1ylsft80ox6a32/LC81970242014109-SC20141230042441.tar.gz?dl=0), and [here](https://www.dropbox.com/s/akb9oyye3ee92h3/LT51980241990098-SC20150107121947.tar.gz?dl=0).
 * Can you tell when the scene were acquired ? (hint: look in file names)
 * Product details are [here](http://landsat.usgs.gov/documents/provisional_l8sr_product_guide.pdf) (Landsat 8) and [here](http://landsat.usgs.gov/documents/cdr_sr_product_guide.pdf) (Landsat 5)
 * Cloud mask from the fmask algorithm is contained in both archives
@@ -488,6 +489,8 @@ Create a well structured reproducible R project showing in the `main.R`.
 * The workflow to pre-process the data
 * Some visualization of the intermediary outputs
 * How to produce and visualize the final output
+
+# References
 
 
 <!--
@@ -520,17 +523,4 @@ VRandomFunction <- function(a, b) {
 
 -->
 
-
-## How to submit
-You should submit the function via GitHub. Either put the function file in a sub-directory of your ''GeoScriptingExercises'' repository, or in a new repository (i.e.: ''Exercise3''). Send the clone url of that repository to me.
-In addition, add a few lines to run the function and visualize the results at the end of the function file.
-
-And finally, do not forget to put your name at the top of the function file. You should obtain something like in the figure below.
-
-<!--
-Figure here
--->
-Result of an average value composit using to dates for the taravao area, the band combination used is 4, 5, 3 (Landsat 8)
-
-# References
 
