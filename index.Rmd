@@ -109,19 +109,25 @@ To illustrate the reading and writing of raster files, we will use data subsets 
 # start by making sure that your working directory is properly set
 # If not you can set it using setwd()
 getwd()
-download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif', destfile = 'LE71700552001036SGS00_SR_Gewata_INT1U.tif', method = 'auto')
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/gewata.zip', destfile = 'gewata.zip', method = 'auto')
 # In case the download code doesn't work (mac, linux?), use method = 'wget'
+# Unpack the archive
+unzip('gewata.zip')
 ```
 
 
 Gewata is the name of the data set added, it is a multi Layer tiff object, its file name is LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif, informing us that this is a subset from a scene acquired by the Landsat 7 sensor. Let's not worry about the region that the data cover for now, we will find a  nice way to discover that later on in that tutorial.
 See the example below.
 
-Now that we have downloaded the geoTiff file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the `list.files()` function.
+Now that we have downloaded and unpacked the geoTiff file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the `list.files()` function.
 
 ```{r, eval=FALSE}
 # When passed without arguments, list.files() returns a list, listing the content of the working directory
 list.files()
+# To get only the files with .tif extension
+list.files(pattern = glob2rx('*.tif'))
+# Or if you are familiar with regular expressions
+list.files(pattern = '^.*\\.tif$')
 ```
 
 We can now load this object in R, since it is a multi-layer raster object, we need to use the `brick()` function to do that.

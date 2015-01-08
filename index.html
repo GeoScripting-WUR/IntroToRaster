@@ -54,7 +54,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">Introduction to raster based analysis in R</h1>
 <h4 class="author"><em>Loïc Dutrieux, Ben DeVries, Jan Verbesselt</em></h4>
-<h4 class="date"><em>07 January, 2015</em></h4>
+<h4 class="date"><em>08 January, 2015</em></h4>
 </div>
 
 <div id="TOC">
@@ -199,9 +199,9 @@ b</code></pre>
 ## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 ## coord. ref. : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
 ## data source : in memory
-## names       :  layer.1,  layer.2,  layer.3 
-## min values  : -2.99224, -5.98448, -2.99224 
-## max values  : 2.894111, 5.788222, 2.894111</code></pre>
+## names       :   layer.1,   layer.2,   layer.3 
+## min values  : -3.733212, -7.466423, -3.733212 
+## max values  :  2.777361,  5.554722,  2.777361</code></pre>
 <p>The RasterBrick metadata displayed above are mostly similar to what we saw earlier for the RasterLayer object, with the exception that these are multi-layer objects.</p>
 </div>
 </div>
@@ -214,12 +214,18 @@ b</code></pre>
 <pre class="r"><code># start by making sure that your working directory is properly set
 # If not you can set it using setwd()
 getwd()
-download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif', destfile = 'LE71700552001036SGS00_SR_Gewata_INT1U.tif', method = 'auto')
-# In case the download code doesn't work (mac, linux?), use method = 'wget'</code></pre>
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/gewata.zip', destfile = 'gewata.zip', method = 'auto')
+# In case the download code doesn't work (mac, linux?), use method = 'wget'
+# Unpack the archive
+unzip('gewata.zip')</code></pre>
 <p>Gewata is the name of the data set added, it is a multi Layer tiff object, its file name is LE71700552001036SGS00_SR_Gewata_INT1U.tif, informing us that this is a subset from a scene acquired by the Landsat 7 sensor. Let’s not worry about the region that the data cover for now, we will find a nice way to discover that later on in that tutorial. See the example below.</p>
-<p>Now that we have downloaded the geoTiff file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the <code>list.files()</code> function.</p>
+<p>Now that we have downloaded and unpacked the geoTiff file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the <code>list.files()</code> function.</p>
 <pre class="r"><code># When passed without arguments, list.files() returns a list, listing the content of the working directory
-list.files()</code></pre>
+list.files()
+# To get only the files with .tif extension
+list.files(pattern = glob2rx('*.tif'))
+# Or if you are familiar with regular expressions
+list.files(pattern = '^.*\\.tif$')</code></pre>
 <p>We can now load this object in R, since it is a multi-layer raster object, we need to use the <code>brick()</code> function to do that.</p>
 <pre class="r"><code>gewata &lt;- brick('LE71700552001036SGS00_SR_Gewata_INT1U.tif')</code></pre>
 <p>Let’s take a look at the structure of this object.</p>
