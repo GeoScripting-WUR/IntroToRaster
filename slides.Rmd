@@ -1,99 +1,62 @@
 ---
 title: "Intro to Raster"
 author: "Loïc Dutrieux, Jan Verbesselt"
-date: "01/06/2015"
-output: ioslides_presentation
+date: "01/08/2015"
+output: slidy_presentation
 ---
 
-<--
-Include:
-Reminder on raster classes
-Add, substract raster layers
-simple value replacement
-calc and overlay
--->
 
+# Yesterday
 
-# Introduction
+Project including function to check whether an input year is a leap year or not.
 
-**Today**
+<center>
+<h2>Who submitted</h2>
+</center>
 
-Introduction to raster manipulation and analysis
-
-
-    * Read and write raster data
-    * Raster arithmetic
-    * Raster manipulation: re-projection, format conversion, cropping, layer stacking, etc
-    * Apply function to single and multiple raster objects
-
-
-**Tomorrow**
-
-Advanced raster analysis (Filtering, classification, etc...)
-
-**Next week**
-
-Temporal analysis of raster data
-
----
-
-# What's under the hood
-## Libraries, bindings, packages
-
-**GDAL**: Geospatial Data Abstraction Library
-
-    * Contains the drivers for reading all formats of data
-
-
-**GDAL** and **PROJ4**
-
-    * Performs geographical transformations of raster data.
-
-
-The `rgdal` package is the interface between R and these libraries.
-
-
----
-
-# The raster package
-Features:
-
-    * Read and write raster data (Makes extensive use of the `rgdal` package)
-    * Perform most raster operations (create raster objects, perform spatial/geometric operations (re-projections, resampling, etc), filtering and raster calculations)
-  * Can work on big raster objects
-  * Relatively fast
-  * Visualize and interact with the data
-  * Extremely well documented (check the vignettes)
-  * etc...
-
-
-Load the raster package using the following command.
-```{r, eval=FALSE}
-library(raster)
+```{r, echo=FALSE, results = 'asis'}
+suppressPackageStartupMessages(library(googleVis))
+x <- data.frame(status = "submitted", n = 13)
+pie <- gvisPieChart(data = x)
+print('<center>')
+print(pie)
+print('</center>')
 ```
 
 ---
 
-# The raster objects
-3 main classes of raster object exist in the raster package.
+Well structured projects
 
-    * RasterLayer: Single georeferenced raster object
-    * RasterBrick: Multilayer georeferenced raster object
-    * RasterStack: Virtual RasterBrick
+`'error: argument of class numeric expected'` instead of `error()`
 
+```{r, eval = FALSE}
+rprint("No Leap Year")
+## instead of
+return()
+## at the end of a function.
+```
 
 ```{r, eval=FALSE}
-# Create a raster object and add random values to it
-r <- raster(nrow=20, ncol=40)
-r[] <- rnorm(n=ncell(r))
-r
-# Stack the layer 3 times
-s <- stack(r,r,r * 2)
-s
-# Coerce to RasterBrick object
-b <- brick(s)
-b
+return(year%%4==0)
 ```
+
+---
+
+# Today
+
+Morning
+
+* Go through [tutorial](http://geoscripting-wur.github.io/IntroToRaster/)
+
+Afternoon
+
+* Quick overview of the tutorial
+* Exercise
+
+
+---
+
+# The raster objects (classes)
 
 
 ```{r, echo=FALSE, results='asis'}
@@ -102,238 +65,48 @@ df <- data.frame(Class = c('RasterLayer', 'RasterBrick', 'RasterStack'), Descrip
 kable(df)
 ```
 
----
-
-# Reading data
-For single layer raster objects, simply use the `raster()` command.
-
-See the help page of the function.
-```{r, eval=FALSE}
-?raster
-```
-
-For multilayer objects, use `stack()` or `brick()`.
 
 
 
-Example: Read, visualize the Landsat data stored in the extdata/ folder of the rasta package.
-```{r, eval=FALSE}
-# Get the path to the data
-x <- system.file('extdata/LE71700552001036SGS00_SR_Gewata_INT1U.tif',
-                 package= 'rasta')
-gewata <- brick(x)
-```
 
-
-Now, let's write this object to the 'D:/' drive.
-```{r, eval=FALSE}
-writeRaster(x=gewata, filename='D:/filepath/filename.tif')
-```
+* `raster()`
+* `brick()`
+* `stack()`
+* `writeRaster()`
 
 ---
 
-# Simple Raster calculations
+# Simple Raster calculations / raster arithmetic
+
 Raster arithmetic follows simple R vector arithmetic rules.
-Therefore to perform pixel based calculations, simply use the operators +, -, *, /
 
+* Value replacement
+* Additions, substractions, etc
 
+**Although warning, not memory safe for big rasters:**
 
-$NDVI=\frac{NIR-R}{NIR+R}=\frac{band 4 - band 3}{band 4 + band 3}$
-
-
-```{r, eval=FALSE}
-ndvi <- (gewata[[4]] - gewata[[3]]) / (gewata[[4]] + gewata[[3]])
-plot(ndvi)
-```
-
-These types of operations are not advised for big rasters as they can overload the R internal memory.
-
-Instead, `calc()` and `overlay()` should be used.
+* Instead, `calc()` and `overlay()` should be used.
 
 ---
 
 # calc() and overlay()
 
 
-    * Both function implement block processing (no memory limitation)
-    * `calc()` mostly for applying a function to single raster objects
-    * `overlay()` makes it easier to implement function that involve multiple raster objects
-    * These functions are only suitable for pixel based calculation
-
-
-\centerline{**overlay example}**
-```{r, eval=FALSE}
-# That function has two input arguments, therefore it is suitable
-# for overlay()
-ndviOver <- function(red, nir) {
-    out <- (nir - red) / (nir + red)
-    return(out)
-}
-
-ndvi <- overlay(x=gewata[[3]], y=gewata[[4]], fun=ndviOver)
-```
-
+* Both function implement block processing (no memory limitation)
+* `calc()` mostly for applying a function to single raster objects
+* `overlay()` makes it easier to implement function that involve multiple raster objects
+* These functions are only suitable for pixel based calculation
+* Can write output directly to disk (see `filename =` argument)
 
 ---
 
-# calc() and overlay() (2)
+# Visualize raster data
 
+* `plot()`
+* `plotRGB()`
+* On google Earth by converting to KML format or using `plotKML` package
 
-\centerline{**calc example}**
-```{r, eval=FALSE}
-ndviCalc <- function(x) {
-    out <- (x[[4]] - x[[3]]) / (x[[3]] + x[[4]])
-    return(out)
-}
+Also possible using `ggplot2` and `rasterVis` package
 
-ndvi2 <- calc(x=gewata, fun=ndviCalc)
-```
-
-Another advantage of `calc()` and `overlay()` is that they can perform calculations directly from file to file, see the **filename=** argument hidden in the ellipsis.
-
-```{r, eval=FALSE}
-calc(x=gewata, fun=ndviCalc, filename='filepath/filename.tif')
-```
-The **filename=** argument holds for most of the functions of the raster package.
-
-
----
-
-# Raster objects manipulation
-But where has this gewata scene beeen acquired by the way?
-
-To discover that, we can try to project the NDVI layer in Google Earth.
-
-```{r, eval=FALSE}
-ndviLL <- projectRaster(ndvi, crs='+proj=longlat')
-KML(x=ndviLL, filename='filepath/filename.kml')
-```
-The entire database of projections is at [http://spatialreference.org/]
-
-**Another type of raster object manipulation.**
-
-    * Crop data interactively.
-
-
-
-```{r, eval=FALSE}
-plotRGB(gewata, 4,5,3, stretch= 'lin')
-e <- drawExtent()
-gewata2 <- crop(x=gewata, y=e)
-plotRGB(gewata2, 4,5,3, stretch= 'lin')
-```
-
-
----
-
-# Other types of raster object manipulations
-## Layer stacking
-
-Now let's prepare the data for tomorrow's lecture.
-
-    * [http://rasta.r-forge.r-project.org/]
-    * We want to:
-    
-    
-        * Read the data
-        * Create a layer stack object on disk
-    
-
-
-
-```{r, eval=FALSE}
-getwd()
-# Downlaod and unpack data
-download.file(url='http://rasta.r-forge.r-project.org/tura.zip',
-              destfile='tura.zip')
-unzip(zipfile='tura.zip')
-# Retrieve the content of the tura sub-directory
-list <- list.files(path='tura/', full.names=TRUE)
-# Quickly visualize the first layer
-plot(raster(list[1]))
-# Stack the layers
-turaStack <- stack(list)
-turaStack
-# Write to disk
-writeRaster(x=turaStack, filename='filename.grd', datatype='INT2S')
-```
-
----
-
-# Reminder about storage and data types
-Check ?dataType
-
-{c  c  c}
-**Datatype definition** & **minimum possible value** & **maximum
-possible value** \cr
-`INT1S` & -127 &  127 \cr
-`INT1U` & 0 &  255 \cr
-`INT2S` & -32,767 &  32,767 \cr
-`INT2U` & 0 &  65,534 \cr
-`INT4S` & -2,147,483,647 & 2,147,483,647 \cr
-`INT4U` & 0 & 4,294,967,296 \cr
-`FLT4S` & -3.4e+38 &  3.4e+38 \cr
-`FLT8S` & -1.7e+308 & 1.7e+308 \cr
-
-
----
-
-# Summary so far
-So far we saw how to:
-
-    * Read and write raster data
-    * perform simple raster algebra
-    * use calc() and overlay()
-    * crop
-    * re-project
-    * stack multiple layers
-
-
----
-
-# More advanced raster arithmetic
-## perform value replacements
-Remember vector arithmetic?
-```{r, eval=FALSE}
-a <- c(1,2,3,4,2,3,7)
-a <- a * 2
-a[a == 4] <- NA
-b <- c(1,0,0,1,0,0,0)
-a[b == 1] <- NA
-```
-
-Data (pixel values) are stored in Raster objects in the form of vectors. Therefore we can use vector arithmetic to perform raster arithmetic.
-
-Example: We can replace all the values <0.4 in the first layer of the gewata NDVI layer by NAs.
-```{r, eval=FALSE}
-ndvi[ndvi < 0.4] <- NA
-plot(ndvi)
-```
-
----
-
-# More about replacements
-The rasta package contains a built in dataset called taravao.
-```{r, eval=FALSE}
-library(rasta)
-data(taravao)
-```
-
-    * It is a subset of a Landat scene
-    * It covers part of the Taravao village, on Tahiti island
-    * It contains a QA (Quality assessment) band in Layer 9
-    
-        * Contains information on the quality of the data
-        * The **QA2cloud\{rasta\}** function can generate a cloud mask from this band
-    
-
-
-**Tutorial**
-
-
-    * Visualize the data
-    * Genarate the cloud mask
-    * Drop band 9 from the rasterBrick
-    * Replace cloudy pixels by NAs
 
  
