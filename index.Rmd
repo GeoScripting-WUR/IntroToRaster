@@ -4,11 +4,11 @@ author: "Loïc Dutrieux, Ben DeVries, Jan Verbesselt"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
-    theme: "cosmo"
-    toc: yes
-    toc_depth: 4
-    number_sections: true
     css: custom.css
+    highlight: tango
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
 cls: nature-no-superscript.csl
 bibliography: refs.bib
 ---
