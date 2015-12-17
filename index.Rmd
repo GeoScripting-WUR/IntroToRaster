@@ -8,10 +8,10 @@ output:
     toc: yes
     toc_depth: 4
     number_sections: true
+    css: custom.css
 cls: nature-no-superscript.csl
 bibliography: refs.bib
 ---
-
 
 # Today's learning objectives
 At the end of the lecture, you should be able to:
