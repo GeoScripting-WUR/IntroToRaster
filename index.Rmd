@@ -53,7 +53,7 @@ library(rgdal)
 getGDALVersionInfo()
 ```
 
-The previous function should return the version number of the current version of GDAL installed on your machine. 1.10.1 is the most recent stable release. In case the function above returns an error, or if you cannot install rgdal at all, you should verify that all required software and libraries are properly installed. Please refer to the [system setup page](http://geoscripting-wur.github.io/system_setup/).
+The previous function should return the version number of the current version of GDAL installed on your machine. 1.11.2 is the most recent stable release. Starting with [GDAL 2.0](http://trac.osgeo.org/gdal/wiki/Release/2.0.1-News) vector processing becomes incorporated into GDAL. In case the function above returns an error, or if you cannot install rgdal at all, you should verify that all required software and libraries are properly installed. Please refer to the [system setup page](http://geoscripting-wur.github.io/system_setup/).
 
 
 # Overview of the raster package
