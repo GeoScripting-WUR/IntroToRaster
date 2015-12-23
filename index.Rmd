@@ -330,8 +330,8 @@ The area selected for this exercise covers most of the South Pacific island of T
 
 ```{r, eval=FALSE}
 # Download the data
-download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE70530722000126_sub.gri', destfile='LE70530722000126_sub.gri', method='auto')
-download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/LE70530722000126_sub.grd', destfile='LE70530722000126_sub.grd', method='auto')
+download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/tahiti.zip', destfile='tahiti.zip', method='auto')
+unzip(zipfile='tahiti.zip')
 
 # Load the data as a rasterBrick object and investigate its content
 tahiti <- brick('LE70530722000126_sub.grd')
