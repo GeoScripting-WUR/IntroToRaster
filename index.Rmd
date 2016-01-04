@@ -3,12 +3,10 @@ title: "Introduction to raster based analysis in R"
 author: "Loïc Dutrieux, Ben DeVries, Jan Verbesselt"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  html_document:
-    css: custom.css
-    highlight: tango
-    number_sections: yes
-    toc: yes
-    toc_depth: 2
+  knitrBootstrap::bootstrap_document:
+    title: "Week 1, Lesson 4: IntroToRaster" 
+    theme: cosmo
+    menu: FALSE
 cls: nature-no-superscript.csl
 bibliography: refs.bib
 ---
