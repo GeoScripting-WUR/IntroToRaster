@@ -23,7 +23,7 @@ At the end of the lecture, you should be able to:
 * Morning: Read the following tutorial
 * 1.30 pm to 2.30 pm:
     * Feedback on yesterday's exercise,
-    * clarifications about today's tutorial
+    * Clarifications about today's tutorial
     * Explanation of the exercise
 
 * Rest of the afternoon: Do the exercise
@@ -41,7 +41,7 @@ At the end of the lecture, you should be able to:
 
 
 
-In a previous lectures you saw the overall system architecture (See figure above) and you saw how to read and write vector data from/to file into your R environment. These vector read/write operations were made possible thanks to the OGR library. The OGR library is interfaced with R thanks to the rgdal package/binding. By analogy, raster data can be read/written thanks to the GDAL library. The figure above provides an overview of the connections between these elements. GDAL stands for Geospatial Data Abstraction Library. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/) and you will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL. (i.e.: ArcGIS, QGIS, GRASS, etc). In this lesson, we will use GDAL indirectly via the raster package, which uses rgdal extensively. However, it is possible to call GDAL functionalities directly through the command line (a shell is usually provided with the GDAL binary distribution you installed on your system), which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it should facilitate the building of the expression that have to be passed to GDAL.
+In a previous lecture you saw the overall system architecture (see figure above) and you saw how to read and write vector data from/to file into your R environment. These vector read/write operations were made possible thanks to the OGR library. The OGR library is interfaced with R thanks to the rgdal package/binding. By analogy, raster data can be read/written thanks to the GDAL library. The figure above provides an overview of the connections between these elements. GDAL stands for Geospatial Data Abstraction Library. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/) and you will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL. (i.e.: ArcGIS, QGIS, GRASS, etc). In this lesson, we will use GDAL indirectly via the raster package, which uses rgdal extensively. However, it is possible to call GDAL functionalities directly through the command line (a shell is usually provided with the GDAL binary distribution you installed on your system), which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it should facilitate the building of the expression that have to be passed to GDAL.
 
 
 Perform system setup checks.
@@ -98,7 +98,7 @@ The RasterBrick metadata displayed above are mostly similar to what we saw earli
 
 # Raster objects manipulations
 ## Reading and writing from/to file
-The actual data used in geo processing projects often comes as geo-data, stored on files such as GeoTiff or other comonly used file formats. Reading data directly from these files into the R working environment (as objects belonging to one of the 3 raster objects classes), is made possible thanks to the raster package. The three main commands for reading raster objects from file are the `raster()`, `stack()`, and `brick()` functions, refering to RasterLayer, RasterStack and RasterBrick objects respectively.
+The actual data used in geo processing projects often comes as geo-data, stored on files such as GeoTiff or other commonly used file formats. Reading data directly from these files into the R working environment (as objects belonging to one of the 3 raster objects classes), is made possible thanks to the raster package. The three main commands for reading raster objects from file are the `raster()`, `stack()`, and `brick()` functions, refering to RasterLayer, RasterStack and RasterBrick objects respectively.
 Writing one of the three raster objects classes to file is achieved with the `writeRaster()` function.
 
 To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, make sure your working directory is set properly and run the following line; it will handle the download:
@@ -175,7 +175,7 @@ kable(df)
  
 
 ## Croping a raster object
-`crop()` is the raster package function that allows you to crop data to smaller spatial extents. A great advantage of the crop function is that it acceps almost all spatial object class of R as its ''extent'' input argument. But the ''extent'' argument also simply accepts objects of class ''extent''. One way of obtaining such an extent object interactively is by using the `drawExtent()` function. In the example below, we will manually draw a regular extent that we will use later to crop the gewata RasterBrick.
+`crop()` is the raster package function that allows you to crop data to smaller spatial extents. A great advantage of the crop function is that it acceps almost all spatial object class of R as its ''extent''  input argument. But the  ''extent''  argument also simply accepts objects of class  ''extent''. One way of obtaining such an extent object interactively is by using the `drawExtent()` function. In the example below, we will manually draw a regular extent that we will use later to crop the gewata RasterBrick.
 
 ```{r, eval=FALSE}
 # Plot the first layer of the RasterBrick
@@ -196,7 +196,7 @@ plot(gewataSub, 1)
 You should see on the resulting plot that the orinal image has been cropped. 
 
 ## Creating layer stacks
-To end this section on general files and raster object manipulations, we will see how multi-layer objects can be created from single-layer objects. The object created as part of the example below is the same that we will later in the course to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landat acquisitions at different dates. The objective is therefore to create a multi-layer NDVI object, for which each layer corresponds to a different date.
+To end this section on general files and raster object manipulations, we will see how multi-layer objects can be created from single-layer objects. The object created as part of the example below is the same that we will use later in the course to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landat acquisitions at different dates. The objective is therefore to create a multi-layer NDVI object, for which each layer corresponds to a different date.
 But first we need to fetch the data, similarly to how we did it for the gewata brick, the data need to be downloaded from the repository where we put them.
 
 ```{r, eval=FALSE}
@@ -258,7 +258,7 @@ plot(ndvi)
 
 The resulting NDVI can be viewed in the above figure. As expected the NDVI ranges from about 0.2, which corresponds to nearly bare soils, to 0.9 which means that there is some dense vegetation in the area.
 
-Although this is a quick way to perform the calculation, directly adding, substracting, multiplying, etc, the layers of big raster objects is not recommended. When working with big objects, it is advisable to use the `calc()` function to perform these types of calculaions. The reason is that R needs to load all the data first into its internal memory before performing the calculation and then runs everything in one block. It is really easy to ''flood'' the RAM when doing that. A big advantage of the `calc()` function is that it has a built-in block processing option for any vectorized function, allowing such calculations to be fully ''RAM friendly''. The example below illustrates how to calculate NDVI from the same date set using the `calc()` function.
+Although this is a quick way to perform the calculation, directly adding, substracting, multiplying, etc, the layers of big raster objects is not recommended. When working with big objects, it is advisable to use the `calc()` function to perform these types of calculaions. The reason is that R needs to load all the data first into its internal memory before performing the calculation and then runs everything in one block. It is really easy to "flood" the RAM when doing that. A big advantage of the `calc()` function is that it has a built-in block processing option for any vectorized function, allowing such calculations to be fully "RAM friendly". The example below illustrates how to calculate NDVI from the same date set using the `calc()` function.
 
 ```{r}
 # Define the function to calculate NDVI from 
@@ -457,7 +457,7 @@ Today you got a general introduction to the raster package, its basic functions,
 
 
 # Hdf files
-*The information [here](hdf.html), about handling HDF4 format files with R is additional to the lesson content, however, it will be usefull for you in the future; particularly if you plan to work with MODIS data*
+*The information [here](hdf.html), about handling HDF4 format files with R is additional to the lesson content, however, it will be useful for you in the future; particularly if you plan to work with MODIS data*
 
 
 
