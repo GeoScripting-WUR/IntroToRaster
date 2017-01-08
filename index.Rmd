@@ -56,7 +56,7 @@ The previous function should return the version number of the current version of
 
 # Overview of the *raster* package
 The *raster* package is the reference R package for raster processing, Robert J. Hijmans is the original developer of the package.
-The introduction of the *raster* package to R has been a revolution for geo processing and analysis using R. Among other things the raster package allows to:
+The introduction of the *raster* package to R has been a revolution for geo-processing and analysis using R. Among other things the raster package allows to:
 
 * Read and write raster data of most commonly used formats (thanks to extensive use of *rgdal*).
 * Perform most raster operations, such ascreation of raster objects, performing spatial/geometric operations (re-projections, resampling, etc), filtering and raster calculations.
@@ -198,7 +198,7 @@ You should see on the resulting plot that the original image has been cropped.
 
 ## Creating layer stacks
 To end this section on general files and raster object manipulations, we will see how multi-layer objects can be created from single-layer objects. The object created as part of the example below is the same that we will use later in the course to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landsat acquisitions at different dates. The objective is therefore to create a multi-layer NDVI object, for which each layer corresponds to a different date.
-But first we need to fetch the data, similarly to how we did it for the *gewata* brick, the data need to be downloaded from the repository where we put them.
+But first we need to fetch the data, similarly to how we did it for the *gewata* brick.
 
 ```{r, eval=FALSE}
 # Again, make sure that your working directory is properly set
@@ -320,7 +320,7 @@ We are done with this data set for this lesson. So let's explore another data se
 
 ## More raster arithmetics: performing simple value replacements
 
-Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionaly, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://code.google.com/p/fmask/), and the publication by @zhu2012object.
+Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://code.google.com/p/fmask/), and the publication by @zhu2012object.
 In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
 
 
@@ -381,7 +381,7 @@ fmask <- tahiti[[7]]
 tahiti6 <- dropLayer(tahiti, 7)
 ```
 
-We will first do the masking using simple vector arithmetic, as if `tahiti6` and `fmask` were simple vectors. We want to keep any value with a 'clean land pixel' flag in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel diffent from 0. This can be done in one line of code.
+We will first do the masking using simple vector arithmetic, as if `tahiti6` and `fmask` were simple vectors. We want to keep any value with a 'clean land pixel' flag in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel different from 0. This can be done in one line of code.
 
 ```{r}
 ## Perform value replacement
