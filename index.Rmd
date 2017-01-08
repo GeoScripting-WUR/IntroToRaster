@@ -4,7 +4,7 @@ author: "Loïc Dutrieux, Ben DeVries, Jan Verbesselt, Dainius Masiliunas"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   knitrBootstrap::bootstrap_document:
-    title: "Week 1, Lesson 5: IntroToRaster" 
+    title: "Week 1, Lesson 5: Intro To Raster" 
     theme: cosmo
     menu: FALSE
 cls: nature-no-superscript.csl
@@ -107,8 +107,8 @@ To illustrate the reading and writing of raster files, we will use data subsets 
 # Start by making sure that your working directory is properly set
 # If not you can set it using setwd()
 getwd()
-download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/gewata.zip', destfile = 'gewata.zip', method = 'wget')
-# In case the download code doesn't work (wget is not installed), use method = 'auto'
+download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/gewata.zip', destfile = 'gewata.zip', method = 'auto')
+# In case the download code doesn't work, use method = 'wget'
 ## Unpack the archive
 unzip('gewata.zip')
 ```
@@ -204,7 +204,7 @@ But first we need to fetch the data, similarly to how we did it for the *gewata*
 # Again, make sure that your working directory is properly set
 getwd()
 ## Download the data
-download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/tura.zip', destfile='tura.zip', method='wget')
+download.file(url='https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile='tura.zip', method='auto')
 unzip(zipfile='tura.zip')
 ## Retrieve the content of the tura sub-directory
 list <- list.files(path='tura/', full.names=TRUE)
@@ -329,7 +329,7 @@ The area selected for this exercise covers most of the South Pacific island of T
 
 ```{r, eval=FALSE}
 ## Download the data
-download.file(url='https://github.com/GeoScripting-WUR/IntroToRaster/raw/gh-pages/data/tahiti.zip', destfile='tahiti.zip', method='wget')
+download.file(url='https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tahiti.zip', destfile='tahiti.zip', method='auto')
 unzip(zipfile='tahiti.zip')
 
 ## Load the data as a RasterBrick object and investigate its content
@@ -342,10 +342,6 @@ names(tahiti)
 ## Visualize the data
 plotRGB(tahiti, 3,4,5)
 ```
-
-<!--
-In linux the argument 'auto' does not work for https download. Can be replaced by 'wget'. What about macOS
--->
 
 ```{r, echo=FALSE, fig.align='center'}
 tahiti <- brick('data/LE70530722000126_sub.grd')
@@ -474,7 +470,7 @@ I would like to know if Wageningen and its surroundings have changed with respec
 
 * Data can be found [here](https://www.dropbox.com/s/i1ylsft80ox6a32/LC81970242014109-SC20141230042441.tar.gz?dl=0), and [here](https://www.dropbox.com/s/akb9oyye3ee92h3/LT51980241990098-SC20150107121947.tar.gz?dl=0).
 * Can you tell when the scenes were acquired ? (Hint: look at the file names)
-* Product details are [here](http://landsat.usgs.gov/documents/provisional_l8sr_product_guide.pdf) (Landsat 8) and [here](http://landsat.usgs.gov/documents/cdr_sr_product_guide.pdf) (Landsat 5)
+* Product details are [here](https://landsat.usgs.gov/sites/default/files/documents/provisional_lasrc_product_guide.pdf) (Landsat 8) and [here](https://landsat.usgs.gov/sites/default/files/documents/ledaps_product_guide.pdf) (Landsat 5)
 * Cloud mask from the *fmask* algorithm is contained in both archives
 * The two scenes have different extents
 
