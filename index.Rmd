@@ -491,6 +491,8 @@ Create a well-structured reproducible R project showing in the `main.R` file:
 * Some visualization of the intermediary outputs
 * How to produce and visualize the final output
 
+The submission deadline is the end of Sunday, and the peer review deadline is 10:00 on Monday!
+
 # References
 
 
