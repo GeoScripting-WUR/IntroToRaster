@@ -4,12 +4,16 @@ author: "Loïc Dutrieux, Ben DeVries, Jan Verbesselt, Dainius Masiliunas"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   knitrBootstrap::bootstrap_document:
-    title: "Week 1, Lesson 5: Intro To Raster" 
-    theme: cosmo
+    title: "Week 1, Lesson 5: Intro To Raster"
+    theme: "simplex"
+    highlight: Tomorrow Night Bright
     menu: FALSE
-cls: nature-no-superscript.csl
-bibliography: refs.bib
+    theme.chooser: TRUE
+    highlight.chooser: TRUE
 ---
+
+# [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="http://www.wur.nl/upload/b43b7095-e452-482a-8969-fed9a50393a8_WUR_RGB_standard.png" alt="WUR logo" style="height: 35px;"/>
+
 
 # Today's learning objectives
 At the end of the lecture, you should be able to:
@@ -325,7 +329,7 @@ In the following section we will use that cfmask layer to mask out remaining clo
 
 
 ### About the area
-The area selected for this exercise covers most of the South Pacific island of Tahiti, French Polynesia. It is a mountaneous, volcanic island, and according to Wikipedia about 180,000 people live on the island. For convenience, the Landsat scene was subsetted to cover only the area of interest and is stored online.
+The area selected for this exercise covers most of the South Pacific island of Tahiti, French Polynesia. It is a mountainous, volcanic island, and according to Wikipedia about 180,000 people live on the island. For convenience, the Landsat scene was subsetted to cover only the area of interest and is stored online.
 
 ```{r, eval=FALSE}
 ## Download the data
@@ -462,7 +466,7 @@ Today you got a general introduction to the *raster* package, its basic function
 The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of GDAL functions from within R.
 
 
-# Exercise: *Design a pre-processing chain to assess change in NDVI over time*
+# Exercise lesson 05: *Design a pre-processing chain to assess change in NDVI over time*
 
 I would like to know if Wageningen and its surroundings have changed with respect to its spring NDVI over the past 15 years. For that I would need to do a bi-temporal comparison of two NDVI images, acquired in spring. Simply subtracting the images should work, but unfortunately these haven't been pre-processed yet. I managed to download two Landsat raw surface reflectance products covering the area. They were acquired around the same period of the year, but about 30 years apart from each other. I don't know how to compare them. Can you please help me?
 
@@ -491,7 +495,6 @@ Create a well-structured reproducible R project showing in the `main.R` file:
 * Some visualization of the intermediary outputs
 * How to produce and visualize the final output
 
-The submission deadline is the end of Sunday, and the peer review deadline is 10:00 on Monday!
 
 # References
 
