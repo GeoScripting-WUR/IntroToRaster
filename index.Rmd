@@ -472,7 +472,7 @@ I would like to know if Wageningen and its surroundings have changed with respec
 
 ## More details
 
-* Data can be found [here](https://www.dropbox.com/s/i1ylsft80ox6a32/LC81970242014109-SC20141230042441.tar.gz?dl=0), and [here](https://www.dropbox.com/s/akb9oyye3ee92h3/LT51980241990098-SC20150107121947.tar.gz?dl=0).
+* Data can be found [here](https://www.dropbox.com/sh/3lz5vylc7tzpiup/AAB3HCFHdJFa8lV_PMRlV5Wda?dl=0)
 * Can you tell when the scenes were acquired ? (Hint: look at the file names)
 * Product details are [here](https://landsat.usgs.gov/sites/default/files/documents/Landsat8DataUsersHandbook.pdf) (Landsat 8) and [here](https://landsat.usgs.gov/sites/default/files/documents/ledaps_product_guide.pdf) (Landsat 5)
 * Cloud mask from the *fmask* algorithm is contained in both archives

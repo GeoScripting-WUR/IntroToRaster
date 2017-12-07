@@ -865,7 +865,7 @@
 <div id="header">
 <h1 class="title">Introduction to raster based analysis in R</h1>
 <h2 class="author">Loïc Dutrieux, Ben DeVries, Jan Verbesselt, Dainius Masiliunas</h2>
-<h3 class="date">09 November, 2017</h3>
+<h3 class="date">07 December, 2017</h3>
 </div>
 <title>
 Week 1, Lesson 5: Intro To Raster
@@ -1005,8 +1005,8 @@ b</code></pre>
 ## coord. ref. : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
 ## data source : in memory
 ## names       :   layer.1,   layer.2,   layer.3 
-## min values  : -3.103658, -6.207316, -3.103658 
-## max values  :  2.717544,  5.435087,  2.717544
+## min values  : -3.351181, -6.702362, -3.351181 
+## max values  :  3.384126,  6.768251,  3.384126
 </code></pre>
 </div>
 <p>The RasterBrick metadata displayed above are mostly similar to what we saw earlier for the RasterLayer object, with the exception that these are multi-layer objects.</p>
@@ -1063,7 +1063,7 @@ Let's take a look at the structure of this object.
 ## resolution  : 30, 30  (x, y)
 ## extent      : 829455, 849045, 825405, 843195  (xmin, xmax, ymin, ymax)
 ## coord. ref. : +proj=utm +zone=36 +ellps=WGS84 +units=m +no_defs 
-## data source : /home/WUR/swink019/Documents/Check/Lesson05/IntroToRaster/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif 
+## data source : /home/WUR/swink019/Documents/Workspace/Lesson5/IntroToRaster/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif 
 ## names       : LE7170055//ta_INT1U.1, LE7170055//ta_INT1U.2, LE7170055//ta_INT1U.3, LE7170055//ta_INT1U.4, LE7170055//ta_INT1U.5, LE7170055//ta_INT1U.6 
 ## min values  :                     4,                     6,                     3,                    18,                     6,                     2 
 ## max values  :                    39,                    56,                    71,                   102,                   138,                   408
@@ -1087,7 +1087,7 @@ gewataB1</code></pre>
 ## resolution  : 30, 30  (x, y)
 ## extent      : 829455, 849045, 825405, 843195  (xmin, xmax, ymin, ymax)
 ## coord. ref. : +proj=utm +zone=36 +ellps=WGS84 +units=m +no_defs 
-## data source : /home/WUR/swink019/Documents/Check/Lesson05/IntroToRaster/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif 
+## data source : /home/WUR/swink019/Documents/Workspace/Lesson5/IntroToRaster/data/LE71700552001036SGS00_SR_Gewata_INT1U.tif 
 ## names       : LE71700552001036SGS00_SR_Gewata_INT1U 
 ## values      : 4, 39  (min, max)
 </code></pre>
@@ -1414,7 +1414,7 @@ plotRGB(tahitiCloudFree, 3,4,5)</code></pre>
 <p>I would like to know if Wageningen and its surroundings have changed with respect to its spring NDVI over the past 15 years. For that I would need to do a bi-temporal comparison of two NDVI images, acquired in spring. Simply subtracting the images should work, but unfortunately these haven't been pre-processed yet. I managed to download two Landsat raw surface reflectance products covering the area. They were acquired around the same period of the year, but about 30 years apart from each other. I don't know how to compare them. Can you please help me?</p>
 <h2 id="more-details">More details</h2>
 <ul>
-<li>Data can be found <a href="https://www.dropbox.com/s/i1ylsft80ox6a32/LC81970242014109-SC20141230042441.tar.gz?dl=0">here</a>, and <a href="https://www.dropbox.com/s/akb9oyye3ee92h3/LT51980241990098-SC20150107121947.tar.gz?dl=0">here</a>.</li>
+<li>Data can be found <a href="https://www.dropbox.com/sh/3lz5vylc7tzpiup/AAB3HCFHdJFa8lV_PMRlV5Wda?dl=0">here</a></li>
 <li>Can you tell when the scenes were acquired ? (Hint: look at the file names)</li>
 <li>Product details are <a href="https://landsat.usgs.gov/sites/default/files/documents/Landsat8DataUsersHandbook.pdf">here</a> (Landsat 8) and <a href="https://landsat.usgs.gov/sites/default/files/documents/ledaps_product_guide.pdf">here</a> (Landsat 5)</li>
 <li>Cloud mask from the <em>fmask</em> algorithm is contained in both archives</li>
