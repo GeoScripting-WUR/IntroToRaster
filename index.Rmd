@@ -1,10 +1,9 @@
 ---
-title: "Introduction to raster based analysis in R"
-author: "Loïc Dutrieux, Ben DeVries, Jan Verbesselt, Dainius Masiliunas"
+author: "LoÃ¯c Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius MasiliÅ«nas", Sabina Rosca
 date: "`r format(Sys.time(), '%d %B, %Y')`"
+title: "Week 1, Lesson 5: Intro To Raster"
 output:
   knitrBootstrap::bootstrap_document:
-    title: "Week 1, Lesson 5: Intro To Raster"
     theme: "simplex"
     highlight: Tomorrow Night Bright
     menu: FALSE
@@ -15,22 +14,29 @@ output:
 # [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="http://www.wur.nl/upload/b43b7095-e452-482a-8969-fed9a50393a8_WUR_RGB_standard.png" alt="WUR logo" style="height: 35px;"/>
 
 
-# Today's learning objectives
+# Week 1, Lesson 5: Intro To Raster 
+
+Good morning! 
+Here is what you will do today:
+
+Time  | Activity
+------------- | -------------
+Morning  |  Self-study: go through the following tutorial
+14:00 to 14:40  | Presentation and discussion
+Rest of the afternoon | Do/finalise the exercise.
+
+## Introduction
+Raster data, is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various different color.
+
+Today it's about constructing a simple spatio-temporal analysis using raster data, R, and git.
+
+## Learning objectives
 At the end of the lecture, you should be able to:
 
 * Read/write raster data 
 * Perform basic raster file operations/conversions
 * Perform simple raster calculations
 
-# ToDo today
-
-* Morning: Read the following tutorial
-* 13:30 to 14:30:
-    * Feedback on yesterday's exercise,
-    * Clarifications about today's tutorial
-    * Explanation of the exercise
-
-* Rest of the afternoon: Do the exercise
 
 # Assumed knowledge from previous lectures
 
@@ -43,7 +49,9 @@ At the end of the lecture, you should be able to:
 
 ![R system architecture graph](figs/geoscripting-system-overview.svg)
 
-*Tip*: *RKWard* is an alternative R GUI, which is well-suited for beginners and those who are familiar with traditional statistical packages like *SPSS* and *STATISTICA*, since it is menu-driven. It is usually easier to install on Linux than *RStudio* as well. You can work in whichever R GUI you prefer.
+```{block, type="alert alert-info"}
+**Tip**: *RKWard* is an alternative R GUI, which is well-suited for beginners and those who are familiar with traditional statistical packages like *SPSS* and *STATISTICA*, since it is menu-driven. It is usually easier to install on Linux than *RStudio* as well. You can work in whichever R GUI you prefer.
+```
 
 In a previous lecture you got introduced to the overall system architecture of R programming (see figure above) and you saw how to read and write vector data from/to file into your R environment. These vector read/write operations were made possible thanks to the *OGR* library. The *OGR* library is interfaced with R thanks to the *rgdal* package/binding. By analogy, raster data can be read/written thanks to the *GDAL* library. The figure above provides an overview of the connections between these elements. *GDAL* stands for *Geospatial Data Abstraction Library*. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/) and you will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this lesson, we will use *GDAL* indirectly via the *raster* package, which uses *rgdal* extensively. However, it is possible to call GDAL functionalities directly through the command line from a terminal, which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to GDAL. (*Note*: This is also doable in *Bash* scripting, as learned in the previous lesson, and you can even combine the two.)
 
@@ -69,7 +77,9 @@ The introduction of the *raster* package to R has been a revolution for geo-proc
 * Visualize and interact with the data.
 * etc...
 
-Check the [home page](http://cran.r-project.org/web/packages/raster/) of the *raster* package, the package is extremely well documented, including vignettes and demos.
+```{block, type="alert alert-info"}
+**Tip**: Check the [home page](http://cran.r-project.org/web/packages/raster/) of the *raster* package, the package is extremely well documented, including vignettes and demos. Check the [reference manual](https://cran.r-project.org/web/packages/raster/raster.pdf) there.
+```
 
 ## Explore the raster objects
 The raster package produces and uses R objects of three different classes. The **RasterLayer**, the **RasterStack** and the **RasterBrick**. A RasterLayer is the equivalent of a single-layer raster, as an R workspace variable. The data themselves, depending on the size of the grid can be loaded in memory or on disk. The same stands for RasterBrick and RasterStack objects, which are the equivalent of multi-layer RasterLayer objects. RasterStack and RasterBrick are very similar, the difference being in the virtual characteristic of the RasterStack. While a RasterBrick has to refer to one multi-layer file or is in itself a multi-layer object with data loaded in memory, a RasterStack may ''virtually'' connect several raster objects written to different files or in memory. Processing will be more efficient for a RasterBrick than for a RasterStack, but RasterStack has the advantage of facilitating pixel based calculations on separate raster layers.
@@ -317,7 +327,12 @@ getwd()
 KML(x=ndviLL, filename='gewataNDVI.kml')
 ```
 
-Note that you need to have Google Earth installed on your system in order to perform the following step.
+Note that you need to have Google Earth Pro installed on your system in order to perform the following step.
+
+```{block, type="alert alert-info"}
+**Tip**: if you do not have Google Earth Pro installed on your computer, you can install Google Chrome and use [https://earth.google.com/web/](https://earth.google.com/web/)
+```
+
 Now let's find that file that we have just written and double click it, and watch how Google Earth brings us all the way to ... Ethiopia. More information will come later in the course about that specific area.
 
 We are done with this data set for this lesson. So let's explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.  
@@ -457,29 +472,30 @@ Today you got a general introduction to the *raster* package, its basic function
 * `overlay()`: Apply a function that takes values from multiple raster objects. Similar to `calc()` but for multiple objects.
 
 
-# HDF files
-*The information [here](hdf.html), about handling HDF4 format files with R is additional to the lesson content, however, it will be useful for you in the future; particularly if you plan to work with MODIS data*
+# Exercise 5: Design a pre-processing chain to assess change in NDVI over time
 
-
-
-# Packages you should know about
-The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of GDAL functions from within R.
-
-
-# Exercise lesson 05: *Design a pre-processing chain to assess change in NDVI over time*
+## Your task
 
 I would like to know if Wageningen and its surroundings have changed with respect to its spring NDVI over the past 15 years. For that I would need to do a bi-temporal comparison of two NDVI images, acquired in spring. Simply subtracting the images should work, but unfortunately these haven't been pre-processed yet. I managed to download two Landsat raw surface reflectance products covering the area. They were acquired around the same period of the year, but about 30 years apart from each other. I don't know how to compare them. Can you please help me?
+
 
 ## More details
 
 * Data can be found [here](https://www.dropbox.com/sh/3lz5vylc7tzpiup/AAB3HCFHdJFa8lV_PMRlV5Wda?dl=0)
-* Can you tell when the scenes were acquired ? (Hint: look at the file names)
+* Can you tell when the scenes were acquired ?
+
+```{block, type="alert alert-info"}
+**Tip** look at the file names
+```
+
 * Product details are [here](https://landsat.usgs.gov/sites/default/files/documents/Landsat8DataUsersHandbook.pdf) (Landsat 8) and [here](https://landsat.usgs.gov/sites/default/files/documents/ledaps_product_guide.pdf) (Landsat 5)
 * Cloud mask from the *fmask* algorithm is contained in both archives
 * The two scenes have different extents
 
+```{block, type="alert alert-info"}
+**Note**: Landsat 8 does not use the same band numbers as its predecessors. Red and NIR correspond to band3 and band4 respectively for ETM+ and TM (Landsat 7 and 5 respectively), while for OLI (Landsat 8), Red is band4 and NIR is band5.
+```
 
-*Note*: Landsat 8 does not use the same band numbers as its predecessors. Red and NIR correspond to band3 and band4 respectively for ETM+ and TM (Landsat 7 and 5 respectively), while for OLI (Landsat 8), Red is band4 and NIR is band5.
 
 ## Hints
 
@@ -488,16 +504,42 @@ I would like to know if Wageningen and its surroundings have changed with respec
 * `?intersect`
 * `untar()` to programmatically extract the files from the archive.
 
-## How to submit
-Create a well-structured reproducible R project showing in the `main.R` file:
 
-* The workflow to pre-process the data
-* Some visualization of the intermediary outputs
-* How to produce and visualize the final output
+## Assessment
+
+The general rubrics will be used for the assessment of your script. This can be found on the BlackBoard. The three specific tasks in the rubrics your script will be assessed on are:
+
+Task1: Pre-proccess the satellite imagery and and visualize it (load,crop, mask and visualise as true colour)
+
+Task2: Calculate NDVI (use correct band combination for both images)
+
+Task3: Make the temporal comparison, using the NDVI rasters with appropriate (cleaned) values (correctly calculated, visualized and saved as output)
+
+## Bonus
+
+Today there is no bonus. Instead the points for the bouns will be attributed by assessing the efficiency of using git, and the structure of the project
+
+ &nbsp; | 0% | 50% | 100%
+------------- | ------------- |-------------|-------------
+Effective use of git | Repository does not have correct naming, there is no description/very poor description of each push (0p) | Either only correct repository naming or acceptable description for each push (0.25p) | Correct repository naming and acceptable description for each push (0.5p)
+Project structure | There is no project structure, all the files are in one folder, and input data was uploaded in the repository instead of having the download as part of the script (0p) | All/some of the folders ("Data", "R", "Output") exist, but files are not structured accordingly (0.25p) | All files are in the correct folder (all folders exist and have files in them after the execution of the script), the file "main.R" being outside the mentioned folders (0.5p)
+
+## Submission
+
+Make sure your script is clear and reproducible. Make a new GitLab project according to the guidelines on BlackBoard and upload the script there. Test the script of another team (see the random team selector Shiny app) tomorrow morning and add an issue with your testing results and score according to the rubric.
+
+Do not forget to add a teamname, and members and date of script at the top of your script. 
 
 
 # References
 
+If you plan to work with MODIS data*, as additional to the lesson content, it will be useful for you in the future to look at the information [here](hdf.html), about handling HDF4 format files with R.
+
+```{block, type="alert alert-info"}
+**Extra**
+Packages you should know about
+The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of GDAL functions from within R.
+```
 
 <!--
 # Exercise: write a compositing function
@@ -528,5 +570,3 @@ VRandomFunction <- function(a, b) {
 * Wrap all that into a clean, nicely written and documented function.
 
 -->
-
-
