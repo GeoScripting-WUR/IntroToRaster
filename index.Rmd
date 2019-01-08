@@ -517,12 +517,7 @@ Task3: Make the temporal comparison, using the NDVI rasters with appropriate (cl
 
 ## Bonus
 
-Today there is no bonus. Instead the points for the bouns will be attributed by assessing the efficiency of using git, and the structure of the project
-
- &nbsp; | 0% | 50% | 100%
-------------- | ------------- |-------------|-------------
-Effective use of git | Repository does not have correct naming, there is no description/very poor description of each push (0p) | Either only correct repository naming or acceptable description for each push (0.25p) | Correct repository naming and acceptable description for each push (0.5p)
-Project structure | There is no project structure, all the files are in one folder, and input data was uploaded in the repository instead of having the download as part of the script (0p) | All/some of the folders ("Data", "R", "Output") exist, but files are not structured accordingly (0.25p) | All files are in the correct folder (all folders exist and have files in them after the execution of the script), the file "main.R" being outside the mentioned folders (0.5p)
+Today there is no bonus. 
 
 ## Submission
 
