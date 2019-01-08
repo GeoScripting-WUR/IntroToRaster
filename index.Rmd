@@ -21,6 +21,7 @@ Here is what you will do today:
 
 Time  | Activity
 ------------- | -------------
+Until 11:00 |  	Review yesterday’s exercise answer of the other team
 Morning  |  Self-study: go through the following tutorial
 14:00 to 14:40  | Presentation and discussion
 Rest of the afternoon | Do/finalise the exercise.
