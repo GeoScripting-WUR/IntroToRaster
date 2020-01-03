@@ -1,7 +1,7 @@
 ---
-author: "LoÃ¯c Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius MasiliÅ«nas", Sabina Rosca
+author: "Loïc Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius Masiliūnas, Sabina Rosca"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-title: "Week 1, Lesson 5: Intro To Raster"
+pagetitle: "Week 1, Lesson 4: Intro To Raster"
 output:
   knitrBootstrap::bootstrap_document:
     theme: "simplex"
@@ -11,11 +11,12 @@ output:
     highlight.chooser: TRUE
 ---
 
-# [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="http://www.wur.nl/upload/b43b7095-e452-482a-8969-fed9a50393a8_WUR_RGB_standard.png" alt="WUR logo" style="height: 35px;"/>
+# [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="https://www.wur.nl/upload/5e55a1d9-47c3-4149-9384-26d5147ee2d7_WUR_RGB_standard.png" alt="WUR logo" style="height: 35px;"/>
 
 
-# Week 1, Lesson 5: Intro To Raster 
+# Week 1, Lesson 4: Intro To Raster 
 
+<!--
 Good morning! 
 Here is what you will do today:
 
@@ -25,6 +26,7 @@ Until 11:00 |  	Review yesterday’s exercise answer of the other team
 Morning  |  Self-study: go through the following tutorial
 14:00 to 14:40  | Presentation and discussion
 Rest of the afternoon | Do/finalise the exercise.
+-->
 
 ## Introduction
 Raster data, is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various different color.
@@ -340,7 +342,7 @@ We are done with this data set for this lesson. So let's explore another data se
 
 ## More raster arithmetics: performing simple value replacements
 
-Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://code.google.com/p/fmask/), and the publication by @zhu2012object.
+Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://github.com/GERSL/Fmask), and the publication by [Zhu & Woodcock](https://doi.org/10.1016/j.rse.2011.10.028).
 In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
 
 
@@ -373,7 +375,7 @@ We can also visualize the cloud mask layer (layer 7).
 plot(tahiti, 7)
 ```
 
-According to the [algorithm description](https://code.google.com/p/fmask/), water is coded as 1, cloud as 4 and cloud shadow as 2.
+According to the [algorithm description](https://github.com/GERSL/Fmask), water is coded as 1, cloud as 4 and cloud shadow as 2.
 
 Does the cloud mask fit with the visual interpretation of the RGB image we plotted before?
 
@@ -472,6 +474,7 @@ Today you got a general introduction to the *raster* package, its basic function
 * `calc()`: Apply a function to every pixel independently of a single raster object (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
 * `overlay()`: Apply a function that takes values from multiple raster objects. Similar to `calc()` but for multiple objects.
 
+<!--
 
 # Exercise 5: Design a pre-processing chain to assess change in NDVI over time
 
@@ -525,7 +528,7 @@ Today there is no bonus.
 Make sure your script is clear and reproducible. Make a new GitLab project according to the guidelines on BlackBoard and upload the script there. Test the script of another team (see the random team selector Shiny app) tomorrow morning and add an issue with your testing results and score according to the rubric.
 
 Do not forget to add a teamname, and members and date of script at the top of your script. 
-
+-->
 
 # References
 
@@ -533,8 +536,10 @@ If you plan to work with MODIS data*, as additional to the lesson content, it wi
 
 ```{block, type="alert alert-info"}
 **Extra**
-Packages you should know about
-The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of GDAL functions from within R.
+
+Packages you should know about:
+
+* The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of GDAL functions from within R.
 ```
 
 <!--
