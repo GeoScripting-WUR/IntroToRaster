@@ -14,10 +14,10 @@ output:
 # [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="https://www.wur.nl/upload/5e55a1d9-47c3-4149-9384-26d5147ee2d7_WUR_RGB_standard.png" alt="WUR logo" style="height: 35px;"/>
 
 
-# Week 1, Lesson 4: Intro To Raster 
+# Week 1, Lesson 4: Intro To Raster
 
 <!--
-Good morning! 
+Good morning!
 Here is what you will do today:
 
 Time  | Activity
@@ -29,14 +29,14 @@ Rest of the afternoon | Do/finalise the exercise.
 -->
 
 ## Introduction
-Raster data, is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various different color.
+Raster data is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various values which are assigned a color.
 
-Today it's about constructing a simple spatio-temporal analysis using raster data, R, and git.
+Today, it's about constructing a simple spatio-temporal analysis using raster data, R, and git.
 
 ## Learning objectives
 At the end of the lecture, you should be able to:
 
-* Read/write raster data 
+* Read/write raster data
 * Perform basic raster file operations/conversions
 * Perform simple raster calculations
 
@@ -92,7 +92,7 @@ Let's take a look into the structure of these objects.
 library(raster)
 ## Generate a RasterLayer object
 r <- raster(ncol=40, nrow=20)
-class(r) 
+class(r)
 # Simply typing the object name displays its general properties / metadata
 r
 ```
@@ -190,7 +190,7 @@ kable(df)
 ```
 
 
- 
+
 
 ## Cropping a raster object
 `crop()` is the raster package function that allows you to crop data to smaller spatial extents. A great advantage of the crop function is that it accepts almost all spatial object classes in R as its `extent`  input argument. But the  `extent`  argument also simply accepts objects of class  `extent`. One way of obtaining such an extent object interactively is by using the `drawExtent()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* RasterBrick.
@@ -211,7 +211,7 @@ gewataSub <- crop(gewata, e)
 plot(gewataSub, 1)
 ```
 
-You should see on the resulting plot that the original image has been cropped. 
+You should see on the resulting plot that the original image has been cropped.
 
 ## Creating layer stacks
 To end this section on general files and raster object manipulations, we will see how multi-layer objects can be created from single-layer objects. The object created as part of the example below is the same that we will use later in the course to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landsat acquisitions at different dates. The objective is therefore to create a multi-layer NDVI object, for which each layer corresponds to a different date.
@@ -258,7 +258,7 @@ Different spectral bands of a same satellite scene are often stored in multi-lay
 Let's look for instance at how the famous NDVI index would have to be calculated from the *gewata* RasterBrick object read earlier, and that contains the spectral bands of the Landsat 7 sensor. And in case you have forgotten, the NDVI formula is as follows.
 
 $$
- NDVI=\frac{NIR-Red}{NIR+Red} 
+ NDVI=\frac{NIR-Red}{NIR+Red}
 $$
 
 with NIR and Red being band 4 and 3 of Landsat 7 respectively.
@@ -279,7 +279,7 @@ The resulting NDVI can be viewed in the above figure. As expected the NDVI range
 Although this is a quick way to perform the calculation, directly adding, subtracting, multiplying, etc, the layers of big raster objects is not recommended. When working with big objects, it is advisable to use the `calc()` function to perform these types of calculaions. The reason is that R needs to load all the data first into its internal memory before performing the calculation and then runs everything in one block. It is really easy to run out of memory when doing that. A big advantage of the `calc()` function is that it has a built-in block processing option for any vectorized function, allowing such calculations to be fully "RAM friendly". The example below illustrates how to calculate NDVI from the same date set using the `calc()` function.
 
 ```{r}
-## Define the function to calculate NDVI from 
+## Define the function to calculate NDVI from
 ndvCalc <- function(x) {
     ndvi <- (x[[4]] - x[[3]]) / (x[[4]] + x[[3]])
     return(ndvi)
@@ -288,7 +288,7 @@ ndvi2 <- calc(x=gewata, fun=ndvCalc)
 
 ```
 
-Note that `overlay()` can also be used in that case to obtain the same result, with the same level of RAM friendlyness. The advantage of `overlay()` is that the number of input RasterLayers is less limiting. As a consequence specifying the layers does not happen in the function call but in the `overlay()` call instead. 
+Note that `overlay()` can also be used in that case to obtain the same result, with the same level of RAM friendliness. The advantage of `overlay()` is that the number of input RasterLayers is less limiting. As a consequence, specifying the layers does not happen in the function call but in the `overlay()` call instead.
 
 ```{r}
 ndvOver <- function(x, y) {
@@ -298,7 +298,7 @@ ndvOver <- function(x, y) {
 ndvi3 <- overlay(x=gewata[[3]], y=gewata[[4]], fun=ndvOver)
 ```
 
-We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the *raster* package. 
+We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the *raster* package.
 
 ```{r}
 all.equal(ndvi, ndvi2)
@@ -325,7 +325,7 @@ Now that we have our NDVI layer in Lat/Long, let's write it to a KML file, which
 # you want to make sure that it is set where you want the file to be written
 # It can be changed using setwd()
 getwd()
-# Note that we are using the filename argument, contained in the ellipsis (...) of 
+# Note that we are using the filename argument, contained in the ellipsis (...) of
 # the function, since we want to write the output directly to file.
 KML(x=ndviLL, filename='gewataNDVI.kml')
 ```
@@ -460,13 +460,13 @@ Today you got a general introduction to the *raster* package, its basic function
 
 * `crop()`: modify the extent of a `Raster*` object based on another spatial object or an extent object.
 * `projectRaster()`: Reproject (and resample) a raster object to a desired coordinate reference system.
-* `stack()`: Assemble RasterLayers in a multilayer object.
+* `stack()`: Assemble RasterLayers in a multi-layer object.
 * `dropLayer()`: Remove a layer from a multi-layer object (RasterStack or RasterBrick).
 
 ### Simple visualization
 
 * `plot()`: Plot a raster object, use `add = TRUE` to overlay several objects.
-* `plotRGB()`: Plot an RGB color composite
+* `plotRGB()`: Plot an RGB color composite. Specifying the bands to assign colors as arguments.
 
 ### Raster calculations
 
@@ -521,13 +521,13 @@ Task3: Make the temporal comparison, using the NDVI rasters with appropriate (cl
 
 ## Bonus
 
-Today there is no bonus. 
+Today there is no bonus.
 
 ## Submission
 
 Make sure your script is clear and reproducible. Make a new GitLab project according to the guidelines on BlackBoard and upload the script there. Test the script of another team (see the random team selector Shiny app) tomorrow morning and add an issue with your testing results and score according to the rubric.
 
-Do not forget to add a teamname, and members and date of script at the top of your script. 
+Do not forget to add a teamname, and members and date of script at the top of your script.
 -->
 
 # References
