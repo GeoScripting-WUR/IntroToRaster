@@ -83,6 +83,9 @@ The introduction of the *raster* package to R has been a revolution for geo-proc
 ```{block, type="alert alert-info"}
 **Tip**: Check the [home page](http://cran.r-project.org/web/packages/raster/) of the *raster* package, the package is extremely well documented, including vignettes and demos. Check the [reference manual](https://cran.r-project.org/web/packages/raster/raster.pdf) there.
 ```
+```{block type="alert alert-info"}
+Note that the *raster* package is now deprecated, as Robert Hijmans has developed a successor to it called *[terra](https://cran.r-project.org/web/packages/terra/)* which is simpler and much faster, as it's rewritten in C++. The downside is that it is not yet supported by the vast majority of other packages, that still assume *raster* package objects. In the future, this lesson will be rewritten with the use of *terra* instead of *raster*.
+```
 
 ## Explore the raster objects
 The raster package produces and uses R objects of three different classes. The **RasterLayer**, the **RasterStack** and the **RasterBrick**. A RasterLayer is the equivalent of a single-layer raster, as an R workspace variable. The data themselves, depending on the size of the grid can be loaded in memory or on disk. The same stands for RasterBrick and RasterStack objects, which are the equivalent of multi-layer RasterLayer objects. RasterStack and RasterBrick are very similar, the difference being in the virtual characteristic of the RasterStack. While a RasterBrick has to refer to one multi-layer file or is in itself a multi-layer object with data loaded in memory, a RasterStack may ''virtually'' connect several raster objects written to different files or in memory. Processing will be more efficient for a RasterBrick than for a RasterStack, but RasterStack has the advantage of facilitating pixel based calculations on separate raster layers.
