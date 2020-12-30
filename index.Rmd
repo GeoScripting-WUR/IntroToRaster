@@ -89,6 +89,9 @@ The raster package produces and uses R objects of three different classes. The *
 
 Let's take a look into the structure of these objects.
 ```{r}
+#  check for the raster package and install if missing
+if(!"raster" %in% rownames(installed.packages())){install.packages("raster")}
+
 library(raster)
 ## Generate a RasterLayer object
 r <- raster(ncol=40, nrow=20)
