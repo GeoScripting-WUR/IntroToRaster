@@ -50,7 +50,7 @@ At the end of the lecture, you should be able to:
 # Reminder on overall system architecture
 
 
-![R system architecture graph](figs/geoscripting-system-overview.svg)
+![R system architecture graph](figs/geoscripting-system-overview.svg){width=100%}
 
 ```{block, type="alert alert-info"}
 **Tip**: *RKWard* is an alternative R GUI, which is well-suited for beginners and those who are familiar with traditional statistical packages like *SPSS* and *STATISTICA*, since it is menu-driven. It is usually easier to install on Linux than *RStudio* as well. You can work in whichever R GUI you prefer.
@@ -84,7 +84,7 @@ The introduction of the *raster* package to R has been a revolution for geo-proc
 **Tip**: Check the [home page](http://cran.r-project.org/web/packages/raster/) of the *raster* package, the package is extremely well documented, including vignettes and demos. Check the [reference manual](https://cran.r-project.org/web/packages/raster/raster.pdf) there.
 ```
 ```{block type="alert alert-info"}
-Note that the *raster* package is now deprecated, as Robert Hijmans has developed a successor to it called *[terra](https://cran.r-project.org/web/packages/terra/)* which is simpler and much faster, as it's rewritten in C++. The downside is that it is not yet supported by the vast majority of other packages, that still assume *raster* package objects. In the future, this lesson will be rewritten with the use of *terra* instead of *raster*.
+**Note**: the *raster* package is now deprecated, as Robert Hijmans has developed a successor to it called *[terra](https://cran.r-project.org/web/packages/terra/)* which is simpler and much faster, as it's rewritten in C++. The downside is that it is not yet supported by the vast majority of other packages, that still assume *raster* package objects. In the future, this lesson will be rewritten with the use of *terra* instead of *raster*.
 ```
 
 ## Explore the raster objects
