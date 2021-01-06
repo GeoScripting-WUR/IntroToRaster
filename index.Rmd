@@ -62,6 +62,7 @@ In a previous lecture you got introduced to the overall system architecture of R
 Let's start working with *rgdal* by performing system setup checks.
 ```{r}
 # Example to perform system set-up checks
+if(!"rgdal" %in% rownames(installed.packages())){install.packages("rgdal")}
 library(rgdal)
 getGDALVersionInfo()
 ```
