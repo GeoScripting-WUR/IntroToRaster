@@ -6,12 +6,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Loïc Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius Masiliūnas, Sabina Rosca" />
   <title>Week 1, Lesson 4: Intro To Raster</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
-  </style>
+  <style type="text/css">code{white-space: pre;}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- jQuery -->
@@ -886,7 +881,7 @@ Rest of the afternoon | Do/finalise the exercise.
 -->
 <h2 id="introduction">Introduction</h2>
 <p>Raster data is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various values which are assigned a color.</p>
-<p>Today, it’s about constructing a simple spatio-temporal analysis using raster data, R, and git.</p>
+<p>Today, it's about constructing a simple spatio-temporal analysis using raster data, R, and git.</p>
 <h2 id="learning-objectives">Learning objectives</h2>
 <p>At the end of the lecture, you should be able to:</p>
 <ul>
@@ -900,7 +895,7 @@ Rest of the afternoon | Do/finalise the exercise.
 <li>Good scripting habits</li>
 </ul>
 <h1 id="reminder-on-overall-system-architecture">Reminder on overall system architecture</h1>
-<p><img src="figs/geoscripting-system-overview.svg" style="width:100.0%" alt="R system architecture graph" /></p>
+<p><img src="figs/geoscripting-system-overview.svg" alt="R system architecture graph" style="width:100.0%" /></p>
 <div class="row">
 <div class="alert alert-info">
 <p>
@@ -908,13 +903,14 @@ Rest of the afternoon | Do/finalise the exercise.
 </p>
 </div>
 </div>
-<p>In a previous lecture you got introduced to the overall system architecture of R programming (see figure above) and you saw how to read and write vector data from/to file into your R environment. These vector read/write operations were made possible thanks to the <em>OGR</em> library. The <em>OGR</em> library is interfaced with R thanks to the <em>rgdal</em> package/binding. By analogy, raster data can be read/written thanks to the <em>GDAL</em> library. The figure above provides an overview of the connections between these elements. <em>GDAL</em> stands for <em>Geospatial Data Abstraction Library</em>. You can check the project home page at <a href="http://www.gdal.org/">http://www.gdal.org/</a> and you will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this lesson, we will use <em>GDAL</em> indirectly via the <em>raster</em> package, which uses <em>rgdal</em> extensively. However, it is possible to call GDAL functionalities directly through the command line from a terminal, which is equivalent to calling a <code>system()</code> command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to GDAL. (<em>Note</em>: This is also doable in <em>Bash</em> scripting, as learned in the previous lesson, and you can even combine the two.)</p>
-Let’s start working with <em>rgdal</em> by performing system setup checks.
+<p>In a previous lecture you got introduced to the overall system architecture of R programming (see figure above) and you saw how to read and write vector data from/to file into your R environment. These vector read/write operations were made possible thanks to the <em>OGR</em> library. The <em>OGR</em> library is interfaced with R thanks to the <em>rgdal</em> package/binding. By analogy, raster data can be read/written thanks to the <em>GDAL</em> library. The figure above provides an overview of the connections between these elements. <em>GDAL</em> stands for <em>Geospatial Data Abstraction Library</em>. You can check the project home page at <a href="http://www.gdal.org/" class="uri">http://www.gdal.org/</a> and you will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this lesson, we will use <em>GDAL</em> indirectly via the <em>raster</em> package, which uses <em>rgdal</em> extensively. However, it is possible to call GDAL functionalities directly through the command line from a terminal, which is equivalent to calling a <code>system()</code> command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to GDAL. (<em>Note</em>: This is also doable in <em>Bash</em> scripting, as learned in the previous lesson, and you can even combine the two.)</p>
+Let's start working with <em>rgdal</em> by performing system setup checks.
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Example to perform system set-up checks
+if(!"rgdal" %in% rownames(installed.packages())){install.packages("rgdal")}
 library(rgdal)</code></pre>
 <button class="message R toggle btn btn-xs btn-info">
 <span class="glyphicon glyphicon-chevron-down"></span> R message
@@ -952,7 +948,7 @@ library(rgdal)</code></pre>
 <li>Work on large raster datasets thanks to its built-in block processing functionalities.</li>
 <li>Perform fast operations thanks to optimized back-end C code.</li>
 <li>Visualize and interact with the data.</li>
-<li>etc…</li>
+<li>etc...</li>
 </ul>
 <div class="row">
 <div class="alert alert-info">
@@ -964,13 +960,13 @@ library(rgdal)</code></pre>
 <div class="row">
 <div class="alert alert-info">
 <p>
-<strong>Note</strong>: the <em>raster</em> package is now deprecated, as Robert Hijmans has developed a successor to it called <em><a href="https://cran.r-project.org/web/packages/terra/">terra</a></em> which is simpler and much faster, as it’s rewritten in C++. The downside is that it is not yet supported by the vast majority of other packages, that still assume <em>raster</em> package objects. In the future, this lesson will be rewritten with the use of <em>terra</em> instead of <em>raster</em>.
+<strong>Note</strong>: the <em>raster</em> package is now deprecated, as Robert Hijmans has developed a successor to it called <em><a href="https://cran.r-project.org/web/packages/terra/">terra</a></em> which is simpler and much faster, as it's rewritten in C++. The downside is that it is not yet supported by the vast majority of other packages, that still assume <em>raster</em> package objects. In the future, this lesson will be rewritten with the use of <em>terra</em> instead of <em>raster</em>.
 </p>
 </div>
 </div>
 <h2 id="explore-the-raster-objects">Explore the raster objects</h2>
-<p>The raster package produces and uses R objects of three different classes. The <strong>RasterLayer</strong>, the <strong>RasterStack</strong> and the <strong>RasterBrick</strong>. A RasterLayer is the equivalent of a single-layer raster, as an R workspace variable. The data themselves, depending on the size of the grid can be loaded in memory or on disk. The same stands for RasterBrick and RasterStack objects, which are the equivalent of multi-layer RasterLayer objects. RasterStack and RasterBrick are very similar, the difference being in the virtual characteristic of the RasterStack. While a RasterBrick has to refer to one multi-layer file or is in itself a multi-layer object with data loaded in memory, a RasterStack may ‘’virtually’’ connect several raster objects written to different files or in memory. Processing will be more efficient for a RasterBrick than for a RasterStack, but RasterStack has the advantage of facilitating pixel based calculations on separate raster layers.</p>
-Let’s take a look into the structure of these objects.
+<p>The raster package produces and uses R objects of three different classes. The <strong>RasterLayer</strong>, the <strong>RasterStack</strong> and the <strong>RasterBrick</strong>. A RasterLayer is the equivalent of a single-layer raster, as an R workspace variable. The data themselves, depending on the size of the grid can be loaded in memory or on disk. The same stands for RasterBrick and RasterStack objects, which are the equivalent of multi-layer RasterLayer objects. RasterStack and RasterBrick are very similar, the difference being in the virtual characteristic of the RasterStack. While a RasterBrick has to refer to one multi-layer file or is in itself a multi-layer object with data loaded in memory, a RasterStack may ''virtually'' connect several raster objects written to different files or in memory. Processing will be more efficient for a RasterBrick than for a RasterStack, but RasterStack has the advantage of facilitating pixel based calculations on separate raster layers.</p>
+Let's take a look into the structure of these objects.
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1029,8 +1025,8 @@ b</code></pre>
 ## crs        : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
 ## source     : memory
 ## names      :   layer.1,   layer.2,   layer.3 
-## min values : -3.039237, -6.078473, -3.039237 
-## max values :  3.050225,  6.100451,  3.050225
+## min values : -4.118481, -8.236963, -4.118481 
+## max values :  3.928942,  7.857885,  3.928942
 </code></pre>
 </div>
 <p>The RasterBrick metadata displayed above are mostly similar to what we saw earlier for the RasterLayer object, with the exception that these are multi-layer objects.</p>
@@ -1050,7 +1046,7 @@ download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToR
 ## Unpack the archive
 unzip('gewata.zip')</code></pre>
 </div>
-<p><em>Gewata</em> is the name of the data set added, it is a multi-layer GeoTIFF object, its file name is <em>LE71700552001036SGS00_SR_Gewata_INT1U.tif</em>, informing us that this is a subset from a scene acquired by the Landsat 7 sensor. Let’s not worry about the region that the data covers for now, we will find a nice way to discover that later on in the tutorial. See the example below.</p>
+<p><em>Gewata</em> is the name of the data set added, it is a multi-layer GeoTIFF object, its file name is <em>LE71700552001036SGS00_SR_Gewata_INT1U.tif</em>, informing us that this is a subset from a scene acquired by the Landsat 7 sensor. Let's not worry about the region that the data covers for now, we will find a nice way to discover that later on in the tutorial. See the example below.</p>
 <p>Now that we have downloaded and unpacked the GeoTIFF file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the <code>list.files()</code> function.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
@@ -1073,7 +1069,7 @@ list.files(pattern = '^.*\\.tif$')</code></pre>
 <div class="row">
 
 </div>
-Let’s take a look at the structure of this object.
+Let's take a look at the structure of this object.
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1116,9 +1112,9 @@ gewataB1</code></pre>
 ## values     : 4, 39  (min, max)
 </code></pre>
 </div>
-<p>Note that in addition to supporting most commonly used geodata formats, the <em>raster</em> package has its own format. Saving a file using the <code>.grd</code> extension (‘filename.grd’) will automatically save the object to the <em>raster</em> package format. This format has some advantages when performing geo processing in R (one advantage for instance is that it conserves original filenames as layer names in multilayer objects), however, it also has disadvantages, since those files are not compressed and thus very large.</p>
-<h2 id="geo-processing-in-memory-vs.-on-disk">Geo processing, in memory vs. on disk</h2>
-<p>When looking at the documentation of most functions of the <em>raster</em> package, you will notice that the list of arguments is almost always ended by <code>...</code>. These ‘three dots’ are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the <code>writeRaster()</code> function; meaning that most geo-processing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.</p>
+<p>Note that in addition to supporting most commonly used geodata formats, the <em>raster</em> package has its own format. Saving a file using the <code>.grd</code> extension ('filename.grd') will automatically save the object to the <em>raster</em> package format. This format has some advantages when performing geo processing in R (one advantage for instance is that it conserves original filenames as layer names in multilayer objects), however, it also has disadvantages, since those files are not compressed and thus very large.</p>
+<h2 id="geo-processing-in-memory-vs.-on-disk">Geo processing, in memory vs. on disk</h2>
+<p>When looking at the documentation of most functions of the <em>raster</em> package, you will notice that the list of arguments is almost always ended by <code>...</code>. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the <code>writeRaster()</code> function; meaning that most geo-processing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.</p>
 <h2 id="data-type-is-still-important">Data type is (still) important</h2>
 <p>When writing files to disk using <code>writeRaster()</code> or the <code>filename =</code> argument in most raster processing functions, you should set an appropriate data type. Use the <code>datatype =</code> argument, it will save some precious disk space, and increase read and write speed.</p>
 <p>See details in <code>?dataType</code>.</p>
@@ -1160,14 +1156,14 @@ unzip(zipfile='tura.zip')
 ## Retrieve the content of the tura sub-directory
 list <- list.files(path='tura/', full.names=TRUE)</code></pre>
 </div>
-<p>The object <code>list</code> contains the file names of all the single layers we have to stack. Let’s open the first one to visualize it.</p>
+<p>The object <code>list</code> contains the file names of all the single layers we have to stack. Let's open the first one to visualize it.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r">plot(raster(list[1]))</code></pre>
 </div>
-<p>We see an NDVI layer, with the clouds masked out. Now let’s create the RasterStack, the function for doing that is called <code>stack()</code>. Looking at the help page of the function , you can see that it can accept a list of file names as argument, which is what the object <code>list</code> represents. So we can very simply create the layer stack by running the function.</p>
+<p>We see an NDVI layer, with the clouds masked out. Now let's create the RasterStack, the function for doing that is called <code>stack()</code>. Looking at the help page of the function , you can see that it can accept a list of file names as argument, which is what the object <code>list</code> represents. So we can very simply create the layer stack by running the function.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1175,7 +1171,7 @@ list <- list.files(path='tura/', full.names=TRUE)</code></pre>
 <pre style=""><code class="source r">turaStack <- stack(list)
 turaStack</code></pre>
 </div>
-<p>Now that we have our 166 layers RasterStack in memory, let’s write it to disk using the <code>writeRaster()</code> function. Note that we decide here to save it as .grd file (the native format of the raster package); the reason for that is that this file format conserves original file names (in which information on dates is written) in the individual band names. The data range is comprised between -10000 and +10000, therefore such a file can be stored as signed 2 byte integer (INT2S).</p>
+<p>Now that we have our 166 layers RasterStack in memory, let's write it to disk using the <code>writeRaster()</code> function. Note that we decide here to save it as .grd file (the native format of the raster package); the reason for that is that this file format conserves original file names (in which information on dates is written) in the individual band names. The data range is comprised between -10000 and +10000, therefore such a file can be stored as signed 2 byte integer (INT2S).</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1188,7 +1184,7 @@ writeRaster(x=turaStack, filename='turaStack.grd', datatype='INT2S')</code></pre
 <h2 id="adding-subtracting-multiplying-and-dividing-rasterlayers">Adding, subtracting, multiplying and dividing RasterLayers</h2>
 <p>Performing simple raster operations with raster objects is fairly easy. For instance, if you want to subtract two RasterLayers of same extent, <code>r1</code> and <code>r2</code>; simply doing <code>r1 - r2</code> will give the expected output, which is, every pixel value of <code>r2</code> will be subtracted from the matching pixel value of <code>r1</code>. These types of pixel-based operations almost always require a set of conditions to be met in order to be executed; the two RasterLayers need to be identical in term of extent, resolution, projection, etc.</p>
 <h2 id="subsetting-layers-from-rasterstack-and-rasterbrick">Subsetting layers from RasterStack and RasterBrick</h2>
-<p>Different spectral bands of a same satellite scene are often stored in multi-layer objects. This means that you will very likely import them in your R working environment as RasterBrick or RasterStack objects. As a consequence, to perform calculations between these bands, you will have to write an expression refering to individual layers of the object. Referring to individual layers in a RasterBrick or RasterStack object is done by using double square brackets <code>[[]]</code>. Let’s look for instance at how the famous NDVI index would have to be calculated from the <em>gewata</em> RasterBrick object read earlier, and that contains the spectral bands of the Landsat 7 sensor. And in case you have forgotten, the NDVI formula is as follows.</p>
+<p>Different spectral bands of a same satellite scene are often stored in multi-layer objects. This means that you will very likely import them in your R working environment as RasterBrick or RasterStack objects. As a consequence, to perform calculations between these bands, you will have to write an expression refering to individual layers of the object. Referring to individual layers in a RasterBrick or RasterStack object is done by using double square brackets <code>[[]]</code>. Let's look for instance at how the famous NDVI index would have to be calculated from the <em>gewata</em> RasterBrick object read earlier, and that contains the spectral bands of the Landsat 7 sensor. And in case you have forgotten, the NDVI formula is as follows.</p>
 <p><br /><span class="math display">$$
  NDVI=\frac{NIR-Red}{NIR+Red}
 $$</span><br /></p>
@@ -1212,7 +1208,7 @@ $$</span><br /></p>
 </div>
 </div>
 <p>The resulting NDVI can be viewed in the above figure. As expected the NDVI ranges from about 0.2, which corresponds to nearly bare soils, to 0.9 which means that there is some dense vegetation in the area.</p>
-<p>Although this is a quick way to perform the calculation, directly adding, subtracting, multiplying, etc, the layers of big raster objects is not recommended. When working with big objects, it is advisable to use the <code>calc()</code> function to perform these types of calculaions. The reason is that R needs to load all the data first into its internal memory before performing the calculation and then runs everything in one block. It is really easy to run out of memory when doing that. A big advantage of the <code>calc()</code> function is that it has a built-in block processing option for any vectorized function, allowing such calculations to be fully “RAM friendly”. The example below illustrates how to calculate NDVI from the same date set using the <code>calc()</code> function.</p>
+<p>Although this is a quick way to perform the calculation, directly adding, subtracting, multiplying, etc, the layers of big raster objects is not recommended. When working with big objects, it is advisable to use the <code>calc()</code> function to perform these types of calculaions. The reason is that R needs to load all the data first into its internal memory before performing the calculation and then runs everything in one block. It is really easy to run out of memory when doing that. A big advantage of the <code>calc()</code> function is that it has a built-in block processing option for any vectorized function, allowing such calculations to be fully &quot;RAM friendly&quot;. The example below illustrates how to calculate NDVI from the same date set using the <code>calc()</code> function.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1258,7 +1254,7 @@ ndvi3 <- overlay(x=gewata[[3]], y=gewata[[4]], fun=ndvOver)</code></pre>
 </div>
 <p>In the simple case of calculating NDVI, we were easily able to produce the same result with <code>calc()</code> and <code>overlay()</code>, however, it is often the case that one function is preferable to the other. As a general rule, a calculation that needs to refer to multiple individual layers separately will be easier to set up in <code>overlay()</code> than in <code>calc()</code>.</p>
 <h2 id="re-projections">Re-projections</h2>
-<p>By the way, we still don’t know where this area is. In order to investigate that, we are going to try projecting it in Google Earth. As you know Google Earth is all in Lat/Long, so we have to get our data re-projected to Lat/Long first. The <code>projectRaster()</code> function allows re-projection of raster objects to any projection one can think of. As the function uses the <a href="https://trac.osgeo.org/proj/">PROJ.4</a> library (the reference library, external to R, that handles cartographic projections and performs projections transformations; the <em>rgdal</em> package is the interface between that library and R) to perform that operation, the <code>crs=</code> argument should receive a <em>proj4</em> expression. <em>proj</em> expressions are strings that provide the projection parameters of cartographic projections. A central place to search for projections is the spatial reference website (<a href="http://spatialreference.org/">http://spatialreference.org/</a>), from this database you will be able to query almost any reference and retrieve it in any format, including its <em>proj</em> expression. Note that <em>proj</em> expressions are handy because they are short and readable, but the Well-Known Text (WKT) 2 expressions are preferred for scientific correctness and lack of ambiguity; hence why if you run the <code>gdalinfo</code> command on a raster file, you will see the project as a WKT2 text block.</p>
+<p>By the way, we still don't know where this area is. In order to investigate that, we are going to try projecting it in Google Earth. As you know Google Earth is all in Lat/Long, so we have to get our data re-projected to Lat/Long first. The <code>projectRaster()</code> function allows re-projection of raster objects to any projection one can think of. As the function uses the <a href="https://trac.osgeo.org/proj/">PROJ.4</a> library (the reference library, external to R, that handles cartographic projections and performs projections transformations; the <em>rgdal</em> package is the interface between that library and R) to perform that operation, the <code>crs=</code> argument should receive a <em>proj4</em> expression. <em>proj</em> expressions are strings that provide the projection parameters of cartographic projections. A central place to search for projections is the spatial reference website (<a href="http://spatialreference.org/" class="uri">http://spatialreference.org/</a>), from this database you will be able to query almost any reference and retrieve it in any format, including its <em>proj</em> expression. Note that <em>proj</em> expressions are handy because they are short and readable, but the Well-Known Text (WKT) 2 expressions are preferred for scientific correctness and lack of ambiguity; hence why if you run the <code>gdalinfo</code> command on a raster file, you will see the project as a WKT2 text block.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1267,7 +1263,7 @@ ndvi3 <- overlay(x=gewata[[3]], y=gewata[[4]], fun=ndvOver)</code></pre>
 ndviLL <- projectRaster(ndvi, crs='+proj=longlat')</code></pre>
 </div>
 <p>Note that if re-projecting and mosaicking is really a large part of your project, you may want to consider using the <code>gdalwarp</code> command line utility (<a href="http://www.gdal.org/gdalwarp.html">gdalwarp</a>) directly. The <code>gdalUtils</code> R package provides utilities to run GDAL commands from R, including <code>gdalwarp</code>, for reprojection, resampling and mosaicking.</p>
-<p>Now that we have our NDVI layer in Lat/Long, let’s write it to a KML file, which is one of the two Google Earth formats.</p>
+<p>Now that we have our NDVI layer in Lat/Long, let's write it to a KML file, which is one of the two Google Earth formats.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1284,12 +1280,12 @@ KML(x=ndviLL, filename='gewataNDVI.kml')</code></pre>
 <div class="row">
 <div class="alert alert-info">
 <p>
-<strong>Tip</strong>: if you do not have Google Earth Pro installed on your computer, you can install Google Chrome and use <a href="https://earth.google.com/web/">https://earth.google.com/web/</a>
+<strong>Tip</strong>: if you do not have Google Earth Pro installed on your computer, you can install Google Chrome and use <a href="https://earth.google.com/web/" class="uri">https://earth.google.com/web/</a>
 </p>
 </div>
 </div>
-<p>Now let’s find that file that we have just written and double click it, and watch how Google Earth brings us all the way to … Ethiopia. More information will come later in the course about that specific area.</p>
-<p>We are done with this data set for this lesson. So let’s explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.</p>
+<p>Now let's find that file that we have just written and double click it, and watch how Google Earth brings us all the way to ... Ethiopia. More information will come later in the course about that specific area.</p>
+<p>We are done with this data set for this lesson. So let's explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.</p>
 <h2 id="more-raster-arithmetics-performing-simple-value-replacements">More raster arithmetics: performing simple value replacements</h2>
 <p>Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named <em>cfmask</em>, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the <a href="https://github.com/GERSL/Fmask">algorithm page</a>, and the publication by <a href="https://doi.org/10.1016/j.rse.2011.10.028">Zhu &amp; Woodcock</a>. In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.</p>
 <h3 id="about-the-area">About the area</h3>
@@ -1333,7 +1329,7 @@ We can also visualize the cloud mask layer (layer 7).
 </div>
 <p>According to the <a href="https://github.com/GERSL/Fmask">algorithm description</a>, water is coded as 1, cloud as 4 and cloud shadow as 2.</p>
 <p>Does the cloud mask fit with the visual interpretation of the RGB image we plotted before?</p>
-<p>We can also plot the two on top of each other, but before that we need to assign no values (NA) to the ‘clear land pixels’ so that they appear transparent on the overlay plot.</p>
+<p>We can also plot the two on top of each other, but before that we need to assign no values (NA) to the 'clear land pixels' so that they appear transparent on the overlay plot.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1363,7 +1359,7 @@ fmask <- tahiti[[7]]
 ## Remove fmask layer from the Landsat stack
 tahiti6 <- dropLayer(tahiti, 7)</code></pre>
 </div>
-<p>We will first do the masking using simple vector arithmetic, as if <code>tahiti6</code> and <code>fmask</code> were simple vectors. We want to keep any value with a ‘clean land pixel’ flag in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel different from 0. This can be done in one line of code.</p>
+<p>We will first do the masking using simple vector arithmetic, as if <code>tahiti6</code> and <code>fmask</code> were simple vectors. We want to keep any value with a 'clean land pixel' flag in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel different from 0. This can be done in one line of code.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
