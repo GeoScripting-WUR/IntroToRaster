@@ -369,12 +369,12 @@ tahiti
 names(tahiti)
 
 ## Visualize the data
-plotRGB(tahiti, 3,4,5)
+plotRGB(tahiti, 3,4,5, stretch="lin")
 ```
 
 ```{r, echo=FALSE, fig.align='center'}
 tahiti <- brick('data/LE70530722000126_sub.grd')
-plotRGB(tahiti, 3,4,5)
+plotRGB(tahiti, 3,4,5, stretch="lin")
 ```
 
 We can also visualize the cloud mask layer (layer 7).
