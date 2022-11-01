@@ -78,9 +78,9 @@ Among other things the *terra* package allows to:
 ```
 
 ## Explore the terra objects
-The terra package produces and uses R objects of two main classes. **SpatRaster and SpatVector**. A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). A Spatvector represents geometries as well as attributes (variables) describing the geometries.
+The terra package produces and uses R objects of two main classes. **SpatRaster** and **SpatVector**. A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). A Spatvector represents geometries as well as attributes (variables) describing the geometries.
 
-Let's take a look into the structure of these objects.
+Let's take a look into the structure of a SpatRaster.
 ```{r}
 ## Generate a SpatRaster object
 r <- rast(ncol=40, nrow=20)
@@ -89,7 +89,7 @@ class(r)
 # Simply typing the object name displays its general properties / metadata
 r
 ```
-From the metadata displayed above, we can see that the SpatRaster object contains all the properties that geo-data should have; that is to say a projection, an extent and a pixel resolution.
+From the metadata displayed above, we can see that the SpatRaster contains all the properties that geo-data should have; that is to say a projection, an extent and a pixel resolution.
 
 Multi-layer SpatRasters can also fairly easily be generated directly in R, as shown in the example below.
 ```{r}
@@ -104,9 +104,9 @@ s <- c(r, r*2, r)
 s
 ```
 
-# Raster object manipulations
+# SpatRaster manipulations
 ## Reading and writing from/to file
-The actual data used in geo-processing projects often comes as geo-data, stored on files such as *GeoTIFF* or other commonly used file formats. Reading data directly from these files into the R working environment (as objects belonging to one of the 3 raster objects classes) is made possible thanks to the *terra* package. The main command for reading raster objects from files is the `rast()` function, which returns a SpatRaster.
+The actual data used in geo-processing projects often comes as geo-data, stored on files such as *GeoTIFF* or other commonly used file formats. Reading data directly from these files into the R working environment is made possible thanks to the *terra* package. The main command for reading raster objects from files is the `rast()` function, which returns a SpatRaster.
 
 Writing a SpatRaster object to file is achieved using the `writeRaster()` function.
 
@@ -181,7 +181,7 @@ plot(gewataSub, 1)
 You should see on the resulting plot that the original image has been cropped.
 
 ## Creating layer stacks
-To end this section on general files and raster object manipulations, we will see more in-depth how multi-layer objects can be created from single-layer objects. The object created as part of the example below is the same that we will use later in the course to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landsat acquisitions at different dates. The objective is therefore to create a multi-layer NDVI object, for which each layer corresponds to a different date. But first we need to fetch the data, similarly to how we did it for the *gewata* brick.
+To end this section on general files and raster object manipulations, we will see more in-depth how multi-layer objects can be created from single-layer objects. The object created as part of the example below is the same that we will use later in the course to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landsat acquisitions at different dates. The objective is therefore to create a multi-layer NDVI object, for which each layer corresponds to a different date. But first we need to fetch the data, similarly to how we did it for the *gewata* dataset.
 
 ```{r, eval=FALSE}
 # Again, make sure that your working directory is properly set
@@ -208,21 +208,21 @@ turaStack <- rast(list)
 turaStack
 ```
 
-Now that we have our 166 layers RasterStack in memory, let's write it to disk using the `writeRaster()` function. Note that we adjust the layer names to the original file names (in which information on dates is written). Also note that the data range is comprised between -10000 and +10000, therefore such a file can be stored as signed 2 byte integer (INT2S).
+Now that we have our 166 layers SpatRaster in memory, let's write it to disk using the `writeRaster()` function. Note that we adjust the layer names to the original file names (in which information on dates is written). Also note that the data range is comprised between -10000 and +10000, therefore such a file can be stored as signed 2 byte integer (INT2S).
 
 ```{r, eval=FALSE}
 # Write this file at the root of the working directory
-writeRaster(x=turaStack, filename='turaStack.tif', names=list.files(path='tura/'), overwrite=T)
+writeRaster(x=turaStack, filename='turaStack.tif', names=list.files(path='tura/'))
 ```
 
 Now this object is stored on your computer, ready to be archived for later use.
 
 # Simple raster arithmetic
-## Adding, subtracting, multiplying and dividing RasterLayers
+## Adding, subtracting, multiplying and dividing SpatRasters
 Performing simple raster operations with a SpatRaster is fairly easy. For instance, if you want to subtract two SpatRasters of same extent, `r1` and `r2`; simply doing `r1 - r2` will give the expected output, which is, every pixel value of `r2` will be subtracted from the matching pixel value of `r1`. These types of pixel-based operations almost always require a set of conditions to be met in order to be executed; the two SpatRasters need to be identical in term of extent, resolution, projection, etc.
 
-## Subsetting layers from RasterStack and RasterBrick
-Different spectral bands of a same satellite scene are often stored in multi-layer objects. This means that you will very likely import them in your R working environment as one multi-layer SpatRaster. As a consequence, to perform calculations between these bands, you will have to write an expression referring to individual layers of the object. Referring to individual layers in a RasterBrick or RasterStack object can be done by using double square brackets `[[]]`.
+## Subsetting layers from SpatRaster
+Different spectral bands of a same satellite scene are often stored in multi-layer objects. This means that you will very likely import them in your R working environment as one multi-layer SpatRaster. As a consequence, to perform calculations between these bands, you will have to write an expression referring to individual layers of the object. Referring to individual layers in a SpatRaster can be done by using double square brackets `[[]]`.
 
 Let's look for instance at how the famous NDVI index would have to be calculated from the *gewata* SpatRaster object read earlier, and that contains the spectral bands of the Landsat 7 sensor. And in case you have forgotten, the NDVI formula is as follows.
 
@@ -255,87 +255,91 @@ ndviApp <- function(x) {
 ndvi2 <- app(x=gewata, fun=ndviApp)
 ```
 
-Note that `lapp()` can also be used in that case to obtain the same result, with the same level of RAM friendliness. The advantage of `lapp()` is that the number of input RasterLayers is less limiting. As a consequence, specifying the layers does not happen in the function call but in the `()` call instead.
+Note that `lapp()` can also be used in that case to obtain the same result, with the same level of RAM friendliness. The advantage of `lapp()` is that the number of input SpatRasters is less limiting. As a consequence, specifying the layers does not happen in the function call but in the `()` call instead. Here, we create a *SpatRasterDataset* using `sds()`.A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
 
 ```{r}
 ndviLapp <- function(x, y) {
     ndvi <- (y - x) / (x + y)
     return(ndvi)
 }
-ndvi3 <- lapp(x=c(gewata[[3]], gewata[[4]]), fun=ndviLapp)
+ndvi3 <- lapp(x=sds(gewata[[3]], gewata[[4]]), fun=ndviLapp)
 ```
 
 We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the *raster* package.
 
 ```{r}
 all.equal(ndvi, ndvi2)
-all.equal(ndvi, ndvi3)
 ```
 
-Here we see that only the names are different. This is because for the first method, which resulted in `ndvi`, the layer name was copied from `gewata[[4]]`, whereas this was not the case for the other two approaches.
+```{r}
+all.equal(ndvi, ndvi3, maxcell=Inf)
+```
+
+Here we see that only the name of `ndvi2` is different. This is because for the first and third method, which resulted in `ndvi` and `ndvi3`, the layer name was copied from `gewata[[4]]`, whereas this was not the case for the second approach.
 
 In the simple case of calculating NDVI, we were easily able to produce the same result with `app()` and `lapp()`, however, it is often the case that one function is preferable to the other. As a general rule, a calculation that needs to refer to multiple individual layers separately will be easier to set up in `lapp()` than in `app()`.
 
 ## Reprojections
-By the way, we still don't know where this area is. In order to investigate that, we are going to try projecting it in Google Earth. As you know Google Earth is all in Lat/Long, so we have to get our data re-projected to Lat/Long first. The `projectRaster()` function allows re-projection of raster objects to any projection one can think of. As the function uses the [PROJ.4](https://trac.osgeo.org/proj/) library (the reference library, external to R, that handles cartographic projections and performs projections transformations; the *rgdal* package is the interface between that library and R) to perform that operation, the `crs=` argument should receive a *proj4* expression. *proj* expressions are strings that provide the projection parameters of cartographic projections. A central place to search for projections is the spatial reference website ([http://spatialreference.org/](http://spatialreference.org/)), from this database you will be able to query almost any reference and retrieve it in any format, including its *proj* expression. Note that *proj* expressions are handy because they are short and readable, but the Well-Known Text (WKT) 2 expressions are preferred for scientific correctness and lack of ambiguity; hence why if you run the `gdalinfo` command on a raster file, you will see the project as a WKT2 text block.
+The `project()` function allows re-projection of raster objects to any projection one can think of. It accepts the following formats to define coordinate reference systems: *WKT*, *PROJ.4* (e.g., +proj=longlat +datum=WGS84), or an *EPSG* code (e.g., "epsg:4326"). Note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored.
+
+A central place to search for projections is the spatial reference website ([http://spatialreference.org/](http://spatialreference.org/)), from this database you will be able to query almost any reference and retrieve it in any format, including its *EPSG* code. Well-Known Text (*WKT*) expressions are preferred for scientific correctness and lack of ambiguity.
+
+Instead of specifying a projection to convert to, you can also provide `project()` with another SpatRaster, and it will convert your input to the projection of that SpatRaster.
 
 ```{r}
-## One single line is sufficient to project any raster to any projection
-ndviLL <- projectRaster(ndvi, crs='+proj=longlat')
+# One single line is sufficient to project any raster to any projection
+ndviLL <- project(ndvi, '+proj=longlat')
 ```
-
 
 Note that if re-projecting and mosaicking is really a large part of your project, you may want to consider using the `gdalwarp` command line utility ([gdalwarp](http://www.gdal.org/gdalwarp.html)) directly. The `gdalUtils` R package provides utilities to run GDAL commands from R, including `gdalwarp`, for reprojection, resampling and mosaicking.
 
-Now that we have our NDVI layer in Lat/Long, let's write it to a KML file, which is one of the two Google Earth formats.
+
+## Exporting and inspecting
+By the way, we still don't know where this area is. In order to investigate that, we are going to try projecting it in QGIS. Let's write our NDVI layer in Lat/Long to a .tif file first.
 
 ```{r, eval = FALSE}
 # Since this function will write a file to your working directory
 # you want to make sure that it is set where you want the file to be written
 # It can be changed using setwd()
 getwd()
+
 # Note that we are using the filename argument, contained in the ellipsis (...) of
 # the function, since we want to write the output directly to file.
-KML(x=ndviLL, filename='gewataNDVI.kml')
+writeRaster(x=ndviLL, filename='gewataNDVI.tif')
 ```
 
-Note that you need to have Google Earth Pro installed on your system in order to perform the following step.
+Now open this file in QGIS (or ArcGIS), and add a base layer (in QGIS for instance OpenStreetMap, using XYZ tiles with the url `https://tile.openstreetmap.org/{z}/{x}/{y}.png`). Once we zoom out a bit, we see we are all the way in ... Ethiopia. More information will come later in the course about that specific area.
 
-```{block, type="alert alert-info"}
-**Tip**: if you do not have Google Earth Pro installed on your computer, you can install Google Chrome and use [https://earth.google.com/web/](https://earth.google.com/web/)
+```{block, type="alert alert-success"}
+> **Question**: Could you also have used `ndvi` instead of `ndviLL` for this final step? Why (not)?
 ```
-
-Now let's find that file that we have just written and double click it, and watch how Google Earth brings us all the way to ... Ethiopia. More information will come later in the course about that specific area.
 
 We are done with this data set for this lesson. So let's explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.  
 
-## More raster arithmetics: performing simple value replacements
-
-Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://github.com/GERSL/Fmask), and the publication by [Zhu & Woodcock](https://doi.org/10.1016/j.rse.2011.10.028).
-In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
-
+## Performing simple value replacements
+Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://github.com/GERSL/Fmask), and the publication by [Zhu & Woodcock](https://doi.org/10.1016/j.rse.2011.10.028). In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
 
 ### About the area
 The area selected for this exercise covers most of the South Pacific island of Tahiti, French Polynesia. It is a mountainous, volcanic island, and according to Wikipedia about 180,000 people live on the island. For convenience, the Landsat scene was subsetted to cover only the area of interest and is stored online.
 
 ```{r, eval=FALSE}
-## Download the data
+# Download the data
 download.file(url='https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tahiti.zip', destfile='tahiti.zip', method='auto')
 unzip(zipfile='tahiti.zip')
 
-## Load the data as a RasterBrick object and investigate its content
-tahiti <- brick('LE70530722000126_sub.grd')
+# Load the data as a SpatRaster and investigate its contents
+tahiti <- rast('LE70530722000126_sub.grd')
 tahiti
 
-## Display names of each individual layer
+# Display names of each individual layer
 names(tahiti)
 
-## Visualize the data
+# Visualize the data
 plotRGB(tahiti, 3,4,5, stretch="lin")
 ```
 
 ```{r, echo=FALSE, fig.align='center'}
-tahiti <- brick('data/LE70530722000126_sub.grd')
+tahiti <- rast('data/LE70530722000126_sub.grd')
 plotRGB(tahiti, 3,4,5, stretch="lin")
 ```
 
@@ -351,7 +355,7 @@ Does the cloud mask fit with the visual interpretation of the RGB image we plott
 We can also plot the two on top of each other, but before that we need to assign no values (NA) to the 'clear land pixels' so that they appear transparent on the overlay plot.
 
 ```{r, fig.align='center'}
-## Extract cloud layer from the brick
+## Extract cloud layer from the SpatRaster
 cloud <- tahiti[[7]]
 
 ## Replace 'clear land' with 'NA'
@@ -362,14 +366,14 @@ plotRGB(tahiti, 3,4,5, stretch="lin")
 plot(cloud, add = TRUE, legend = FALSE)
 ```
 
-Applying a cloud mask to a dataset simply consists in performing value replacement. In this case, a condition on the 7th layer of the stack (the `fmask` layer) will determine whether values in the other layers are kept, or replaced by NA, which is equivalent to masking them.
-It is more convenient to work on the cloud mask as a separate RasterLayer, we will therefore split the RasterBrick using the `dropLayer()` function.
+Applying a cloud mask to a dataset simply consists in performing value replacement. In this case, a condition on the 7th layer of the stack (the `fmask` layer) will determine whether values in the other layers are kept, or replaced by NA, which is equivalent to masking them. It is more convenient to work on the cloud mask as a separate SpatRaster. We will therefore subset the SpatRaster using the `subset()` function.
 
 ```{r}
-## Extract cloud mask RasterLayer
+## Extract cloud mask layer
 fmask <- tahiti[[7]]
-## Remove fmask layer from the Landsat stack
-tahiti6 <- dropLayer(tahiti, 7)
+
+## Create a subset of the first six layers
+tahiti6 <- subset(tahiti, 1:6)
 ```
 
 We will first do the masking using simple vector arithmetic, as if `tahiti6` and `fmask` were simple vectors. We want to keep any value with a 'clean land pixel' flag in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel different from 0. This can be done in one line of code.
@@ -379,7 +383,7 @@ We will first do the masking using simple vector arithmetic, as if `tahiti6` and
 tahiti6[fmask != 0] <- NA
 ```
 
-However, this is possible here because both objects are relatively small and the values can all be loaded in the computer memory without any risk of overloading it. When working with very large raster objects, you will very likely run into problems if you do that. It is then preferable, as presented earlier in this tutorial to use `calc()` or `overlay()`. `overlay()` in this case is the appropriate function, since we are working with two distinct raster objects.
+However, this is possible here because both objects are relatively small and the values can all be loaded in the computer memory without any risk of overloading it. When working with very large raster objects, you will very likely run into problems if you do that. It is then preferable, as presented earlier in this tutorial to use `app()` or `lapp()`. `lapp()` in this case is the appropriate function, since we are working with two distinct raster objects.
 
 ```{r}
 ## First define a value replacement function
@@ -389,115 +393,54 @@ cloud2NA <- function(x, y){
 }
 ```
 
-The value replacement function takes two arguments, x and y. Similarly to what we did earlier, x corresponds to the RasterBrick, and y to the cloud mask.
+The value replacement function takes two arguments, x and y. Similarly to what we did earlier, x corresponds to the data we want to mask, and y to the cloud mask. Again, we add both to a SpatRasterDataset.
 
 ```{r, fig.align='center'}
-# Let's create a new 6 layers object since tahiti6 has been masked already
-tahiti6_2 <- dropLayer(tahiti, 7)
+# Let's create a new 6 layers object since tahiti6 has now been masked already
+tahiti6_2 <- subset(tahiti, 1:6)
 
 ## Apply the function on the two raster objects using overlay
-tahitiCloudFree <- overlay(x = tahiti6_2, y = fmask, fun = cloud2NA)
+tahitiCloudFree <- lapp(x = sds(tahiti6_2, fmask), fun = cloud2NA)
 
 ## Visualize the output
 plotRGB(tahitiCloudFree, 3,4,5, stretch="lin")
 ```
 
-
-There are holes in the image, but at least the clouds are gone. We could use another image from another date, to create a composited image, but that is a little bit too much for today.
+There are holes in the image, but at least the clouds are gone. We could use another image from another date, to create a composite image, but that is a little bit too much for today.
 
 # Summary
-Today you got a general introduction to the *raster* package, its basic functions, its object classes and methods. They can be categorized as follows:
+Today you got a general introduction to the *terra* package, its basic functions, its object classes and methods. They can be categorized as follows:
 
-## Raster classes
+## Terra classes
 
-* `RasterLayer`: Single-layer object.
-* `RasterStack` and `RasterBrick`: Multi-layer raster objects.
+* `SpatRaster`: Single- or multi-layer object (raster).
+* `SpatRasterDataset`: A collection of SpatRasters.
+* `SpatVector`: Geometries object (vector).
 
 ## Functions
 
-### Read data
+### Reading and writing
 
-* `raster()`: Read a single-layer raster object written on disk, or read the first layer of a multi-layer object.
-* `brick()`: Read a multi-layer raster object written on disk.
-
-### Write data
-
-* `writeRaster()`: Write a `RasterLayer`, `RasterBrick` or `RasterStack` to disk.
+* `rast()`: Read a raster object from disk.
+* `writeRaster()`: Write a `SpatRaster` to disk.
 * `filename =` argument: Available for most functions of the *raster* package that produce raster objects, write directly the output of the function to disk.
 
 ### Reformat data
 
 * `crop()`: modify the extent of a `Raster*` object based on another spatial object or an extent object.
-* `projectRaster()`: Reproject (and resample) a raster object to a desired coordinate reference system.
-* `stack()`: Assemble RasterLayers in a multi-layer object.
-* `dropLayer()`: Remove a layer from a multi-layer object (RasterStack or RasterBrick).
+* `project()`: Reproject (and resample) a raster object to a desired coordinate reference system or reference raster object.
+* `subset()`: Create a subset of a SpatRaster.
 
 ### Simple visualization
 
-* `plot()`: Plot a raster object, use `add = TRUE` to overlay several objects.
+* `plot()`: Plot a SpatRaster. Use `add = TRUE` to overlay several objects.
 * `plotRGB()`: Plot an RGB color composite. Specifying the bands to assign colors as arguments.
 
 ### Raster calculations
 
-* First of all, raster objects work just like vectors of numerics (`c(1,2,3)`). They can be subsetted, added, subtracted, etc.
-* `calc()`: Apply a function to every pixel independently of a single raster object (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
-* `overlay()`: Apply a function that takes values from multiple raster objects. Similar to `calc()` but for multiple objects.
-
-<!--
-
-# Exercise 5: Design a pre-processing chain to assess change in NDVI over time
-
-## Your task
-
-I would like to know if Wageningen and its surroundings have changed with respect to its spring NDVI over the past 15 years. For that I would need to do a bi-temporal comparison of two NDVI images, acquired in spring. Simply subtracting the images should work, but unfortunately these haven't been pre-processed yet. I managed to download two Landsat raw surface reflectance products covering the area. They were acquired around the same period of the year, but about 30 years apart from each other. I don't know how to compare them. Can you please help me?
-
-
-## More details
-
-* Data can be found [here](https://www.dropbox.com/sh/3lz5vylc7tzpiup/AAB3HCFHdJFa8lV_PMRlV5Wda?dl=0)
-* Can you tell when the scenes were acquired ?
-
-```{block, type="alert alert-info"}
-**Tip** look at the file names
-```
-
-* Product details are [here](https://landsat.usgs.gov/sites/default/files/documents/Landsat8DataUsersHandbook.pdf) (Landsat 8) and [here](https://landsat.usgs.gov/sites/default/files/documents/ledaps_product_guide.pdf) (Landsat 5)
-* Cloud mask from the *fmask* algorithm is contained in both archives
-* The two scenes have different extents
-
-```{block, type="alert alert-info"}
-**Note**: Landsat 8 does not use the same band numbers as its predecessors. Red and NIR correspond to band3 and band4 respectively for ETM+ and TM (Landsat 7 and 5 respectively), while for OLI (Landsat 8), Red is band4 and NIR is band5.
-```
-
-
-## Hints
-
-* `list.files()` with `pattern =` argument. For example, `list.files('data/', pattern = glob2rx('*.tif'), full.names = TRUE)` will return only the files that have the `.tif` extension.
-* You should always use `full.names = TRUE` in `list.files()` to be able to use the output directly.
-* `?intersect`
-* `untar()` to programmatically extract the files from the archive.
-
-
-## Assessment
-
-The general rubrics will be used for the assessment of your script. This can be found on the BlackBoard. The three specific tasks in the rubrics your script will be assessed on are:
-
-Task1: Pre-proccess the satellite imagery and and visualize it (load,crop, mask and visualise as true colour)
-
-Task2: Calculate NDVI (use correct band combination for both images)
-
-Task3: Make the temporal comparison, using the NDVI rasters with appropriate (cleaned) values (correctly calculated, visualized and saved as output)
-
-## Bonus
-
-Today there is no bonus.
-
-## Submission
-
-Make sure your script is clear and reproducible. Make a new GitLab project according to the guidelines on BlackBoard and upload the script there. Test the script of another team (see the random team selector Shiny app) tomorrow morning and add an issue with your testing results and score according to the rubric.
-
-Do not forget to add a teamname, and members and date of script at the top of your script.
--->
+* First of all, SpatRasters work just like vectors of numerics (`c(1,2,3)`). They can be subsetted, added, subtracted, etc.
+* `app()`: Apply a function to every pixel independently of a single raster object (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
+* `lapp()`: Apply a function that takes values from multiple raster objects. Similar to `app()` but for multiple objects.
 
 # References
 
