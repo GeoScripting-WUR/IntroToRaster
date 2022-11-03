@@ -1,7 +1,7 @@
 ---
 author: "Loïc Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius Masiliūnas, Sabina Rosca"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-pagetitle: "Lesson 4: Intro To Raster"
+pagetitle: "Lesson 4: Intro To Raster"    
 output:
   knitrBootstrap::bootstrap_document:
     theme: "simplex"
@@ -21,20 +21,17 @@ a:visited {color: #91170a;}
 
 # Week 1, Lesson 4: Intro To Raster
 
+## Learning objectives
+* Read & write raster data
+* Perform basic raster file operations/conversions
+* Perform simple raster calculations
+
 ## Introduction
 Raster data is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various values which are assigned a color.
 
 Today's lesson is about constructing a simple spatio-temporal analysis using raster data, R, and git.
 
-## Learning objectives
-At the end of the lesson, you should be able to:
-
-* Read & write raster data
-* Perform basic raster file operations/conversions
-* Perform simple raster calculations
-
-
-# Assumed knowledge from previous lectures
+## Assumed knowledge from previous lectures
 
 * Understand system architecture (R, R packages, libraries, drivers, bindings)
 * Good scripting habits
@@ -82,8 +79,8 @@ The terra package produces and uses R objects of two main classes. **SpatRaster*
 
 Let's take a look into the structure of a SpatRaster.
 ```{r}
-## Generate a SpatRaster object
-r <- rast(ncol=40, nrow=20)
+# Generate a SpatRaster object
+r <- rast(ncol = 40, nrow = 20)
 class(r)
 
 # Simply typing the object name displays its general properties / metadata
@@ -95,7 +92,7 @@ Multi-layer SpatRasters can also fairly easily be generated directly in R, as sh
 ```{r}
 # Using the previously generated SpatRaster bject
 # Let's first put some values in the cells of the layer
-r[] <- rnorm(n=ncell(r))
+r[] <- rnorm(n = ncell(r))
 
 # Create a SpatRaster object with 3 layers
 s <- c(r, r*2, r)
@@ -125,7 +122,7 @@ download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToR
 unzip('gewata.zip')
 ```
 
-*Gewata* is the name of the data set added. It is a multi-layer GeoTIFF object, and its file name is *LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif*, informing us that this is a subset from a scene acquired by the Landsat 7 sensor. Let's not worry about the region that the data covers for now, we will find a  nice way to discover that later on in the tutorial.
+*Gewata* is the name of the data set added. It is a multi-layer GeoTIFF object, and its file name is *LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif*, informing us that this is a subset from a scene acquired by the Landsat 7 sensor. Let's not worry about the region that the data covers for now, we will find a nice way to discover that later on in the tutorial.
 
 Now that we have downloaded and unpacked the GeoTIFF file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the `list.files()` function.
 ```{r, eval=FALSE}
@@ -140,13 +137,10 @@ list.files(pattern = '^.*\\.tif$')
 ```
 
 We can now load this object in R:
-
-```{r, eval=FALSE}
+```{r}
 gewata <- rast('LE71700552001036SGS00_SR_Gewata_INT1U.tif')
 ```
-```{r, echo=FALSE}
-gewata <- rast('data/LE71700552001036SGS00_SR_Gewata_INT1U.tif')
-```
+
 Let's take a look at the structure of this object.
 ```{r}
 gewata
@@ -160,7 +154,7 @@ When writing files to disk using writeRaster() or the filename = argument in mos
 When looking at the documentation of most functions of the *terra* package, you will notice that the list of arguments is almost always ended by `...`. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the `writeRaster()` function; meaning that most geoprocessing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.
 
 ## Cropping a raster object
-`crop()` is the terra package function that allows you to crop data to smaller spatial extents. A great advantage of the crop function is that it accepts almost all spatial object classes in R as its `extent`  input argument. But the `extent` argument also simply accepts objects of class `extent`. One way of obtaining such an extent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
+`crop()` is the terra package function that allows you to crop data to smaller spatial extents. A great advantage of the crop function is that it accepts almost all spatial object classes in R as its `extent` input argument. But the `extent` argument also simply accepts objects of class `extent`. One way of obtaining such an extent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
 
 ```{r, eval=FALSE}
 # Plot the first layer of the SpatRaster
@@ -187,12 +181,12 @@ To end this section on general files and raster object manipulations, we will se
 # Again, make sure that your working directory is properly set
 getwd()
 
-## Download and unzip the data
-download.file(url='https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile='tura.zip', method='auto')
-unzip(zipfile='tura.zip')
+# Download and unzip the data
+download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile = 'tura.zip', method = 'auto')
+unzip(zipfile = 'tura.zip')
 
-## Retrieve the content of the tura sub-directory
-list <- list.files(path='tura/', full.names=TRUE)
+# Retrieve the content of the tura sub-directory
+list <- list.files(path = 'tura/', full.names = TRUE)
 ```
 
 The object `list` contains the file names of all the single layers we have to stack. Let's open the first one to visualize it.
@@ -212,7 +206,7 @@ Now that we have our 166 layers SpatRaster in memory, let's write it to disk usi
 
 ```{r, eval=FALSE}
 # Write this file at the root of the working directory
-writeRaster(x=turaStack, filename='turaStack.tif', names=list.files(path='tura/'))
+writeRaster(x = turaStack, filename = 'turaStack.tif', names = list.files(path = 'tura/'), datatype = "INT2S")
 ```
 
 Now this object is stored on your computer, ready to be archived for later use.
@@ -238,7 +232,7 @@ ndvi <- (gewata[[4]] - gewata[[3]]) / (gewata[[4]] + gewata[[3]])
 
 The `plot()` function automatically recognises the objects of `terra` classes and returns an appropriate spatial plot.
 
-```{r, ndvi, echo=TRUE, fig=TRUE, fig.align='center'}
+```{r, ndvi, fig.align='center'}
 plot(ndvi)
 ```
 
@@ -247,12 +241,12 @@ The resulting NDVI can be viewed in the figure above. As expected the NDVI range
 Although this is a quick way to perform the calculation, directly adding, subtracting, multiplying, etc, the layers of big raster objects is not recommended. When working with big objects, it is advisable to use the `app()` function to perform these types of calculations. The reason is that R needs to load all the data first into its internal memory before performing the calculation and then runs everything in one block. It is really easy to run out of memory when doing that. A big advantage of the `app()` function is that it has a built-in block processing option for any vectorized function, allowing such calculations to be fully "RAM friendly". The example below illustrates how to calculate NDVI from the same date set using the `app()` function.
 
 ```{r}
-## Define the function to calculate NDVI from
+# Define the function to calculate NDVI from
 ndviApp <- function(x) {
     ndvi <- (x[[4]] - x[[3]]) / (x[[4]] + x[[3]])
     return(ndvi)
 }
-ndvi2 <- app(x=gewata, fun=ndviApp)
+ndvi2 <- app(x = gewata, fun = ndviApp)
 ```
 
 Note that `lapp()` can also be used in that case to obtain the same result, with the same level of RAM friendliness. The advantage of `lapp()` is that the number of input SpatRasters is less limiting. As a consequence, specifying the layers does not happen in the function call but in the `()` call instead. Here, we create a *SpatRasterDataset* using `sds()`.A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
@@ -262,7 +256,7 @@ ndviLapp <- function(x, y) {
     ndvi <- (y - x) / (x + y)
     return(ndvi)
 }
-ndvi3 <- lapp(x=sds(gewata[[3]], gewata[[4]]), fun=ndviLapp)
+ndvi3 <- lapp(x = sds(gewata[[3]], gewata[[4]]), fun = ndviLapp)
 ```
 
 We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the *raster* package.
@@ -272,7 +266,7 @@ all.equal(ndvi, ndvi2)
 ```
 
 ```{r}
-all.equal(ndvi, ndvi3, maxcell=Inf)
+all.equal(ndvi, ndvi3, maxcell = Inf)
 ```
 
 Here we see that only the name of `ndvi2` is different. This is because for the first and third method, which resulted in `ndvi` and `ndvi3`, the layer name was copied from `gewata[[4]]`, whereas this was not the case for the second approach.
@@ -305,16 +299,16 @@ getwd()
 
 # Note that we are using the filename argument, contained in the ellipsis (...) of
 # the function, since we want to write the output directly to file.
-writeRaster(x=ndviLL, filename='gewataNDVI.tif')
+writeRaster(x = ndviLL, filename = 'gewataNDVI.tif')
 ```
 
 Now open this file in QGIS (or ArcGIS), and add a base layer (in QGIS for instance OpenStreetMap, using XYZ tiles with the url `https://tile.openstreetmap.org/{z}/{x}/{y}.png`). Once we zoom out a bit, we see we are all the way in ... Ethiopia. More information will come later in the course about that specific area.
 
 ```{block, type="alert alert-success"}
-> **Question**: Could you also have used `ndvi` instead of `ndviLL` for this final step? Why (not)?
+> **Question**: Could you also have used `ndvi` SpatRaster instead of `ndviLL` for this final step? Why (not)?
 ```
 
-We are done with this data set for this lesson. So let's explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.  
+We are done with this data set for this lesson. So let's explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.
 
 ## Performing simple value replacements
 Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://github.com/GERSL/Fmask), and the publication by [Zhu & Woodcock](https://doi.org/10.1016/j.rse.2011.10.028). In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
@@ -324,23 +318,23 @@ The area selected for this exercise covers most of the South Pacific island of T
 
 ```{r, eval=FALSE}
 # Download the data
-download.file(url='https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tahiti.zip', destfile='tahiti.zip', method='auto')
-unzip(zipfile='tahiti.zip')
+download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tahiti.zip', destfile = 'tahiti.zip', method = 'auto')
+unzip(zipfile = 'tahiti.zip')
 
 # Load the data as a SpatRaster and investigate its contents
-tahiti <- rast('LE70530722000126_sub.grd')
+tahiti <- rast('LE70530722000126_sub.tif')
 tahiti
 
 # Display names of each individual layer
 names(tahiti)
 
 # Visualize the data
-plotRGB(tahiti, 3,4,5, stretch="lin")
+plotRGB(tahiti, 3, 4, 5, stretch = "lin")
 ```
 
 ```{r, echo=FALSE, fig.align='center'}
-tahiti <- rast('data/LE70530722000126_sub.grd')
-plotRGB(tahiti, 3,4,5, stretch="lin")
+tahiti <- rast('LE70530722000126_sub.tif')
+plotRGB(tahiti, 3, 4, 5, stretch = "lin")
 ```
 
 We can also visualize the cloud mask layer (layer 7).
@@ -355,38 +349,38 @@ Does the cloud mask fit with the visual interpretation of the RGB image we plott
 We can also plot the two on top of each other, but before that we need to assign no values (NA) to the 'clear land pixels' so that they appear transparent on the overlay plot.
 
 ```{r, fig.align='center'}
-## Extract cloud layer from the SpatRaster
+# Extract cloud layer from the SpatRaster
 cloud <- tahiti[[7]]
 
-## Replace 'clear land' with 'NA'
+# Replace 'clear land' with 'NA'
 cloud[cloud == 0] <- NA
 
-## Plot the stack and the cloud mask on top of each other
-plotRGB(tahiti, 3,4,5, stretch="lin")
+# Plot the stack and the cloud mask on top of each other
+plotRGB(tahiti, 3, 4, 5, stretch = "lin")
 plot(cloud, add = TRUE, legend = FALSE)
 ```
 
 Applying a cloud mask to a dataset simply consists in performing value replacement. In this case, a condition on the 7th layer of the stack (the `fmask` layer) will determine whether values in the other layers are kept, or replaced by NA, which is equivalent to masking them. It is more convenient to work on the cloud mask as a separate SpatRaster. We will therefore subset the SpatRaster using the `subset()` function.
 
 ```{r}
-## Extract cloud mask layer
+# Extract cloud mask layer
 fmask <- tahiti[[7]]
 
-## Create a subset of the first six layers
+# Create a subset of the first six layers
 tahiti6 <- subset(tahiti, 1:6)
 ```
 
 We will first do the masking using simple vector arithmetic, as if `tahiti6` and `fmask` were simple vectors. We want to keep any value with a 'clean land pixel' flag in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel different from 0. This can be done in one line of code.
 
 ```{r}
-## Perform value replacement
+# Perform value replacement
 tahiti6[fmask != 0] <- NA
 ```
 
 However, this is possible here because both objects are relatively small and the values can all be loaded in the computer memory without any risk of overloading it. When working with very large raster objects, you will very likely run into problems if you do that. It is then preferable, as presented earlier in this tutorial to use `app()` or `lapp()`. `lapp()` in this case is the appropriate function, since we are working with two distinct raster objects.
 
 ```{r}
-## First define a value replacement function
+# First define a value replacement function
 cloud2NA <- function(x, y){
     x[y != 0] <- NA
     return(x)
@@ -399,11 +393,11 @@ The value replacement function takes two arguments, x and y. Similarly to what w
 # Let's create a new 6 layers object since tahiti6 has now been masked already
 tahiti6_2 <- subset(tahiti, 1:6)
 
-## Apply the function on the two raster objects using overlay
+# Apply the function on the two raster objects using overlay
 tahitiCloudFree <- lapp(x = sds(tahiti6_2, fmask), fun = cloud2NA)
 
-## Visualize the output
-plotRGB(tahitiCloudFree, 3,4,5, stretch="lin")
+# Visualize the output
+plotRGB(tahitiCloudFree, 3, 4, 5, stretch = "lin")
 ```
 
 There are holes in the image, but at least the clouds are gone. We could use another image from another date, to create a composite image, but that is a little bit too much for today.
@@ -438,7 +432,7 @@ Today you got a general introduction to the *terra* package, its basic functions
 
 ### Raster calculations
 
-* First of all, SpatRasters work just like vectors of numerics (`c(1,2,3)`). They can be subsetted, added, subtracted, etc.
+* First of all, SpatRasters work just like vectors of numerics (`c(1, 2, 3)`). They can be subsetted, added, subtracted, etc.
 * `app()`: Apply a function to every pixel independently of a single raster object (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
 * `lapp()`: Apply a function that takes values from multiple raster objects. Similar to `app()` but for multiple objects.
 
@@ -453,33 +447,3 @@ Packages you should know about:
 
 * The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of GDAL functions from within R.
 ```
-
-<!--
-# Exercise: write a compositing function
-
-## Context
-We would really like to have a cloud free image of Tahiti, unfortunately as we saw earlier the first image we downloaded and filtered for cloud contamination discarded a lot of pixels. Luckily there is another image available for the same area, acquired around the same time as the first one. This second image is also partially contaminated by clouds, but they appear to be at different locations. Can you create a composited image that uses the two images of tahiti?
-
-## Expected output
-Using the two tahiti images, write a mean value compositing function. The function should accept 2 `RasterBrick` or `RasterStack` objects - containing 7 bands and band 7 being the 'fmask layer - and return a 6 layers `RasterStack` or `RasterBrick` object. In case of cloud occurence at both dates, pixel value should be NA, if both dates are cloud free, the mean value will be returned.
-
-## Hints
-There are many ways to create such a function, one fast way would be to:
-
-* Remove band 7 from both RasterStack objects
-* Replace cloud contaminated pixels by NAs
-* Write a micro function that performs the averaging, as described in the exercise definition (take a look at the `na.rm=` argument in the `mean()` function).
-* Apply the function to the RasterStack objects using `calc()` or `overlay()`. Depending on how you wrote the it, it is possible that `overlay()` complains about the function not being vectorized. One quick way to vectorize a function that has multiple input arguments is by using `mapply()`. See the example below.
-```{r, eval=FALSE}
-# Considering a non vectorised function, with 2 input arguments (a, b)
-# called RandomFunction()
-# The vectorized version (VRandomFunction()) can be created as follows
-VRandomFunction <- function(a, b) {
-    out <- mapply(FUN=RandomFunction, a, b)
-    return(out)
-}
-```
-
-* Wrap all that into a clean, nicely written and documented function.
-
--->
