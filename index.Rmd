@@ -164,7 +164,7 @@ gewata
 The metadata above informs us that the gewata object is a relatively small (593x653 pixels) SpatRaster with 6 layers.
 
 ## Data type is (still) important
-When writing files to disk using writeRaster() or the filename = argument in most raster processing functions, you are able set an appropriate data type. Using the datatype = argument, you can save some precious disk space compared to the default datatype, and thus increase read and write speed.
+When writing files to disk using `writeRaster()` or the `filename =` argument in most raster processing functions, you are able set an appropriate data type. Using the `datatype =` argument, you can save some precious disk space compared to the default datatype, and thus increase read and write speed.
 
 ## Geoprocessing: in memory vs. on disk
 When looking at the documentation of most functions of the *terra* package, you will notice that the list of arguments is almost always ended by `...`. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the `writeRaster()` function; meaning that most geoprocessing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.
@@ -434,14 +434,6 @@ Today you got a general introduction to the *terra* package, its basic functions
 * First of all, SpatRasters work just like vectors of numerics (`c(1, 2, 3)`). They can be subsetted, added, subtracted, etc.
 * `app()`: Apply a function to every pixel independently of a single SpatRaster (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
 
-# References
+# Extra
 
-If you plan to work with MODIS data*, as additional to the tutorial content, it will be useful for you in the future to look at the information [here](hdf.html), about handling HDF4 format files with R.
-
-```{block, type="alert alert-info"}
-**Extra**
-
-Packages you should know about:
-
-* The [gdalUtils](http://cran.r-project.org/web/packages/gdalUtils/index.html) package provides interesting wrappers facilitating the use of GDAL functions from within R.
-```
+* The [gdalUtilities](http://cran.r-project.org/web/packages/gdalUtilities/index.html) package provides interesting wrappers facilitating the use of GDAL functions from within R.

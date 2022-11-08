@@ -1219,8 +1219,8 @@ s</code></pre>
 ##               memory  
 ##               memory  
 ## names       :     lyr.1,     lyr.1,     lyr.1 
-## min values  : -3.414578, -6.829156, -3.414578 
-## max values  :  3.169807,  6.339614,  3.169807
+## min values  : -3.258292, -6.516585, -3.258292 
+## max values  :  3.571615,  7.143231,  3.571615
 </code></pre>
 </div>
 <p>Also note that using <code>c()</code> here behaves different from
@@ -1245,8 +1245,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -3.414578 
-## max value   :  3.169807 
+## min value   : -3.258292 
+## max value   :  3.571615 
 ## 
 ## [[2]]
 ## class       : SpatRaster 
@@ -1256,8 +1256,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -6.829156 
-## max value   :  6.339614 
+## min value   : -6.516585 
+## max value   :  7.143231 
 ## 
 ## [[3]]
 ## class       : SpatRaster 
@@ -1267,8 +1267,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -3.414578 
-## max value   :  3.169807
+## min value   : -3.258292 
+## max value   :  3.571615
 </code></pre>
 </div>
 <h1 id="spatraster-manipulations">SpatRaster manipulations</h1>
@@ -1368,11 +1368,12 @@ Let’s take a look at the structure of this object.
 small (593x653 pixels) SpatRaster with 6 layers.</p>
 <h2 id="data-type-is-still-important">Data type is (still)
 important</h2>
-<p>When writing files to disk using writeRaster() or the filename =
-argument in most raster processing functions, you are able set an
-appropriate data type. Using the datatype = argument, you can save some
-precious disk space compared to the default datatype, and thus increase
-read and write speed.</p>
+<p>When writing files to disk using <code>writeRaster()</code> or the
+<code>filename =</code> argument in most raster processing functions,
+you are able set an appropriate data type. Using the
+<code>datatype =</code> argument, you can save some precious disk space
+compared to the default datatype, and thus increase read and write
+speed.</p>
 <h2 id="geoprocessing-in-memory-vs.-on-disk">Geoprocessing: in memory
 vs. on disk</h2>
 <p>When looking at the documentation of most functions of the
@@ -1869,29 +1870,12 @@ etc.</li>
 a single SpatRaster (Single or multi-layer). RAM friendly and can write
 output directly to disk using the <code>filename =</code> argument.</li>
 </ul>
-<h1 id="references">References</h1>
-<p>If you plan to work with MODIS data*, as additional to the tutorial
-content, it will be useful for you in the future to look at the
-information <a href="hdf.html">here</a>, about handling HDF4 format
-files with R.</p>
-<div class="row">
-<div class="alert alert-info">
-<p>
-<strong>Extra</strong>
-</p>
-<p>
-Packages you should know about:
-</p>
+<h1 id="extra">Extra</h1>
 <ul>
-<li>
-The <a
-href="http://cran.r-project.org/web/packages/gdalUtils/index.html">gdalUtils</a>
+<li>The <a
+href="http://cran.r-project.org/web/packages/gdalUtilities/index.html">gdalUtilities</a>
 package provides interesting wrappers facilitating the use of GDAL
 functions from within R.
-</li>
-</ul>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -1907,6 +1891,7 @@ Styled with
 </div>
 </div>
 <link rel="stylesheet" id="theme" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/simplex/bootstrap.min.css" media="screen"></link><link rel="stylesheet" id="highlight" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-bright.min.css" media="screen"></link>
-</div>
+</div></li>
+</ul>
 </body>
 </html>
