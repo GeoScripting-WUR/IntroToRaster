@@ -278,6 +278,27 @@ all.equal(ndvi, ndvi2)
 
 Here we see that only the name of `ndvi2` is different. This is because for the first method, which resulted in `ndvi`, the layer name was copied from `gewata[[4]]`, whereas this was not the case for the second approach.
 
+## Simple raster statistics
+The `global()` function allows the extraction of basic global statistics from an entire SpatRaster, such as the mean value, maximum value, the range of values, or the number of NA cells. `global` will return a dataframe, from which we can consequently select the value we need. See also `?global` for more information and documentation. Let's try some of these options for our `ndvi` SpatRaster. 
+```{r}
+# Calculate the mean (this produces a dataframe)
+mean <- global(ndvi, fun = 'mean')
+mean
+
+# Get only the value from the dataframe
+mean$mean
+
+# Calculate the amount of NA values (which should be zero in this case)
+global(ndvi, fun = 'isNA')
+
+# Calculate the amount of non-NA values
+global(ndvi, fun = 'notNA')
+
+# Which, as we have no NA values, should be equal to
+ncell(ndvi)
+```
+
+
 ## Reprojections
 The `project()` function allows re-projection of raster objects to any projection one can think of. It accepts the following formats to define coordinate reference systems: *WKT*, *PROJ.4* (e.g., +proj=longlat +datum=WGS84), or an *EPSG* code (e.g., "epsg:4326"). Note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored.
 

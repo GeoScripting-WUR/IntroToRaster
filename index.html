@@ -1219,8 +1219,8 @@ s</code></pre>
 ##               memory  
 ##               memory  
 ## names       :     lyr.1,     lyr.1,     lyr.1 
-## min values  : -3.258292, -6.516585, -3.258292 
-## max values  :  3.571615,  7.143231,  3.571615
+## min values  : -3.858465, -7.716931, -3.858465 
+## max values  :  3.279504,  6.559008,  3.279504
 </code></pre>
 </div>
 <p>Also note that using <code>c()</code> here behaves different from
@@ -1245,8 +1245,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -3.258292 
-## max value   :  3.571615 
+## min value   : -3.858465 
+## max value   :  3.279504 
 ## 
 ## [[2]]
 ## class       : SpatRaster 
@@ -1256,8 +1256,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -6.516585 
-## max value   :  7.143231 
+## min value   : -7.716931 
+## max value   :  6.559008 
 ## 
 ## [[3]]
 ## class       : SpatRaster 
@@ -1267,8 +1267,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -3.258292 
-## max value   :  3.571615
+## min value   : -3.858465 
+## max value   :  3.279504
 </code></pre>
 </div>
 <h1 id="spatraster-manipulations">SpatRaster manipulations</h1>
@@ -1577,6 +1577,70 @@ This is because for the first method, which resulted in
 <code>ndvi</code>, the layer name was copied from
 <code>gewata[[4]]</code>, whereas this was not the case for the second
 approach.</p>
+<h2 id="simple-raster-statistics">Simple raster statistics</h2>
+The <code>global()</code> function allows the extraction of basic global
+statistics from an entire SpatRaster, such as the mean value, maximum
+value, the range of values, or the number of NA cells.
+<code>global</code> will return a dataframe, from which we can
+consequently select the value we need. See also <code>?global</code> for
+more information and documentation. Let’s try some of these options for
+our <code>ndvi</code> SpatRaster.
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r"># Calculate the mean (this produces a dataframe)
+mean <- global(ndvi, fun = 'mean')
+mean</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">##                                              mean
+## LE71700552001036SGS00_SR_Gewata_INT1U_4 0.6865039
+</code></pre>
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r"># Get only the value from the dataframe
+mean$mean</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">## [1] 0.6865039
+</code></pre>
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r"># Calculate the amount of NA values (which should be zero in this case)
+global(ndvi, fun = 'isNA')</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">##                                         isNA
+## LE71700552001036SGS00_SR_Gewata_INT1U_4    0
+</code></pre>
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r"># Calculate the amount of non-NA values
+global(ndvi, fun = 'notNA')</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">##                                          notNA
+## LE71700552001036SGS00_SR_Gewata_INT1U_4 387229
+</code></pre>
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r"># Which, as we have no NA values, should be equal to
+ncell(ndvi)</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">## [1] 387229
+</code></pre>
+</div>
 <h2 id="reprojections">Reprojections</h2>
 <p>The <code>project()</code> function allows re-projection of raster
 objects to any projection one can think of. It accepts the following
