@@ -1,9 +1,10 @@
 ---
+pagetitle: "Tutorial 4: Intro To Raster"    
 author: "Loïc Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius Masiliūnas, Sabina Rosca"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-pagetitle: "Lesson 4: Intro To Raster"    
 output:
   knitrBootstrap::bootstrap_document:
+    title: "Tutorial 4: Intro To Raster"
     theme: "simplex"
     highlight: Tomorrow Night Bright
     menu: FALSE
@@ -18,8 +19,7 @@ a:visited {color: #91170a;}
 
 # [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="https://www.wur.nl/upload/854757ab-168f-46d7-b415-f8b501eebaa5_WUR_RGB_standard_2021-site.svg" alt="WUR logo" style="height: 35px;"/>
 
-
-# Week 1, Lesson 4: Intro To Raster
+# Week 1, Tutorial 4: Intro To Raster
 
 ## Learning objectives
 * Read & write raster data
@@ -29,9 +29,9 @@ a:visited {color: #91170a;}
 ## Introduction
 Raster data is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various values which are assigned a color.
 
-Today's lesson is about constructing a simple spatio-temporal analysis using raster data, R, and git.
+Today's tutorial is about constructing a simple spatio-temporal analysis using raster data, R, and git.
 
-## Assumed knowledge from previous lectures
+## Assumed knowledge from previous tutorials
 
 * Understand system architecture (R, R packages, libraries, drivers, bindings)
 * Good scripting habits
@@ -46,7 +46,7 @@ Today's lesson is about constructing a simple spatio-temporal analysis using ras
 **Tip**: *RKWard* is an alternative R GUI, which is well-suited for beginners and those who are familiar with traditional statistical packages like *SPSS* and *STATISTICA*, since it is menu-driven. It is usually easier to install on Linux than *RStudio* as well. You can work in whichever R GUI you prefer.
 ```
 
-In a previous lecture you got introduced to the overall system architecture of R programming (see figure above) and briefly saw how to read and use vector data from a file into your R environment. These vector read/write operations were made possible thanks to the *GDAL* library. The figure above provides an overview of the connections between these elements. *GDAL* stands for *Geospatial Data Abstraction Library*. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/). You will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this lesson, we will use *GDAL* indirectly via the *terra* package. However, it is also possible to call GDAL functionalities directly through the command line from a terminal, which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to GDAL. (*Note*: This is also doable in *Bash* scripting, as learned in the previous lesson, and you can even combine the two.)
+In a previous tutorial you got introduced to the overall system architecture of R programming (see figure above) and briefly saw how to read and use vector data from a file into your R environment. These vector read/write operations were made possible thanks to the *GDAL* library. The figure above provides an overview of the connections between these elements. *GDAL* stands for *Geospatial Data Abstraction Library*. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/). You will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this tutorial, we will use *GDAL* indirectly via the *terra* package. However, it is also possible to call GDAL functionalities directly through the command line from a terminal, which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to GDAL. (*Note*: This is also doable in *Bash* scripting, as learned in the previous tutorial, and you can even combine the two.)
 
 Let's start working with *terra* by performing system setup checks.
 ```{r}
@@ -79,7 +79,7 @@ The terra package produces and uses R objects of two main classes. **SpatRaster*
 
 Let's take a look into the structure of a SpatRaster.
 ```{r}
-# Generate a SpatRaster object
+# Generate a SpatRaster
 r <- rast(ncol = 40, nrow = 20)
 class(r)
 
@@ -90,22 +90,31 @@ From the metadata displayed above, we can see that the SpatRaster contains all t
 
 Multi-layer SpatRasters can also fairly easily be generated directly in R, as shown in the example below.
 ```{r}
-# Using the previously generated SpatRaster bject
+# Using the previously generated SpatRaster
 # Let's first put some values in the cells of the layer
 r[] <- rnorm(n = ncell(r))
 
-# Create a SpatRaster object with 3 layers
+# Create a SpatRaster with 3 layers
 s <- c(r, r*2, r)
 
-# Let's look at the properties of of one of these two objects
+# Let's look at the properties of the resulting object
 s
 ```
+Also note that using `c()` here behaves different from using `list()`.
+```{r}
+# Create a list of three separate SpatRasters
+s2 <- list(r, r*2, r)
+
+# Let's look at the properties of the resulting object
+s2
+```
+
 
 # SpatRaster manipulations
 ## Reading and writing from/to file
 The actual data used in geo-processing projects often comes as geo-data, stored on files such as *GeoTIFF* or other commonly used file formats. Reading data directly from these files into the R working environment is made possible thanks to the *terra* package. The main command for reading raster objects from files is the `rast()` function, which returns a SpatRaster.
 
-Writing a SpatRaster object to file is achieved using the `writeRaster()` function.
+Writing a SpatRaster to file is achieved using the `writeRaster()` function.
 
 To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, first make sure your working directory is set properly. Then run the following line; it will handle the download:
 
@@ -153,7 +162,7 @@ When writing files to disk using writeRaster() or the filename = argument in mos
 ## Geoprocessing: in memory vs. on disk
 When looking at the documentation of most functions of the *terra* package, you will notice that the list of arguments is almost always ended by `...`. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the `writeRaster()` function; meaning that most geoprocessing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.
 
-## Cropping a raster object
+## Cropping a SpatRaster
 `crop()` is the terra package function that allows you to crop data to smaller spatial extents. A great advantage of the crop function is that it accepts almost all spatial object classes in R as its `extent` input argument. But the `extent` argument also simply accepts objects of class `extent`. One way of obtaining such an extent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
 
 ```{r, eval=FALSE}
@@ -202,7 +211,7 @@ turaStack <- rast(list)
 turaStack
 ```
 
-Now that we have our 166 layers SpatRaster in memory, let's write it to disk using the `writeRaster()` function. Note that we adjust the layer names to the original file names (in which information on dates is written). Also note that the data range is comprised between -10000 and +10000, therefore such a file can be stored as signed 2 byte integer (INT2S).
+Now that we have our SpatRaster with 166 layers in memory, let's write it to disk using the `writeRaster()` function. Note that we adjust the layer names to the original file names (in which information on dates is written). Also note that the data range is comprised between -10000 and +10000, therefore such a file can be stored as signed 2 byte integer (INT2S).
 
 ```{r, eval=FALSE}
 # Write this file at the root of the working directory
@@ -218,7 +227,7 @@ Performing simple raster operations with a SpatRaster is fairly easy. For instan
 ## Subsetting layers from SpatRaster
 Different spectral bands of a same satellite scene are often stored in multi-layer objects. This means that you will very likely import them in your R working environment as one multi-layer SpatRaster. As a consequence, to perform calculations between these bands, you will have to write an expression referring to individual layers of the object. Referring to individual layers in a SpatRaster can be done by using double square brackets `[[]]`.
 
-Let's look for instance at how the famous NDVI index would have to be calculated from the *gewata* SpatRaster object read earlier, and that contains the spectral bands of the Landsat 7 sensor. And in case you have forgotten, the NDVI formula is as follows.
+Let's look for instance at how the famous NDVI index would have to be calculated from the *gewata* SpatRaster read earlier, and that contains the spectral bands of the Landsat 7 sensor. And in case you have forgotten, the NDVI formula is as follows.
 
 $$
  NDVI=\frac{NIR-Red}{NIR+Red}
@@ -249,29 +258,13 @@ ndviApp <- function(x) {
 ndvi2 <- app(x = gewata, fun = ndviApp)
 ```
 
-Note that `lapp()` can also be used in that case to obtain the same result, with the same level of RAM friendliness. The advantage of `lapp()` is that the number of input SpatRasters is less limiting. As a consequence, specifying the layers does not happen in the function call but in the `()` call instead. Here, we create a *SpatRasterDataset* using `sds()`.A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
-
-```{r}
-ndviLapp <- function(x, y) {
-    ndvi <- (y - x) / (x + y)
-    return(ndvi)
-}
-ndvi3 <- lapp(x = sds(gewata[[3]], gewata[[4]]), fun = ndviLapp)
-```
-
-We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the *raster* package.
+We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the *terra* package.
 
 ```{r}
 all.equal(ndvi, ndvi2)
 ```
 
-```{r}
-all.equal(ndvi, ndvi3, maxcell = Inf)
-```
-
-Here we see that only the name of `ndvi2` is different. This is because for the first and third method, which resulted in `ndvi` and `ndvi3`, the layer name was copied from `gewata[[4]]`, whereas this was not the case for the second approach.
-
-In the simple case of calculating NDVI, we were easily able to produce the same result with `app()` and `lapp()`, however, it is often the case that one function is preferable to the other. As a general rule, a calculation that needs to refer to multiple individual layers separately will be easier to set up in `lapp()` than in `app()`.
+Here we see that only the name of `ndvi2` is different. This is because for the first method, which resulted in `ndvi`, the layer name was copied from `gewata[[4]]`, whereas this was not the case for the second approach.
 
 ## Reprojections
 The `project()` function allows re-projection of raster objects to any projection one can think of. It accepts the following formats to define coordinate reference systems: *WKT*, *PROJ.4* (e.g., +proj=longlat +datum=WGS84), or an *EPSG* code (e.g., "epsg:4326"). Note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored.
@@ -308,7 +301,7 @@ Now open this file in QGIS (or ArcGIS), and add a base layer (in QGIS for instan
 > **Question**: Could you also have used `ndvi` SpatRaster instead of `ndviLL` for this final step? Why (not)?
 ```
 
-We are done with this data set for this lesson. So let's explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.
+We are done with this data set for this tutorial. So let's explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.
 
 ## Performing simple value replacements
 Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://github.com/GERSL/Fmask), and the publication by [Zhu & Woodcock](https://doi.org/10.1016/j.rse.2011.10.028). In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
@@ -377,24 +370,24 @@ We will first do the masking using simple vector arithmetic, as if `tahiti6` and
 tahiti6[fmask != 0] <- NA
 ```
 
-However, this is possible here because both objects are relatively small and the values can all be loaded in the computer memory without any risk of overloading it. When working with very large raster objects, you will very likely run into problems if you do that. It is then preferable, as presented earlier in this tutorial to use `app()` or `lapp()`. `lapp()` in this case is the appropriate function, since we are working with two distinct raster objects.
+However, this is possible here because both objects are relatively small and the values can all be loaded in the computer memory without any risk of overloading it. When working with very large raster objects, you will very likely run into problems if you do that. It is then preferable, as presented earlier in this tutorial to use `app()`.
 
 ```{r}
 # First define a value replacement function
-cloud2NA <- function(x, y){
-    x[y != 0] <- NA
+cloud2NA <- function(x) {
+    x[1:6][x[7] != 0] <- NA
     return(x)
 }
 ```
 
-The value replacement function takes two arguments, x and y. Similarly to what we did earlier, x corresponds to the data we want to mask, and y to the cloud mask. Again, we add both to a SpatRasterDataset.
+The value replacement function takes one argument, `x`. `x` corresponds to a SpatRaster, where the 7th layer is our cloud mask.
 
 ```{r, fig.align='center'}
 # Let's create a new 6 layers object since tahiti6 has now been masked already
 tahiti6_2 <- subset(tahiti, 1:6)
 
-# Apply the function on the two raster objects using overlay
-tahitiCloudFree <- lapp(x = sds(tahiti6_2, fmask), fun = cloud2NA)
+# Apply the function on the two SpatRasters
+tahitiCloudFree <- app(x = c(tahiti6_2, fmask), fun = cloud2NA)
 
 # Visualize the output
 plotRGB(tahitiCloudFree, 3, 4, 5, stretch = "lin")
@@ -408,7 +401,6 @@ Today you got a general introduction to the *terra* package, its basic functions
 ## Terra classes
 
 * `SpatRaster`: Single- or multi-layer object (raster).
-* `SpatRasterDataset`: A collection of SpatRasters.
 * `SpatVector`: Geometries object (vector).
 
 ## Functions
@@ -417,12 +409,12 @@ Today you got a general introduction to the *terra* package, its basic functions
 
 * `rast()`: Read a raster object from disk.
 * `writeRaster()`: Write a `SpatRaster` to disk.
-* `filename =` argument: Available for most functions of the *raster* package that produce raster objects, write directly the output of the function to disk.
+* `filename =` argument: Available for most functions of the *terra* package that produce SpatRaster objects, write directly the output of the function to disk.
 
 ### Reformat data
 
-* `crop()`: modify the extent of a `Raster*` object based on another spatial object or an extent object.
-* `project()`: Reproject (and resample) a raster object to a desired coordinate reference system or reference raster object.
+* `crop()`: modify the extent of a `SpatRaster` based on another spatial object or an extent object.
+* `project()`: Reproject (and resample) a `SpatRaster` to a desired coordinate reference system or reference `SpatRaster`.
 * `subset()`: Create a subset of a SpatRaster.
 
 ### Simple visualization
@@ -433,12 +425,11 @@ Today you got a general introduction to the *terra* package, its basic functions
 ### Raster calculations
 
 * First of all, SpatRasters work just like vectors of numerics (`c(1, 2, 3)`). They can be subsetted, added, subtracted, etc.
-* `app()`: Apply a function to every pixel independently of a single raster object (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
-* `lapp()`: Apply a function that takes values from multiple raster objects. Similar to `app()` but for multiple objects.
+* `app()`: Apply a function to every pixel independently of a single SpatRaster (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
 
 # References
 
-If you plan to work with MODIS data*, as additional to the lesson content, it will be useful for you in the future to look at the information [here](hdf.html), about handling HDF4 format files with R.
+If you plan to work with MODIS data*, as additional to the tutorial content, it will be useful for you in the future to look at the information [here](hdf.html), about handling HDF4 format files with R.
 
 ```{block, type="alert alert-info"}
 **Extra**
