@@ -1,10 +1,10 @@
 ---
-pagetitle: "Tutorial 4: Intro To Raster"    
+pagetitle: "Tutorial 4: Intro to Raster"    
 author: "Loïc Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius Masiliūnas, Sabina Rosca"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   knitrBootstrap::bootstrap_document:
-    title: "Tutorial 4: Intro To Raster"
+    title: "Tutorial 4: Intro to Raster"
     theme: "simplex"
     highlight: Tomorrow Night Bright
     menu: FALSE
@@ -19,7 +19,7 @@ a:visited {color: #91170a;}
 
 # [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="https://www.wur.nl/upload/854757ab-168f-46d7-b415-f8b501eebaa5_WUR_RGB_standard_2021-site.svg" alt="WUR logo" style="height: 35px;"/>
 
-# Week 1, Tutorial 4: Intro To Raster
+# Week 1, Tutorial 4: Intro to Raster
 
 ## Learning objectives
 * Read & write raster data
