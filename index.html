@@ -1219,8 +1219,8 @@ s</code></pre>
 ##               memory  
 ##               memory  
 ## names       :     lyr.1,     lyr.1,     lyr.1 
-## min values  : -2.755967, -5.511933, -2.755967 
-## max values  :  2.768984,  5.537967,  2.768984
+## min values  : -3.122569, -6.245138, -3.122569 
+## max values  :  3.779579,  7.559158,  3.779579
 </code></pre>
 </div>
 <p>Also note that using <code>c()</code> here behaves different from
@@ -1245,8 +1245,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -2.755967 
-## max value   :  2.768984 
+## min value   : -3.122569 
+## max value   :  3.779579 
 ## 
 ## [[2]]
 ## class       : SpatRaster 
@@ -1256,8 +1256,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -5.511933 
-## max value   :  5.537967 
+## min value   : -6.245138 
+## max value   :  7.559158 
 ## 
 ## [[3]]
 ## class       : SpatRaster 
@@ -1267,8 +1267,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -2.755967 
-## max value   :  2.768984
+## min value   : -3.122569 
+## max value   :  3.779579
 </code></pre>
 </div>
 <h1 id="spatraster-manipulations">SpatRaster manipulations</h1>
@@ -1309,7 +1309,7 @@ if (!dir.exists("data")) {
 
 # Download the data
 # In case the download code doesn't work, use method = 'wget'
-download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/gewata.zip', destfile = 'data/gewata.zip')
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/gewata.zip', destfile = 'data/gewata.zip')
 
 # Unpack the archive
 unzip('data/gewata.zip', exdir = "data")</code></pre>
@@ -1438,7 +1438,7 @@ did it for the <em>gewata</em> dataset.</p>
 getwd()
 
 # Download and unzip the data
-download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile = 'data/tura.zip')
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/tura.zip', destfile = 'data/tura.zip')
 unzip(zipfile = 'data/tura.zip', exdir = 'data')
 
 # Retrieve the content of the tura sub-directory

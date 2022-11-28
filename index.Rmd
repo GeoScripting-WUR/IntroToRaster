@@ -132,7 +132,7 @@ if (!dir.exists("data")) {
 
 # Download the data
 # In case the download code doesn't work, use method = 'wget'
-download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/gewata.zip', destfile = 'data/gewata.zip')
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/gewata.zip', destfile = 'data/gewata.zip')
 
 # Unpack the archive
 unzip('data/gewata.zip', exdir = "data")
@@ -198,7 +198,7 @@ To end this section on general files and raster object manipulations, we will se
 getwd()
 
 # Download and unzip the data
-download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile = 'data/tura.zip')
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/tura.zip', destfile = 'data/tura.zip')
 unzip(zipfile = 'data/tura.zip', exdir = 'data')
 
 # Retrieve the content of the tura sub-directory
