@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Loïc Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius Masiliūnas, Sabina Rosca" />
-  <title>Tutorial 4: Intro To Raster</title>
+  <title>Tutorial 4: Intro to Raster</title>
   <style type="text/css">
     html {
       line-height: 1.5;
@@ -1016,7 +1016,7 @@
 </head>
 <body>
 <title>
-Tutorial 4: Intro To Raster
+Tutorial 4: Intro to Raster
 </title>
 <div id="wrap">
 <div class="container">
@@ -1029,7 +1029,7 @@ a:visited {color: #91170a;}
 <h1 id="wur-geoscripting"><a
 href="https://geoscripting-wur.github.io/">WUR Geoscripting</a>
 <img src="https://www.wur.nl/upload/854757ab-168f-46d7-b415-f8b501eebaa5_WUR_RGB_standard_2021-site.svg" alt="WUR logo" style="height: 35px;"/></h1>
-<h1 id="week-1-tutorial-4-intro-to-raster">Week 1, Tutorial 4: Intro To
+<h1 id="week-1-tutorial-4-intro-to-raster">Week 1, Tutorial 4: Intro to
 Raster</h1>
 <h2 id="learning-objectives">Learning objectives</h2>
 <ul>
@@ -1092,7 +1092,7 @@ checks.
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Example to perform system set-up checks
-if(!"terra" %in% rownames(installed.packages())){install.packages("terra")}
+if(!"terra" %in% installed.packages()){install.packages("terra")}
 library(terra)</code></pre>
 <button class="message R toggle btn btn-xs btn-info">
 <span class="glyphicon glyphicon-chevron-down"></span> R message
@@ -1219,8 +1219,8 @@ s</code></pre>
 ##               memory  
 ##               memory  
 ## names       :     lyr.1,     lyr.1,     lyr.1 
-## min values  : -3.858465, -7.716931, -3.858465 
-## max values  :  3.279504,  6.559008,  3.279504
+## min values  : -2.755967, -5.511933, -2.755967 
+## max values  :  2.768984,  5.537967,  2.768984
 </code></pre>
 </div>
 <p>Also note that using <code>c()</code> here behaves different from
@@ -1245,8 +1245,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -3.858465 
-## max value   :  3.279504 
+## min value   : -2.755967 
+## max value   :  2.768984 
 ## 
 ## [[2]]
 ## class       : SpatRaster 
@@ -1256,8 +1256,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -7.716931 
-## max value   :  6.559008 
+## min value   : -5.511933 
+## max value   :  5.537967 
 ## 
 ## [[3]]
 ## class       : SpatRaster 
@@ -1267,8 +1267,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -3.858465 
-## max value   :  3.279504
+## min value   : -2.755967 
+## max value   :  2.768984
 </code></pre>
 </div>
 <h1 id="spatraster-manipulations">SpatRaster manipulations</h1>
@@ -1309,7 +1309,7 @@ if (!dir.exists("data")) {
 
 # Download the data
 # In case the download code doesn't work, use method = 'wget'
-download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/gewata.zip', destfile = 'data/gewata.zip', method = 'auto')
+download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/gewata.zip', destfile = 'data/gewata.zip')
 
 # Unpack the archive
 unzip('data/gewata.zip', exdir = "data")</code></pre>
@@ -1331,7 +1331,7 @@ function.
 <pre style=""><code class="source r"># When passed without arguments, list.files() returns a character vector, listing the content of the working directory
 list.files()
 
-# To get only the files with .tif extension in the data folder
+# To get only the files with .tif extension in the data directory
 list.files('data', pattern = glob2rx('*.tif'))
 
 # Or if you are familiar with regular expressions
@@ -1438,7 +1438,7 @@ did it for the <em>gewata</em> dataset.</p>
 getwd()
 
 # Download and unzip the data
-download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile = 'data/tura.zip', method = 'auto')
+download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile = 'data/tura.zip')
 unzip(zipfile = 'data/tura.zip', exdir = 'data')
 
 # Retrieve the content of the tura sub-directory
@@ -1699,7 +1699,7 @@ information will come later in the course about that specific area.</p>
 <div class="alert alert-success">
 <blockquote>
 <p>
-<strong>Question</strong>: Could you also have used <code>ndvi</code>
+<strong>Question 1</strong>: Could you also have used <code>ndvi</code>
 SpatRaster instead of <code>ndviLL</code> for this final step? Why
 (not)?
 </p>
@@ -1715,12 +1715,12 @@ replacements</h2>
 surface reflectance. This means that they are taking care of important
 steps such as atmospheric correction and conversion from sensor radiance
 to reflectance factors. Additionally, they provide a cloud mask with
-this product. The cloud mask is an extra raster layer, at the same
-resolution as the surface reflectance bands, that contains information
-about the presence or absence of cloud as well as shadowing effects from
-the clouds. The cloud mask of Landsat surface reflectance product is
-named <em>cfmask</em>, after the name of the algorithm used to detect
-the clouds. For more information about cloud detection, see the <a
+this product. The cloud mask is an extra layer, at the same resolution
+as the surface reflectance bands, that contains information about the
+presence or absence of cloud as well as shadowing effects from the
+clouds. The cloud mask of Landsat surface reflectance product is named
+<em>cfmask</em>, after the name of the algorithm used to detect the
+clouds. For more information about cloud detection, see the <a
 href="https://github.com/GERSL/Fmask">algorithm page</a>, and the
 publication by <a href="https://doi.org/10.1016/j.rse.2011.10.028">Zhu
 &amp; Woodcock</a>. In the following section we will use that cfmask
@@ -1736,7 +1736,7 @@ the area of interest and is stored online.</p>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r"># Download the data
-download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/tahiti.zip', destfile = 'data/tahiti.zip', method = 'auto')
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/tahiti.zip', destfile = 'data/tahiti.zip')
 unzip(zipfile = 'data/tahiti.zip', exdir = 'data')
 
 # Load the data as a SpatRaster and investigate its contents
@@ -1795,8 +1795,16 @@ We can also visualize the cloud mask layer (layer 7).
 <p>According to the <a href="https://github.com/GERSL/Fmask">algorithm
 description</a>, water is coded as 1, cloud as 4 and cloud shadow as
 2.</p>
-<p>Does the cloud mask fit with the visual interpretation of the RGB
-image we plotted before?</p>
+<div class="row">
+<div class="alert alert-success">
+<blockquote>
+<p>
+<strong>Question 2</strong>: Does the cloud mask fit with the visual
+interpretation of the RGB image we plotted before?
+</p>
+</blockquote>
+</div>
+</div>
 <p>We can also plot the two on top of each other, but before that we
 need to assign no values (NA) to the ‘clear land pixels’ so that they
 appear transparent on the overlay plot.</p>

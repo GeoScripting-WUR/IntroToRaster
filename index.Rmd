@@ -51,7 +51,7 @@ In a previous tutorial you got introduced to the overall system architecture of 
 Let's start working with *terra* by performing system setup checks.
 ```{r}
 # Example to perform system set-up checks
-if(!"terra" %in% rownames(installed.packages())){install.packages("terra")}
+if(!"terra" %in% installed.packages()){install.packages("terra")}
 library(terra)
 gdal()
 ```
@@ -132,7 +132,7 @@ if (!dir.exists("data")) {
 
 # Download the data
 # In case the download code doesn't work, use method = 'wget'
-download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/gewata.zip', destfile = 'data/gewata.zip', method = 'auto')
+download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/gewata.zip', destfile = 'data/gewata.zip')
 
 # Unpack the archive
 unzip('data/gewata.zip', exdir = "data")
@@ -145,7 +145,7 @@ Now that we have downloaded and unpacked the GeoTIFF file, it should be present 
 # When passed without arguments, list.files() returns a character vector, listing the content of the working directory
 list.files()
 
-# To get only the files with .tif extension in the data folder
+# To get only the files with .tif extension in the data directory
 list.files('data', pattern = glob2rx('*.tif'))
 
 # Or if you are familiar with regular expressions
@@ -198,7 +198,7 @@ To end this section on general files and raster object manipulations, we will se
 getwd()
 
 # Download and unzip the data
-download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile = 'data/tura.zip', method = 'auto')
+download.file(url = 'https://raw.githubusercontent.com/GeoScripting-WUR/IntroToRaster/gh-pages/data/tura.zip', destfile = 'data/tura.zip')
 unzip(zipfile = 'data/tura.zip', exdir = 'data')
 
 # Retrieve the content of the tura sub-directory
@@ -331,20 +331,20 @@ writeRaster(x = ndviLL, filename = 'output/gewataNDVI.tif')
 Now open this file in QGIS (or ArcGIS), and add a base layer (in QGIS for instance OpenStreetMap, using XYZ tiles with the url `https://tile.openstreetmap.org/{z}/{x}/{y}.png`). Once we zoom out a bit, we see we are all the way in ... Ethiopia. More information will come later in the course about that specific area.
 
 ```{block, type="alert alert-success"}
-> **Question**: Could you also have used `ndvi` SpatRaster instead of `ndviLL` for this final step? Why (not)?
+> **Question 1**: Could you also have used `ndvi` SpatRaster instead of `ndviLL` for this final step? Why (not)?
 ```
 
 We are done with this data set for this tutorial. So let's explore another data set, from the Landsat sensors. This dataset will allow us to find other interesting raster operations to perform.
 
 ## Performing simple value replacements
-Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra raster layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://github.com/GERSL/Fmask), and the publication by [Zhu & Woodcock](https://doi.org/10.1016/j.rse.2011.10.028). In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
+Since 2014, the USGS has started releasing Landsat data processed to surface reflectance. This means that they are taking care of important steps such as atmospheric correction and conversion from sensor radiance to reflectance factors. Additionally, they provide a cloud mask with this product. The cloud mask is an extra layer, at the same resolution as the surface reflectance bands, that contains information about the presence or absence of cloud as well as shadowing effects from the clouds. The cloud mask of Landsat surface reflectance product is named *cfmask*, after the name of the algorithm used to detect the clouds. For more information about cloud detection, see the [algorithm page](https://github.com/GERSL/Fmask), and the publication by [Zhu & Woodcock](https://doi.org/10.1016/j.rse.2011.10.028). In the following section we will use that cfmask layer to mask out remaining clouds in a Landsat scene.
 
 ### About the area
 The area selected for this exercise covers most of the South Pacific island of Tahiti, French Polynesia. It is a mountainous, volcanic island, and according to Wikipedia about 180,000 people live on the island. For convenience, the Landsat scene was subsetted to cover only the area of interest and is stored online.
 
 ```{r, eval=TRUE}
 # Download the data
-download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/tahiti.zip', destfile = 'data/tahiti.zip', method = 'auto')
+download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/tahiti.zip', destfile = 'data/tahiti.zip')
 unzip(zipfile = 'data/tahiti.zip', exdir = 'data')
 
 # Load the data as a SpatRaster and investigate its contents
@@ -365,7 +365,9 @@ plot(tahiti, 7)
 
 According to the [algorithm description](https://github.com/GERSL/Fmask), water is coded as 1, cloud as 4 and cloud shadow as 2.
 
-Does the cloud mask fit with the visual interpretation of the RGB image we plotted before?
+```{block, type="alert alert-success"}
+> **Question 2**: Does the cloud mask fit with the visual interpretation of the RGB image we plotted before?
+```
 
 We can also plot the two on top of each other, but before that we need to assign no values (NA) to the 'clear land pixels' so that they appear transparent on the overlay plot.
 
