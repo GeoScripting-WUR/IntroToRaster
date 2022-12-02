@@ -304,7 +304,7 @@ The `project()` function allows re-projection of raster objects to any projectio
 
 A central place to search for coordinate reference systems is the spatial reference website ([http://spatialreference.org/](http://spatialreference.org/)), from this database you will be able to query almost any reference and retrieve it in any format, including its *EPSG* code. Well-Known Text (*WKT*) expressions are preferred for scientific correctness and lack of ambiguity.
 
-Instead of specifying a projection to convert to, you can also provide `project()` with another SpatRaster, and it will convert your input to the projection of that SpatRaster.
+Instead of specifying a coordinate reference system to convert to, you can also provide `project()` with another SpatRaster, and it will convert your input to the CRS of that SpatRaster.
 
 ```{r}
 # One single line is sufficient to project any raster to any projection
