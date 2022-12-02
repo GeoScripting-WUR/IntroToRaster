@@ -1148,17 +1148,20 @@ href="http://cran.r-project.org/web/packages/terra/">home page</a> of
 the <em>terra</em> package. The package is extremely well documented,
 including vignettes and demos. See also the <a
 href="https://cran.r-project.org/web/packages/terra/terra.pdf">reference
-manual</a> there.
+manual</a> there. Another useful resource for information on spatial
+data handling with terra can be found <a
+href="https://rspatial.org/spatial/index.html">here</a>.
 </p>
 </div>
 </div>
 <h2 id="explore-the-terra-objects">Explore the terra objects</h2>
-<p>The terra package produces and uses R objects of two main classes.
+<p>The terra package produces and uses R objects of two main classes:
 <strong>SpatRaster</strong> and <strong>SpatVector</strong>. A
 SpatRaster represents a spatially referenced surface divided into three
-dimensional cells (rows, columns, and layers). A Spatvector represents
-geometries as well as attributes (variables) describing the
-geometries.</p>
+dimensional cells (rows, columns, and layers). A SpatVector represents
+geometries as well as attributes (variables) describing the geometries.
+Note: we will be using <em>terra</em> only for raster processing, as you
+will see in subsequent tutorials.</p>
 Let’s take a look into the structure of a SpatRaster.
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
@@ -1191,7 +1194,7 @@ r</code></pre>
 </div>
 <p>From the metadata displayed above, we can see that the SpatRaster
 contains all the properties that geo-data should have; that is to say a
-projection, an extent and a pixel resolution.</p>
+coordinate reference system, an extent and a pixel size.</p>
 Multi-layer SpatRasters can also fairly easily be generated directly in
 R, as shown in the example below.
 <div class="row">
@@ -1219,8 +1222,8 @@ s</code></pre>
 ##               memory  
 ##               memory  
 ## names       :     lyr.1,     lyr.1,     lyr.1 
-## min values  : -3.508198, -7.016396, -3.508198 
-## max values  :  2.858407,  5.716814,  2.858407
+## min values  : -2.788414, -5.576828, -2.788414 
+## max values  :  3.555477,  7.110953,  3.555477
 </code></pre>
 </div>
 <p>Also note that using <code>c()</code> here behaves different from
@@ -1245,8 +1248,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -3.508198 
-## max value   :  2.858407 
+## min value   : -2.788414 
+## max value   :  3.555477 
 ## 
 ## [[2]]
 ## class       : SpatRaster 
@@ -1256,8 +1259,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -7.016396 
-## max value   :  5.716814 
+## min value   : -5.576828 
+## max value   :  7.110953 
 ## 
 ## [[3]]
 ## class       : SpatRaster 
@@ -1267,8 +1270,8 @@ s2</code></pre>
 ## coord. ref. : lon/lat WGS 84 
 ## source      : memory 
 ## name        :     lyr.1 
-## min value   : -3.508198 
-## max value   :  2.858407
+## min value   : -2.788414 
+## max value   :  3.555477
 </code></pre>
 </div>
 <h1 id="spatraster-manipulations">SpatRaster manipulations</h1>
@@ -1297,7 +1300,7 @@ getwd()</code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
-<pre style=""><code class="output r">## [1] "C:/Users/marti/OneDrive - Wageningen University & Research/Bureaublad/Geoscripting 2023/lesson4"
+<pre style=""><code class="output r">## [1] "C:/Users/marti/OneDrive - Wageningen University & Research/Bureaublad/Geoscripting 2023/lesson4_3"
 </code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1314,12 +1317,12 @@ download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/
 # Unpack the archive
 unzip('data/gewata.zip', exdir = "data")</code></pre>
 </div>
-<p><em>Gewata</em> is the name of the data set added. It is a
-multi-layer GeoTIFF object, and its file name is
+<p><em>Gewata</em> is the name of the dataset that we just downloaded.
+It is a multi-layer GeoTIFF object, and its file name is
 <em>LE71700552001036SGS00_SR_Gewata_INT1U.tif</em>, informing us that
-this is a subset from a scene acquired by the Landsat 7 sensor. Let’s
-not worry about the region that the data covers for now, we will find a
-nice way to discover that later on in the tutorial.</p>
+this is a subset from a scene acquired by the Landsat 7 ETM+ sensor.
+Let’s not worry about the region that the data covers for now, we will
+find a nice way to discover that later on in the tutorial.</p>
 Now that we have downloaded and unpacked the GeoTIFF file, it should be
 present in our working directory. We can investigate the content of the
 working directory (or any directory) using the <code>list.files()</code>
@@ -1388,11 +1391,9 @@ working with big raster objects that tend to overload the memory if not
 written directly to file.</p>
 <h2 id="cropping-a-spatraster">Cropping a SpatRaster</h2>
 <p><code>crop()</code> is the terra package function that allows you to
-crop data to smaller spatial extents. A great advantage of the crop
-function is that it accepts almost all spatial object classes in R as
-its <code>extent</code> input argument. But the <code>extent</code>
-argument also simply accepts objects of class <code>extent</code>. One
-way of obtaining such an extent object interactively is by using the
+crop data to smaller spatial extents. It accepts objects of classes
+SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining
+such a SpatExtent object interactively is by using the
 <code>draw()</code> function. In the example below, we will manually
 draw a regular extent that we will use later to crop the <em>gewata</em>
 SpatRaster.</p>
@@ -1406,8 +1407,9 @@ e <- draw()</code></pre>
 </div>
 <p>Now you have to define a rectangular bounding box that will define
 the spatial extent of the extent object. Click twice, for the two
-opposite corners of the rectangle. Now we can crop the data following
-the boundaries of this extent.</p>
+opposite corners of the rectangle. Note that R will wait until you
+finish drawing before it will let you run any more code (!). Now we can
+crop the data following the boundaries of this extent.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1422,14 +1424,10 @@ plot(gewataSub, 1)</code></pre>
 cropped.</p>
 <h2 id="creating-layer-stacks">Creating layer stacks</h2>
 <p>To end this section on general files and raster object manipulations,
-we will see more in-depth how multi-layer objects can be created from
-single-layer objects. The object created as part of the example below is
-the same that we will use later in the course to perform time series
-analysis on raster objects. It is composed of NDVI layers derived from
-Landsat acquisitions at different dates. The objective is therefore to
-create a multi-layer NDVI object, for which each layer corresponds to a
-different date. But first we need to fetch the data, similarly to how we
-did it for the <em>gewata</em> dataset.</p>
+we will see how multi-layer objects can be created from multiple
+single-layer objects. Let’s create a multi-layer NDVI object, composed
+of NDVI layers derived from Landsat acquisitions at different dates. We
+first need to fetch the data file by file.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -1492,11 +1490,11 @@ will give the expected output, which is, every pixel value of
 <code>r2</code> will be subtracted from the matching pixel value of
 <code>r1</code>. These types of pixel-based operations almost always
 require a set of conditions to be met in order to be executed; the two
-SpatRasters need to be identical in term of extent, resolution,
-projection, etc.</p>
+SpatRasters need to be identical in term of extent, pixel size,
+coordinate reference system, etc.</p>
 <h2 id="subsetting-layers-from-spatraster">Subsetting layers from
 SpatRaster</h2>
-<p>Different spectral bands of a same satellite scene are often stored
+<p>Different spectral bands of the same satellite scene are often stored
 in multi-layer objects. This means that you will very likely import them
 in your R working environment as one multi-layer SpatRaster. As a
 consequence, to perform calculations between these bands, you will have
@@ -1645,26 +1643,26 @@ ncell(ndvi)</code></pre>
 <p>The <code>project()</code> function allows re-projection of raster
 objects to any projection one can think of. It accepts the following
 formats to define coordinate reference systems: <em>WKT</em>,
-<em>PROJ.4</em> (e.g., +proj=longlat +datum=WGS84), or an <em>EPSG</em>
-code (e.g., “epsg:4326”). Note that the PROJ.4 notation has been
-deprecated, and you can only use it with the WGS84/NAD83 and NAD27
-datums. Other datums are silently ignored.</p>
-<p>A central place to search for projections is the spatial reference
-website (<a
+<em>PROJ.4</em> (e.g., <code>+proj=longlat +datum=WGS84</code>), or an
+<em>EPSG</em> code (e.g., <code>epsg:4326</code>). Note that the PROJ.4
+notation has been deprecated, and you can only use it with the
+WGS84/NAD83 and NAD27 datums. Other datums are silently ignored.</p>
+<p>A central place to search for coordinate reference systems is the
+spatial reference website (<a
 href="http://spatialreference.org/">http://spatialreference.org/</a>),
 from this database you will be able to query almost any reference and
 retrieve it in any format, including its <em>EPSG</em> code. Well-Known
 Text (<em>WKT</em>) expressions are preferred for scientific correctness
 and lack of ambiguity.</p>
-<p>Instead of specifying a projection to convert to, you can also
-provide <code>project()</code> with another SpatRaster, and it will
-convert your input to the projection of that SpatRaster.</p>
+<p>Instead of specifying a coordinate reference system to convert to,
+you can also provide <code>project()</code> with another SpatRaster, and
+it will convert your input to the CRS of that SpatRaster.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r"># One single line is sufficient to project any raster to any projection
-ndviLL <- project(ndvi, '+proj=longlat')</code></pre>
+<pre style=""><code class="source r"># One single line is sufficient to project any raster to any CRS
+ndviLL <- project(ndvi, 'epsg:28992')</code></pre>
 </div>
 <p>Note that if re-projecting and mosaicking is really a large part of
 your project, you may want to consider using the <code>gdalwarp</code>
@@ -1675,7 +1673,7 @@ from R, including <code>gdalwarp</code>, for reprojection, resampling
 and mosaicking.</p>
 <h2 id="exporting-and-inspecting">Exporting and inspecting</h2>
 <p>By the way, we still don’t know where this area is. In order to
-investigate that, we are going to try projecting it in QGIS. Let’s write
+investigate that, we are going to try displaying it in QGIS. Let’s write
 our NDVI layer in Lat/Long to a .tif file first.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
@@ -1690,8 +1688,8 @@ getwd()
 # the function, since we want to write the output directly to file.
 writeRaster(x = ndviLL, filename = 'output/gewataNDVI.tif')</code></pre>
 </div>
-<p>Now open this file in QGIS (or ArcGIS), and add a base layer (in QGIS
-for instance OpenStreetMap, using XYZ tiles with the url
+<p>Now open this file in QGIS, and add a base layer (in QGIS for
+instance OpenStreetMap, using XYZ tiles with the url
 <code>https://tile.openstreetmap.org/{z}/{x}/{y}.png</code>). Once we
 zoom out a bit, we see we are all the way in … Ethiopia. More
 information will come later in the course about that specific area.</p>
@@ -1880,11 +1878,8 @@ cloud mask.</p>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r"># Let's create a new 6 layers object since tahiti6 has now been masked already
-tahiti6_2 <- subset(tahiti, 1:6)
-
-# Apply the function on the two SpatRasters
-tahitiCloudFree <- app(x = c(tahiti6_2, fmask), fun = cloud2NA)
+<pre style=""><code class="source r"># Apply the function on the two SpatRasters
+tahitiCloudFree <- app(x = tahiti, fun = cloud2NA)
 
 # Visualize the output
 plotRGB(tahitiCloudFree, 3, 4, 5, stretch = "lin")</code></pre>
@@ -1903,9 +1898,8 @@ its basic functions, its object classes and methods. They can be
 categorized as follows:</p>
 <h2 id="terra-classes">Terra classes</h2>
 <ul>
-<li><code>SpatRaster</code>: Single- or multi-layer object
-(raster).</li>
-<li><code>SpatVector</code>: Geometries object (vector).</li>
+<li><code>SpatRaster</code>: Single- or multi-layer raster object.</li>
+<li><code>SpatVector</code>: Vector object.</li>
 </ul>
 <h2 id="functions">Functions</h2>
 <h3 id="reading-and-writing">Reading and writing</h3>
@@ -1919,12 +1913,13 @@ directly the output of the function to disk.</li>
 </ul>
 <h3 id="reformat-data">Reformat data</h3>
 <ul>
-<li><code>crop()</code>: modify the extent of a <code>SpatRaster</code>
-based on another spatial object or an extent object.</li>
-<li><code>project()</code>: Reproject (and resample) a
-<code>SpatRaster</code> to a desired coordinate reference system or
-reference <code>SpatRaster</code>.</li>
+<li><code>crop()</code>: modify the extent of a SpatRaster based on
+another spatial object or a SpatExtent object.</li>
+<li><code>project()</code>: Reproject (and resample) a SpatRaster to a
+desired coordinate reference system or reference SpatRaster.</li>
 <li><code>subset()</code>: Create a subset of a SpatRaster.</li>
+<li><code>c()</code>: Combina multiple SpatRasters into a single
+SpatRaster.</li>
 </ul>
 <h3 id="simple-visualization">Simple visualization</h3>
 <ul>

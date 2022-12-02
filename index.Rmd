@@ -71,7 +71,7 @@ Among other things the *terra* package allows to:
 * etc...
 
 ```{block, type="alert alert-info"}
-**Tip**: Check the [home page](http://cran.r-project.org/web/packages/terra/) of the *terra* package. The package is extremely well documented, including vignettes and demos. See also the [reference manual](https://cran.r-project.org/web/packages/terra/terra.pdf) there.
+**Tip**: Check the [home page](http://cran.r-project.org/web/packages/terra/) of the *terra* package. The package is extremely well documented, including vignettes and demos. See also the [reference manual](https://cran.r-project.org/web/packages/terra/terra.pdf) there. Another useful resource for information on spatial data handling with terra can be found [here](https://rspatial.org/spatial/index.html).
 ```
 
 ## Explore the terra objects
@@ -170,7 +170,7 @@ When writing files to disk using `writeRaster()` or the `filename =` argument in
 When looking at the documentation of most functions of the *terra* package, you will notice that the list of arguments is almost always ended by `...`. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the `writeRaster()` function; meaning that most geoprocessing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.
 
 ## Cropping a SpatRaster
-`crop()` is the terra package function that allows you to crop data to smaller spatial extents. A great advantage of the crop function is that it accepts almost all spatial object classes in R as its `extent` input argument. But the `extent` argument also simply accepts objects of class `extent`. One way of obtaining such an extent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
+`crop()` is the terra package function that allows you to crop data to smaller spatial extents. It accepts objects of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining such a SpatExtent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
 
 ```{r, eval=FALSE}
 # Plot the first layer of the SpatRaster
@@ -178,7 +178,7 @@ plot(gewata, 1)
 e <- draw()
 ```
 
-Now you have to define a rectangular bounding box that will define the spatial extent of the extent object. Click twice, for the two opposite corners of the rectangle. Now we can crop the data following the boundaries of this extent.
+Now you have to define a rectangular bounding box that will define the spatial extent of the extent object. Click twice, for the two opposite corners of the rectangle. Note that R will wait until you finish drawing before it will let you run any more code (!). Now we can crop the data following the boundaries of this extent.
 
 ```{r, eval=FALSE}
 # Crop gewata using e
@@ -191,7 +191,7 @@ plot(gewataSub, 1)
 You should see on the resulting plot that the original image has been cropped.
 
 ## Creating layer stacks
-To end this section on general files and raster object manipulations, we will see more in-depth how multi-layer objects can be created from single-layer objects. The object created as part of the example below is the same that we will use later in the course to perform time series analysis on raster objects. It is composed of NDVI layers derived from Landsat acquisitions at different dates. The objective is therefore to create a multi-layer NDVI object, for which each layer corresponds to a different date. But first we need to fetch the data, similarly to how we did it for the *gewata* dataset.
+To end this section on general files and raster object manipulations, we will see how multi-layer objects can be created from multiple single-layer objects. Let's create a multi-layer NDVI object, composed of NDVI layers derived from Landsat acquisitions at different dates. We first need to fetch the data file by file.
 
 ```{r, eval=FALSE}
 # Again, make sure that your working directory is properly set
@@ -308,7 +308,7 @@ Instead of specifying a coordinate reference system to convert to, you can also 
 
 ```{r}
 # One single line is sufficient to project any raster to any CRS
-ndviLL <- project(ndvi, '+proj=longlat')
+ndviLL <- project(ndvi, 'epsg:28992')
 ```
 
 Note that if re-projecting and mosaicking is really a large part of your project, you may want to consider using the `gdalwarp` command line utility ([gdalwarp](http://www.gdal.org/gdalwarp.html)) directly. The `gdalUtils` R package provides utilities to run GDAL commands from R, including `gdalwarp`, for reprojection, resampling and mosaicking.
@@ -328,7 +328,7 @@ getwd()
 writeRaster(x = ndviLL, filename = 'output/gewataNDVI.tif')
 ```
 
-Now open this file in QGIS (or ArcGIS), and add a base layer (in QGIS for instance OpenStreetMap, using XYZ tiles with the url `https://tile.openstreetmap.org/{z}/{x}/{y}.png`). Once we zoom out a bit, we see we are all the way in ... Ethiopia. More information will come later in the course about that specific area.
+Now open this file in QGIS, and add a base layer (in QGIS for instance OpenStreetMap, using XYZ tiles with the url `https://tile.openstreetmap.org/{z}/{x}/{y}.png`). Once we zoom out a bit, we see we are all the way in ... Ethiopia. More information will come later in the course about that specific area.
 
 ```{block, type="alert alert-success"}
 > **Question 1**: Could you also have used `ndvi` SpatRaster instead of `ndviLL` for this final step? Why (not)?
@@ -413,11 +413,8 @@ cloud2NA <- function(x) {
 The value replacement function takes one argument, `x`. `x` corresponds to a SpatRaster, where the 7th layer is our cloud mask.
 
 ```{r, fig.align='center'}
-# Let's create a new 6 layers object since tahiti6 has now been masked already
-tahiti6_2 <- subset(tahiti, 1:6)
-
 # Apply the function on the two SpatRasters
-tahitiCloudFree <- app(x = c(tahiti6_2, fmask), fun = cloud2NA)
+tahitiCloudFree <- app(x = tahiti, fun = cloud2NA)
 
 # Visualize the output
 plotRGB(tahitiCloudFree, 3, 4, 5, stretch = "lin")
@@ -443,9 +440,10 @@ Today you got a general introduction to the *terra* package, its basic functions
 
 ### Reformat data
 
-* `crop()`: modify the extent of a `SpatRaster` based on another spatial object or a `SpatExtent` object.
-* `project()`: Reproject (and resample) a `SpatRaster` to a desired coordinate reference system or reference `SpatRaster`.
+* `crop()`: modify the extent of a SpatRaster based on another spatial object or a SpatExtent object.
+* `project()`: Reproject (and resample) a SpatRaster to a desired coordinate reference system or reference SpatRaster.
 * `subset()`: Create a subset of a SpatRaster.
+* `c()`: Combina multiple SpatRasters into a single SpatRaster.
 
 ### Simple visualization
 
