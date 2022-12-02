@@ -75,7 +75,7 @@ Among other things the *terra* package allows to:
 ```
 
 ## Explore the terra objects
-The terra package produces and uses R objects of two main classes. **SpatRaster** and **SpatVector**. A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). A Spatvector represents geometries as well as attributes (variables) describing the geometries.
+The terra package produces and uses R objects of two main classes: **SpatRaster** and **SpatVector**. A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). A SpatVector represents geometries as well as attributes (variables) describing the geometries. Note: we will be using *terra* only for raster processing, as you will see in subsequent tutorials.
 
 Let's take a look into the structure of a SpatRaster.
 ```{r}
