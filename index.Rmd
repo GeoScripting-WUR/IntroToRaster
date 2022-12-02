@@ -234,7 +234,7 @@ Now this object is stored on your computer, ready to be archived for later use.
 
 # Simple raster arithmetic
 ## Adding, subtracting, multiplying and dividing SpatRasters
-Performing simple raster operations with a SpatRaster is fairly easy. For instance, if you want to subtract two SpatRasters of same extent, `r1` and `r2`; simply doing `r1 - r2` will give the expected output, which is, every pixel value of `r2` will be subtracted from the matching pixel value of `r1`. These types of pixel-based operations almost always require a set of conditions to be met in order to be executed; the two SpatRasters need to be identical in term of extent, resolution, projection, etc.
+Performing simple raster operations with a SpatRaster is fairly easy. For instance, if you want to subtract two SpatRasters of same extent, `r1` and `r2`; simply doing `r1 - r2` will give the expected output, which is, every pixel value of `r2` will be subtracted from the matching pixel value of `r1`. These types of pixel-based operations almost always require a set of conditions to be met in order to be executed; the two SpatRasters need to be identical in term of extent, pixel size, coordinate reference system, etc.
 
 ## Subsetting layers from SpatRaster
 Different spectral bands of a same satellite scene are often stored in multi-layer objects. This means that you will very likely import them in your R working environment as one multi-layer SpatRaster. As a consequence, to perform calculations between these bands, you will have to write an expression referring to individual layers of the object. Referring to individual layers in a SpatRaster can be done by using double square brackets `[[]]`.
