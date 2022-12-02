@@ -315,7 +315,7 @@ Note that if re-projecting and mosaicking is really a large part of your project
 
 
 ## Exporting and inspecting
-By the way, we still don't know where this area is. In order to investigate that, we are going to try projecting it in QGIS. Let's write our NDVI layer in Lat/Long to a .tif file first.
+By the way, we still don't know where this area is. In order to investigate that, we are going to try displaying it in QGIS. Let's write our NDVI layer in Lat/Long to a .tif file first.
 
 ```{r, eval = FALSE}
 # Since this function will write a file to your working directory
