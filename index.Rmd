@@ -86,7 +86,7 @@ class(r)
 # Simply typing the object name displays its general properties / metadata
 r
 ```
-From the metadata displayed above, we can see that the SpatRaster contains all the properties that geo-data should have; that is to say a projection, an extent and a pixel resolution.
+From the metadata displayed above, we can see that the SpatRaster contains all the properties that geo-data should have; that is to say a coordinate reference system, an extent and a pixel size.
 
 Multi-layer SpatRasters can also fairly easily be generated directly in R, as shown in the example below.
 ```{r}
