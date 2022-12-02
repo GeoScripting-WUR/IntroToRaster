@@ -138,7 +138,7 @@ download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/
 unzip('data/gewata.zip', exdir = "data")
 ```
 
-*Gewata* is the name of the data set added. It is a multi-layer GeoTIFF object, and its file name is *LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif*, informing us that this is a subset from a scene acquired by the Landsat 7 sensor. Let's not worry about the region that the data covers for now, we will find a nice way to discover that later on in the tutorial.
+*Gewata* is the name of the dataset that we just downloaded. It is a multi-layer GeoTIFF object, and its file name is *LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif*, informing us that this is a subset from a scene acquired by the Landsat 7 ETM+ sensor. Let's not worry about the region that the data covers for now, we will find a nice way to discover that later on in the tutorial.
 
 Now that we have downloaded and unpacked the GeoTIFF file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the `list.files()` function.
 ```{r, eval=FALSE}
