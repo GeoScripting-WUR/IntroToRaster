@@ -430,8 +430,8 @@ Today you got a general introduction to the *terra* package, its basic functions
 
 ## Terra classes
 
-* `SpatRaster`: Single- or multi-layer object (raster).
-* `SpatVector`: Geometries object (vector).
+* `SpatRaster`: Single- or multi-layer raster object.
+* `SpatVector`: Vector object.
 
 ## Functions
 
