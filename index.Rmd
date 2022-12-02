@@ -302,7 +302,7 @@ ncell(ndvi)
 ## Reprojections
 The `project()` function allows re-projection of raster objects to any projection one can think of. It accepts the following formats to define coordinate reference systems: *WKT*, *PROJ.4* (e.g., `+proj=longlat +datum=WGS84`), or an *EPSG* code (e.g., `epsg:4326`). Note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored.
 
-A central place to search for projections is the spatial reference website ([http://spatialreference.org/](http://spatialreference.org/)), from this database you will be able to query almost any reference and retrieve it in any format, including its *EPSG* code. Well-Known Text (*WKT*) expressions are preferred for scientific correctness and lack of ambiguity.
+A central place to search for coordinate reference systems is the spatial reference website ([http://spatialreference.org/](http://spatialreference.org/)), from this database you will be able to query almost any reference and retrieve it in any format, including its *EPSG* code. Well-Known Text (*WKT*) expressions are preferred for scientific correctness and lack of ambiguity.
 
 Instead of specifying a projection to convert to, you can also provide `project()` with another SpatRaster, and it will convert your input to the projection of that SpatRaster.
 
