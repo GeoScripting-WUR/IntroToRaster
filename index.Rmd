@@ -307,7 +307,7 @@ A central place to search for coordinate reference systems is the spatial refere
 Instead of specifying a coordinate reference system to convert to, you can also provide `project()` with another SpatRaster, and it will convert your input to the CRS of that SpatRaster.
 
 ```{r}
-# One single line is sufficient to project any raster to any projection
+# One single line is sufficient to project any raster to any CRS
 ndviLL <- project(ndvi, '+proj=longlat')
 ```
 
