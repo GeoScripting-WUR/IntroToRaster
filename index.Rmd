@@ -443,7 +443,7 @@ Today you got a general introduction to the *terra* package, its basic functions
 
 ### Reformat data
 
-* `crop()`: modify the extent of a `SpatRaster` based on another spatial object or an extent object.
+* `crop()`: modify the extent of a `SpatRaster` based on another spatial object or a `SpatExtent` object.
 * `project()`: Reproject (and resample) a `SpatRaster` to a desired coordinate reference system or reference `SpatRaster`.
 * `subset()`: Create a subset of a SpatRaster.
 
