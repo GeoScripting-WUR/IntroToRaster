@@ -308,7 +308,7 @@ Instead of specifying a coordinate reference system to convert to, you can also 
 
 ```{r}
 # One single line is sufficient to project any raster to any CRS
-ndviLL <- project(ndvi, 'epsg:28992')
+ndviLL <- project(ndvi, 'epsg:4326')
 ```
 
 Note that if re-projecting and mosaicking is really a large part of your project, you may want to consider using the `gdalwarp` command line utility ([gdalwarp](http://www.gdal.org/gdalwarp.html)) directly. The `gdalUtils` R package provides utilities to run GDAL commands from R, including `gdalwarp`, for reprojection, resampling and mosaicking.
@@ -440,10 +440,10 @@ Today you got a general introduction to the *terra* package, its basic functions
 
 ### Reformat data
 
-* `crop()`: modify the extent of a SpatRaster based on another spatial object or a SpatExtent object.
+* `crop()`: Modify the extent of a SpatRaster based on another spatial object or a SpatExtent object.
 * `project()`: Reproject (and resample) a SpatRaster to a desired coordinate reference system or reference SpatRaster.
 * `subset()`: Create a subset of a SpatRaster.
-* `c()`: Combina multiple SpatRasters into a single SpatRaster.
+* `c()`: Combine multiple SpatRasters into a single SpatRaster.
 
 ### Simple visualization
 
