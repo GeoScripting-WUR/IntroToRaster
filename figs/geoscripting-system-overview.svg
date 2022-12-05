@@ -207,7 +207,7 @@
         <path fill="rgb(0,0,0)" stroke="none" d="M 19754.238 10493.806 L 19882.029 10051.791 L 19615.403 10055.806 L 19754.238 10493.806 Z"/>
       </g>
     </g>
-    <g class="com.sun.star.drawing.ConnectorShape" transform="matrix(1, 0, 0, 1, 3298.983887, 5451.59668)" clip-path="url(#presentation_clip_path)">
+    <g class="com.sun.star.drawing.ConnectorShape" transform="matrix(-1, 0, 0, -1, 42844.984375, 16410.365234)" clip-path="url(#presentation_clip_path)">
       <g id="g-9">
         <rect class="BoundingBox" stroke="none" fill="none" x="19622" y="6399" width="302" height="1002"/>
         <path fill="none" stroke="rgb(0,0,0)" d="M 19768.586 3257.318 L 19779.328 6975.164"/>
@@ -221,7 +221,7 @@
         <path fill="rgb(0,0,0)" stroke="none" d="M 19774.985 7395.836 L 19922 6958 L 19631.328 6963.821 L 19774.985 7395.836 Z"/>
       </g>
     </g>
-    <g class="com.sun.star.drawing.ConnectorShape" transform="matrix(-0.873987, 0.485951, -0.485951, -0.873987, 39639.195313, 5770.785156)" clip-path="url(#presentation_clip_path)">
+    <g class="com.sun.star.drawing.ConnectorShape" transform="matrix(0.873987, -0.485951, 0.491717, 0.884357, 1539.112793, 15442.588867)" clip-path="url(#presentation_clip_path)" style="">
       <g id="g-10">
         <rect class="BoundingBox" stroke="none" fill="none" x="19622" y="6399" width="302" height="1002"/>
         <path fill="none" stroke="rgb(0,0,0)" d="M 19766.587 2395.201 L 19779.328 6975.164"/>
@@ -304,7 +304,7 @@
         <path fill="none" stroke="rgb(0,0,0)" d="M 19696.314 3464.773 C 20886.323 3464.773 22226.864 4090.118 22252.336 4912.108 C 22277.81 5734.1 20976.159 6363.741 19786.15 6363.741 C 18596.143 6363.741 17126.367 5737.914 17100.896 4915.922 C 17075.422 4093.932 18506.305 3464.773 19696.314 3464.773 Z" style="" transform="matrix(0.999992, 0.004008, -0.004008, 0.999992, 19.854905, -79.083331)"/>
         <path fill="none" stroke="rgb(0,0,0)" d="M 17700,3500 L 17700,3500 Z"/>
         <path fill="none" stroke="rgb(0,0,0)" d="M 21901,6400 L 21901,6400 Z"/>
-        <text class="TextShape" style="white-space: pre; text-anchor: middle;" transform="matrix(1, 0, 0, 1, 1055.892212, -301.683472)"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="635px" font-weight="400"><tspan class="TextPosition" x="18724" y="4815"><tspan fill="rgb(0,0,0)" stroke="none">Webbrowser<tspan x="18724" dy="1em">​</tspan>(Firefox, <tspan x="18724" dy="1em">​</tspan>Chrome, ...)</tspan></tspan></tspan></text>
+        <text class="TextShape" style="white-space: pre; text-anchor: middle;" transform="matrix(1, 0, 0, 1, 1055.892212, -301.683472)"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="635px" font-weight="400"><tspan class="TextPosition" x="18724" y="4815"><tspan fill="rgb(0,0,0)" stroke="none">Web browser<tspan x="18724" dy="1em">​</tspan>(Firefox, <tspan x="18724" dy="1em">​</tspan>Chrome, ...)</tspan></tspan></tspan></text>
       </g>
     </g>
     <g class="com.sun.star.drawing.CustomShape" transform="matrix(1, 0, 0, 1, -2119.981934, -725.895996)" clip-path="url(#presentation_clip_path)">
@@ -557,10 +557,10 @@
         <path fill="none" stroke="rgb(0,0,0)" d="M 21602,12600 C 22452,12600 23102,12947 23102,13401 23102,13855 22452,14202 21602,14202 20752,14202 20102,13855 20102,13401 20102,12947 20752,12600 21602,12600 Z"/>
         <path fill="none" stroke="rgb(0,0,0)" d="M 20102,12600 L 20102,12600 Z"/>
         <path fill="none" stroke="rgb(0,0,0)" d="M 23103,14203 L 23103,14203 Z"/>
-        <text class="TextShape" style="white-space: pre;"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="635px" font-weight="400"><tspan class="TextPosition" x="20740" y="13622"><tspan fill="rgb(0,0,0)" stroke="none">pyproj</tspan></tspan></tspan></text>
+        <text class="TextShape" style="white-space: pre;" x="-66.767" y="-66.767"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="635px" font-weight="400" style="font-size: 635px; word-spacing: 0px;"><tspan class="TextPosition" x="20673.233" y="13555.233" style="font-size: 635px; word-spacing: 0px;"><tspan fill="rgb(0,0,0)" stroke="none" style="font-size: 635px; word-spacing: 0px;">pyproj</tspan></tspan></tspan></text>
       </g>
     </g>
-    <g class="com.sun.star.drawing.CustomShape" transform="matrix(1, 0, 0, 1, 1374.577393, 182.0802)" clip-path="url(#presentation_clip_path)">
+    <g class="com.sun.star.drawing.CustomShape" transform="matrix(1, 0, 0, 1, 1191.694092, -288.19101)" clip-path="url(#presentation_clip_path)">
       <title>earthengine-api</title>
       <g id="g-6">
         <rect class="BoundingBox" stroke="none" fill="none" x="20101" y="12599" width="3004" height="1606"/>
