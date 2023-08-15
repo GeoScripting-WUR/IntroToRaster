@@ -19,7 +19,7 @@ a:visited {color: #91170a;}
 
 # [WUR Geoscripting](https://geoscripting-wur.github.io/) <img src="https://www.wur.nl/upload/854757ab-168f-46d7-b415-f8b501eebaa5_WUR_RGB_standard_2021-site.svg" alt="WUR logo" style="height: 35px;"/>
 
-# Week 1, Tutorial 4: Intro to Raster
+# Intro to Raster
 
 ## Learning objectives
 * Read & write raster data
@@ -31,22 +31,20 @@ Raster data is like any image. Although it may portray various properties of obj
 
 Today's tutorial is about constructing a simple spatio-temporal analysis using raster data, R, and git.
 
-## Assumed knowledge from previous tutorials
-
-* Understand system architecture (R, R packages, libraries, drivers, bindings)
-* Good scripting habits
-
-
-# Reminder on overall system architecture
+# The overall system architecture
 
 
 ![R system architecture graph](figs/geoscripting-system-overview.svg){width=100%}
+
+The overall system architecture is comprised of integrated development environments (IDE), engines, packages, bindings, and libraries. Let's start with the engine, the core program that executes the foundation or crucial tasks of the programming language. The most relevant engines in this course are Python, Google Earth Engine, and R. To interact with the engine, we can either code in the command line directly or we can use an IDE, which provides many tools and features for working with the engine integrated in a single environment. An IDE allows the developer to write code, test it, and debug it all in a single software application. For interacting with the R engine, we can use *Rstudio* or *RKWard* for instance. 
 
 ```{block, type="alert alert-info"}
 **Tip**: *RKWard* is an alternative R GUI, which is well-suited for beginners and those who are familiar with traditional statistical packages like *SPSS* and *STATISTICA*, since it is menu-driven. It is usually easier to install on Linux than *RStudio* as well. You can work in whichever R GUI you prefer.
 ```
 
-In a previous tutorial you got introduced to the overall system architecture of R programming (see figure above) and briefly saw how to read and use vector data from a file into your R environment. These vector read/write operations were made possible thanks to the *GDAL* library. The figure above provides an overview of the connections between these elements. *GDAL* stands for *Geospatial Data Abstraction Library*. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/). You will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this tutorial, we will use *GDAL* indirectly via the *terra* package. However, it is also possible to call GDAL functionalities directly through the command line from a terminal, which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to GDAL. (*Note*: This is also doable in *Bash* scripting, as learned in the previous tutorial, and you can even combine the two.)
+We then install packages in the IDE, these are collections of related code files, libraries, and resources that are related and compatible with each other. Libraries are pre-written code that provide specific functions and services. The idea of libraries and packages is to make coding more efficient by the reuse of common functions. Some R packages that we will use are *terra* and *sf*, which link back to the *Geospatial Data Abstraction Library* (*GDAL*). 
+
+In a [previous tutorial](../Scripting4GeoIntro/index.html#reading-and-writing-data) you briefly saw how to read and use vector data from a file into your R environment. These vector read/write operations were made possible thanks to the *GDAL* library. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/). You will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this tutorial, we will use *GDAL* indirectly via the *terra* package. However, it is also possible to call *GDAL* functionalities directly through the command line from a terminal, which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to *GDAL*. (*Note*: This is also doable in *Bash* scripting, as learned in a [previous tutorial](../Intro2Linux/index.html), and you can even combine the two.)
 
 Let's start working with *terra* by performing system setup checks.
 ```{r}
@@ -138,7 +136,7 @@ download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/
 unzip('data/gewata.zip', exdir = "data")
 ```
 
-*Gewata* is the name of the dataset that we just downloaded. It is a multi-layer GeoTIFF object, and its file name is *LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif*, informing us that this is a subset from a scene acquired by the Landsat 7 ETM+ sensor. Let's not worry about the region that the data covers for now, we will find a nice way to discover that later on in the tutorial.
+*Gewata* is the name of the dataset that we just downloaded. It is a multi-layer GeoTIFF object, and its file name is *LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif*, informing us that this is a subset from a scene acquired by NASA's [Landsat 7 ETM+ sensor](https://www.usgs.gov/landsat-missions/landsat-7). Let's not worry about the region that the data covers for now, we will find a nice way to discover that later on in the tutorial.
 
 Now that we have downloaded and unpacked the GeoTIFF file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the `list.files()` function.
 ```{r, eval=FALSE}
@@ -191,7 +189,7 @@ plot(gewataSub, 1)
 You should see on the resulting plot that the original image has been cropped.
 
 ## Creating layer stacks
-To end this section on general files and raster object manipulations, we will see how multi-layer objects can be created from multiple single-layer objects. Let's create a multi-layer NDVI object, composed of NDVI layers derived from Landsat acquisitions at different dates. We first need to fetch the data file by file.
+To end this section on general files and raster object manipulations, we will see how multi-layer objects can be created from multiple single-layer objects. We have already derived the [Normalized Difference Vegetation Index (NDVI)](https://gisgeography.com/ndvi-normalized-difference-vegetation-index/) from the Landsat 7 imagery in advance for you. The resulting product is an image (2-dimensional SpatRaster) where high pixel values represent green vegetated areas. The dataset that we are working with is a series of NDVI images of a region in Tahiti over time. Let's create a multi-layer NDVI object, composed of NDVI layers derived from Landsat acquisitions at different dates. We first need to fetch the data file by file.
 
 ```{r, eval=FALSE}
 # Again, make sure that your working directory is properly set
@@ -202,19 +200,19 @@ download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/
 unzip(zipfile = 'data/tura.zip', exdir = 'data')
 
 # Retrieve the content of the tura sub-directory
-list <- list.files(path = 'data/tura/', full.names = TRUE)
+turaList <- list.files(path = 'data/tura/', full.names = TRUE)
 ```
 
-The object `list` contains the file names of all the single layers we have to stack. Let's open the first one to visualize it.
+The object `turaList` contains the file names of all the single layers we have to stack. Let's open the first one to visualize it.
 
 ```{r, eval=FALSE}
-plot(rast(list[1]))
+plot(rast(turaList[1]))
 ```
 
 We see an NDVI layer, with the clouds masked out. Now let's create a multi-layer SpatRaster.
 
 ```{r, eval=FALSE}
-turaStack <- rast(list)
+turaStack <- rast(turaList)
 turaStack
 ```
 
@@ -237,9 +235,9 @@ Now this object is stored on your computer, ready to be archived for later use.
 Performing simple raster operations with a SpatRaster is fairly easy. For instance, if you want to subtract two SpatRasters of same extent, `r1` and `r2`; simply doing `r1 - r2` will give the expected output, which is, every pixel value of `r2` will be subtracted from the matching pixel value of `r1`. These types of pixel-based operations almost always require a set of conditions to be met in order to be executed; the two SpatRasters need to be identical in term of extent, pixel size, coordinate reference system, etc.
 
 ## Subsetting layers from SpatRaster
-Different spectral bands of the same satellite scene are often stored in multi-layer objects. This means that you will very likely import them in your R working environment as one multi-layer SpatRaster. As a consequence, to perform calculations between these bands, you will have to write an expression referring to individual layers of the object. Referring to individual layers in a SpatRaster can be done by using double square brackets `[[]]`.
+Previously, we used data with already derived NDVI. Now, we will make use of the Landsat 7 spectral bands to create the NDVI SpatRaster ourselves. The different spectral bands of the same satellite scene are often stored in multi-layer objects. This means that you will very likely import them in your R working environment as one multi-layer SpatRaster. As a consequence, to perform calculations between these bands, you will have to write an expression referring to individual layers of the object. Referring to individual layers in a SpatRaster can be done by using double square brackets `[[]]`.
 
-Let's look for instance at how the famous NDVI index would have to be calculated from the *gewata* SpatRaster read earlier, and that contains the spectral bands of the Landsat 7 sensor. And in case you have forgotten, the NDVI formula is as follows.
+Let's look for instance at how the famous NDVI index would have to be calculated from the *gewata* SpatRaster read earlier. The *gewata* SpatRaster already contains [6 bands of the Landsat 7 sensor](https://www.usgs.gov/faqs/what-are-band-designations-landsat-satellites). The formula below uses Landsat 7's NIR and Red bands, corresponding to layers 4 and 3 of the gewata SpatRaster, respectively.
 
 $$
  NDVI=\frac{NIR-Red}{NIR+Red}
@@ -270,7 +268,7 @@ ndviApp <- function(x) {
 ndvi2 <- app(x = gewata, fun = ndviApp)
 ```
 
-We can verify that the three layers ndvi, ndvi2 and ndvi3 are actually identical using the `all.equal()` function from the *terra* package.
+We can verify that the two layers ndvi and ndvi2 are actually identical using the `all.equal()` function from the *terra* package.
 
 ```{r}
 all.equal(ndvi, ndvi2)
