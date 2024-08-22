@@ -126,7 +126,7 @@ To illustrate the reading and writing of raster files, we will use data subsets 
 
 ```{r, eval=TRUE}
 # Start by making sure that your working directory is properly set
-# If not you can set it using setwd()
+# If not you can set it in the RStudio menu bar tab called Session → Set Working Directory → To Source File Location
 getwd()
 
 # Create data directory if it does not yet exist
@@ -324,7 +324,7 @@ By the way, we still don't know where this area is. In order to investigate that
 ```{r, eval = FALSE}
 # Since this function will write a file to your working directory
 # you want to make sure that it is set where you want the file to be written
-# It can be changed using setwd()
+# If not you can set it in the RStudio menu bar tab called Session → Set Working Directory → To Source File Location
 getwd()
 
 # Note that we are using the filename argument, contained in the ellipsis (...) of
