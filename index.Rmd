@@ -121,13 +121,13 @@ The actual data used in geo-processing projects often comes as geo-data, stored 
 
 Writing a SpatRaster to file is achieved using the `writeRaster()` function.
 
-To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, first make sure your working directory is set properly. Then run the following line; it will handle the download:
+To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, first make sure your working directory is set properly. You can do this using the following tip.
+
+```{block, type="alert alert-info"}
+**Tip**: To set your current working directory in RStudio, go to the menu bar tab; Session → Set Working Directory → To Source File Location
+```
 
 ```{r, eval=TRUE}
-# Start by making sure that your working directory is properly set
-# If not you can set it using setwd()
-getwd()
-
 # Create data directory if it does not yet exist
 if (!dir.exists("data")) {
   dir.create("data")
