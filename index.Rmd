@@ -33,7 +33,7 @@ code[class^="sourceCode bash"]::before { content: "Bash Source"; }
 * Perform simple raster calculations
 
 ## Introduction
-Raster data is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various values which are assigned a color.
+Raster data is a type of digital data that uses a grid of cells or pixels to represent information. Each cell in the grid represents a different value or attribute, such as pixel, elevation, temperature, or color.
 
 Today's tutorial is about constructing a simple spatio-temporal analysis using raster data, R, and git.
 
@@ -42,15 +42,15 @@ Today's tutorial is about constructing a simple spatio-temporal analysis using r
 
 ![R system architecture graph](figs/geoscripting-system-overview.svg){width=100%}
 
-The overall system architecture is comprised of integrated development environments (IDE), engines, packages, bindings, and libraries. Let's start with the engine, the core program that executes the foundation or crucial tasks of the programming language. The most relevant engines in this course are Python, Google Earth Engine, and R. To interact with the engine, we can either code in the command line directly or we can use an IDE, which provides many tools and features for working with the engine integrated in a single environment. An IDE allows the developer to write code, test it, and debug it all in a single software application. For interacting with the R engine, we can use *Rstudio* or *RKWard* for instance. 
+The overall system architecture is comprised of integrated development environments (IDE), engines, packages, bindings, and libraries. Let's start with the engine, the core program that executes the foundation or crucial tasks of the programming language. The most relevant engines in this course are Python, Google Earth Engine, and R. To interact with the engine, we can either code in the command line directly or we can use an IDE, which provides many tools and features for working with the engine integrated in a single environment. An IDE enables developers to write, test, and debug code within a single software application. For interacting with the R engine, we can use *Rstudio* or *RKWard* for instance. 
 
 ```{block, type="alert alert-info"}
-**Tip**: *RKWard* is an alternative R GUI, which is well-suited for beginners and those who are familiar with traditional statistical packages like *SPSS* and *STATISTICA*, since it is menu-driven. It is usually easier to install on Linux than *RStudio* as well. You can work in whichever R GUI you prefer.
+**Tip**: *RKWard* is an alternative R IDE, which is well-suited for beginners and those who are familiar with traditional statistical packages like *SPSS* and *STATISTICA*, since it is menu-driven. It is usually easier to install on Linux than *RStudio* as well. You can work in whichever R IDE you prefer.
 ```
 
-We then install packages in the IDE, these are collections of related code files, libraries, and resources that are related and compatible with each other. Libraries are pre-written code that provide specific functions and services. The idea of libraries and packages is to make coding more efficient by the reuse of common functions. Some R packages that we will use are *terra* and *sf*, which link back to the *Geospatial Data Abstraction Library* (*GDAL*). 
+Inside an IDE we can install packages, also called libraries. Libraries are pre-written code that provide specific functions and services. The idea of packages is to make coding more efficient by the reuse of common functions. Some R packages that we will use are *terra* and *sf*, which link back to the *Geospatial Data Abstraction Library* (*GDAL*). 
 
-In a [previous tutorial](../Scripting4GeoIntro/index.html#reading-and-writing-data) you briefly saw how to read and use vector data from a file into your R environment. These vector read/write operations were made possible thanks to the *GDAL* library. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/). You will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this tutorial, we will use *GDAL* indirectly via the *terra* package. However, it is also possible to call *GDAL* functionalities directly through the command line from a terminal, which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to *GDAL*. (*Note*: This is also doable in *Bash* scripting, as learned in a [previous tutorial](../Intro2Linux/index.html), and you can even combine the two.)
+In a [previous tutorial](../Scripting4GeoIntro/index.html#reading-and-writing-data) you briefly saw how to read and use vector data from a file into your R environment. These vector read/write operations were made possible thanks to the *GDAL* library. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/). You will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this tutorial, we will use *GDAL* indirectly via the *terra* package. However, it is also possible to call *GDAL* functionalities directly through the command line from a terminal, which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to *GDAL*. (*Note*: This is also doable in *Bash* scripting, as learned in a [previous tutorial](https://geoscripting-wur.github.io/Intro2Linux/), and you can even combine the two.)
 
 Let's start working with *terra* by performing system setup checks.
 ```{r}
@@ -63,7 +63,7 @@ gdal()
 The previous function should return the version number of the current version of *GDAL* installed on your machine. Starting with [GDAL 2.0](http://trac.osgeo.org/gdal/wiki/Release/2.0.1-News) vector processing becomes incorporated into *GDAL*. In case the function above returns an error, or if you cannot install *terra* at all, you should verify that all required software and libraries are properly installed. Please refer to the [system setup page](http://geoscripting-wur.github.io/system_setup/).
 
 # Overview of the *terra* package
-The *raster* package used to be the reference R package for raster processing, with Robert J. Hijmans as its the original developer. The introduction of the *raster* package to R was a revolution for geo-processing and analysis using R. The *raster* package is now deprecated, as Robert Hijmans has developed a successor to it called *[terra](https://cran.r-project.org/web/packages/terra/)* which is both simpler and much faster, as it's rewritten in C++.
+The *raster* package used to be the reference R package for raster processing, with Robert J. Hijmans as its the original developer. The introduction of the *raster* package to R was a revolution for geo-processing and analysis using R. The *raster* package is now deprecated as Robert Hijmans has developed a successor, called *[terra](https://cran.r-project.org/web/packages/terra/)*, which is both simpler and much faster as it’s rewritten in C++.
 
 Among other things the *terra* package allows to:
 
@@ -72,14 +72,13 @@ Among other things the *terra* package allows to:
 * Work on large raster datasets thanks to its built-in block processing functionalities.
 * Perform fast operations thanks to optimized back-end C++ code.
 * Visualize and interact with the data.
-* etc...
 
 ```{block, type="alert alert-info"}
-**Tip**: Check the [home page](http://cran.r-project.org/web/packages/terra/) of the *terra* package. The package is extremely well documented, including vignettes and demos. See also the [reference manual](https://cran.r-project.org/web/packages/terra/terra.pdf) there. Another useful resource for information on spatial data handling with terra can be found [here](https://rspatial.org/spatial/index.html).
+**Tip**: Check the [home page](http://cran.r-project.org/web/packages/terra/) of the *terra* package. The package is extremely well documented, including vignettes and demos. See also the [reference manual](https://cran.r-project.org/web/packages/terra/terra.pdf) there. Another useful resource for information on spatial data handling with *terra* can be found [here](https://rspatial.org/spatial/index.html).
 ```
 
 ## Explore the terra objects
-The terra package produces and uses R objects of two main classes: **SpatRaster** and **SpatVector**. A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). A SpatVector represents geometries as well as attributes (variables) describing the geometries. Note: we will be using *terra* only for raster processing, as you will see in subsequent tutorials.
+The *terra* package produces and uses R objects of two main classes: **SpatRaster** and **SpatVector**. A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). A SpatVector represents geometries as well as attributes (variables) describing the geometries. Note: we will be using *terra* only for raster processing, as you will see in subsequent tutorials.
 
 Let's take a look into the structure of a SpatRaster.
 ```{r}
@@ -122,13 +121,13 @@ The actual data used in geo-processing projects often comes as geo-data, stored 
 
 Writing a SpatRaster to file is achieved using the `writeRaster()` function.
 
-To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, first make sure your working directory is set properly. Then run the following line; it will handle the download:
+To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, first make sure your working directory is set properly. You can do this using the following tip.
+
+```{block, type="alert alert-info"}
+**Tip**: To set your current working directory in RStudio, go to the menu bar tab; Session → Set Working Directory → To Source File Location
+```
 
 ```{r, eval=TRUE}
-# Start by making sure that your working directory is properly set
-# If not you can set it using setwd()
-getwd()
-
 # Create data directory if it does not yet exist
 if (!dir.exists("data")) {
   dir.create("data")
@@ -174,7 +173,7 @@ When writing files to disk using `writeRaster()` or the `filename =` argument in
 When looking at the documentation of most functions of the *terra* package, you will notice that the list of arguments is almost always ended by `...`. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the `writeRaster()` function; meaning that most geoprocessing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.
 
 ## Cropping a SpatRaster
-`crop()` is the terra package function that allows you to crop data to smaller spatial extents. It accepts objects of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining such a SpatExtent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
+`crop()` is the *terra* package function that allows you to crop data to smaller spatial extents. It accepts objects of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining such a SpatExtent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
 
 ```{r, eval=FALSE}
 # Plot the first layer of the SpatRaster
@@ -255,7 +254,7 @@ with NIR and Red being band 4 and 3 of Landsat 7 respectively.
 ndvi <- (gewata[[4]] - gewata[[3]]) / (gewata[[4]] + gewata[[3]])
 ```
 
-The `plot()` function automatically recognises the objects of `terra` classes and returns an appropriate spatial plot.
+The `plot()` function automatically recognizes the objects of `terra` classes and returns an appropriate spatial plot.
 
 ```{r, ndvi, fig.align='center'}
 plot(ndvi)
@@ -427,7 +426,7 @@ plotRGB(tahitiCloudFree, 3, 4, 5, stretch = "lin")
 There are holes in the image, but at least the clouds are gone. We could use another image from another date, to create a composite image, but that is a little bit too much for today.
 
 # Summary
-Today you got a general introduction to the *terra* package, its basic functions, its object classes and methods. They can be categorized as follows:
+Today you received a general introduction to the *terra* package, covering its basic functions, object classes, and methods. They can be categorized as follows:
 
 ## Terra classes
 
