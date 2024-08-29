@@ -37,22 +37,10 @@ Raster data is like any image. Although it may portray various properties of obj
 
 Today's tutorial is about constructing a simple spatio-temporal analysis using raster data, R, and git.
 
-# The overall system architecture
-
-
-![R system architecture graph](figs/geoscripting-system-overview.svg){width=100%}
-
-The overall system architecture is comprised of integrated development environments (IDE), engines, packages, bindings, and libraries. Let's start with the engine, the core program that executes the foundation or crucial tasks of the programming language. The most relevant engines in this course are Python, Google Earth Engine, and R. To interact with the engine, we can either code in the command line directly or we can use an IDE, which provides many tools and features for working with the engine integrated in a single environment. An IDE allows the developer to write code, test it, and debug it all in a single software application. For interacting with the R engine, we can use *Rstudio* or *RKWard* for instance. 
-
-```{block, type="alert alert-info"}
-**Tip**: *RKWard* is an alternative R GUI, which is well-suited for beginners and those who are familiar with traditional statistical packages like *SPSS* and *STATISTICA*, since it is menu-driven. It is usually easier to install on Linux than *RStudio* as well. You can work in whichever R GUI you prefer.
-```
-
-We then install packages in the IDE, these are collections of related code files, libraries, and resources that are related and compatible with each other. Libraries are pre-written code that provide specific functions and services. The idea of libraries and packages is to make coding more efficient by the reuse of common functions. Some R packages that we will use are *terra* and *sf*, which link back to the *Geospatial Data Abstraction Library* (*GDAL*). 
-
 In a [previous tutorial](../Scripting4GeoIntro/index.html#reading-and-writing-data) you briefly saw how to read and use vector data from a file into your R environment. These vector read/write operations were made possible thanks to the *GDAL* library. You can check the project home page at [http://www.gdal.org/](http://www.gdal.org/). You will be surprised to see that a lot of the software you have used in the past to read gridded geospatial data use GDAL (i.e.: ArcGIS, QGIS, GRASS, etc). In this tutorial, we will use *GDAL* indirectly via the *terra* package. However, it is also possible to call *GDAL* functionalities directly through the command line from a terminal, which is equivalent to calling a `system()` command directly from within R. In addition, if you are familiar with R and its string handling utilities, it may facilitate the building of the expressions that have to be passed to *GDAL*. (*Note*: This is also doable in *Bash* scripting, as learned in a [previous tutorial](../Intro2Linux/index.html), and you can even combine the two.)
 
 Let's start working with *terra* by performing system setup checks.
+
 ```{r}
 # Example to perform system set-up checks
 if(!"terra" %in% installed.packages()){install.packages("terra")}
@@ -426,6 +414,110 @@ plotRGB(tahitiCloudFree, 3, 4, 5, stretch = "lin")
 
 There are holes in the image, but at least the clouds are gone. We could use another image from another date, to create a composite image, but that is a little bit too much for today.
 
+# Obtaining satellite imagery
+
+So far we have worked on a prepared dataset.
+However, in actual work (and the project), you will need to obtain your own data.
+A lot of satellite imagery is free to use, but sometimes downloading the data in a script can be challenging.
+Thankfully, there are packages developed to help automate it.
+
+One package that is very helpful for downloading, cleaning, performing classification and postprocessing satellite image time series is called `sits` (for Satellite Image Time Series).
+We will not go over most of its functionality (though it can be useful to study it for the project, [see its documentation here](https://e-sensing.github.io/sitsbook/)), but we will use its image downloading capabitilites to quickly get our own dataset to work with.
+
+First, let's get the `sits` package and its dependencies (this can take hours if you are not using `r2u`):
+
+```{r}
+if(!"sits" %in% installed.packages()){install.packages("sits")}
+if(!"geojsonsf" %in% installed.packages()){install.packages("geojsonsf")}
+if(!"stars" %in% installed.packages()){install.packages("stars")}
+if(!"tmap" %in% installed.packages()){install.packages("tmap")}
+if(!"httr2" %in% installed.packages()){install.packages("httr2")}
+library(sits)
+```
+
+Next, let's take a look at what kind of satellite data the package lets us download.
+There are several data providers, but the most useful are `AWS` (Amazon Web Services), `MPC` (Microsoft Planetary Computer), `CDSE` (Copernicus Dataspace Ecosystem), and `USGS` (US Geological Survey).
+Let's see what they have:
+
+```{r}
+sits_list_collections(c("AWS", "MPC", "CDSE", "USGS"))
+```
+
+We can see that several providers provide the same data, such as Sentinel-2 imagery.
+Note that their level of preprocessing may differ, so it is always good to check the details to know what exactly is the data you are downloading!
+
+In this tutorial we were working with Tahiti data, so let's get some more images over Tahiti!
+First, let's find what area our Tahiti images cover.
+At the moment `sits` requires either the coordinates in the WGS84 CRS, or a vector object, which you will learn about in the next tutorial.
+For now, let's get the WGS84 coordinates by reprojecting the raster.
+
+```{r}
+tahiti84 <- project(tahiti, "EPSG:4326")
+(roi <- ext(tahiti84))
+```
+
+We have a Landsat image so far, so let's now get a few MODIS images to compare with.
+It's easiest to get data from Microsoft Planetary Computer, since it does not require authentication.
+
+```{r}
+tahitiMODIS <- sits_cube("MPC", "MOD13Q1-6.1",
+  roi = as.vector(roi), # At the moment SpatExtent objects need to be converted to a vector manually
+  bands = c("RED", "NIR", "BLUE"),
+  start_date = "2023-07-01", end_date = "2023-08-01")
+```
+
+Let's explore what we got. We can see all details in the `file_info` slot:
+
+```{r}
+tahitiMODIS$file_info[[1]]
+```
+
+We got six dates and three bands, that is 18 items in total.  What are the dates of the images we downloaded?
+
+```{r}
+# This is equivalent to unique(tahitiMODIS$file_info[[1]]$date)
+sits_timeline(tahitiMODIS)
+```
+
+Let's look at one of these images:
+
+```{r}
+plot(tahitiMODIS, red="RED", blue="BLUE", green="NIR", date="2023-07-04")
+```
+
+As you can see, this is way zoomed out! MODIS has a coarser pixel size compared to Landsat, and therefore a tile in MODIS is much larger than in Landsat.
+
+Let's load the data with `terra`. First, we will save all the files on our disk:
+
+```{r results='hide'}
+outdir <- "output"
+if (!dir.exists(outdir))
+  dir.create(outdir)
+sits_cube_copy(tahitiMODIS, output_dir = outdir)
+```
+
+Now load the files in `terra`:
+
+```{r}
+(MODISfiles <- list.files(outdir, full.names=TRUE))
+# If you get bogus green files, remove them
+#file.remove(grep("GREEN", MODISfiles, value = TRUE))
+#(MODISfiles <- list.files(outdir, full.names=TRUE))
+
+tahitiMOD = rast(MODISfiles)
+plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
+```
+
+Let's reproject and crop to our region of interest:
+
+```{r}
+tahitiMOD = project(tahitiMOD, tahiti)
+tahitiMOD = crop(tahitiMOD, tahiti)
+plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
+```
+
+It looks a bit more pixelated, but that's certainly the same Tahiti as we saw in the Landsat imagery earlier!
+
 # Summary
 Today you got a general introduction to the *terra* package, its basic functions, its object classes and methods. They can be categorized as follows:
 
@@ -439,6 +531,7 @@ Today you got a general introduction to the *terra* package, its basic functions
 ### Reading and writing
 
 * `rast()`: Read a raster object from disk.
+* `ext()`: get the extent of the raster
 * `writeRaster()`: Write a `SpatRaster` to disk.
 * `filename =` argument: Available for most functions of the *terra* package that produce SpatRaster objects, write directly the output of the function to disk.
 
@@ -458,6 +551,12 @@ Today you got a general introduction to the *terra* package, its basic functions
 
 * First of all, SpatRasters work just like vectors of numerics (`c(1, 2, 3)`). They can be subsetted, added, subtracted, etc.
 * `app()`: Apply a function to every pixel independently of a single SpatRaster (Single or multi-layer). RAM friendly and can write output directly to disk using the `filename =` argument.
+
+### sits functions
+
+* `sits_cube()`: Download satellite imagery from a cloud platform
+* `sits_cube_copy()`: Write the imagery to disk
+
 
 # Extra
 
