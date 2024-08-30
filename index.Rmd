@@ -487,26 +487,27 @@ plot(tahitiMODIS, red="RED", blue="BLUE", green="NIR", date="2023-07-04")
 
 As you can see, this is way zoomed out! MODIS has a coarser pixel size compared to Landsat, and therefore a tile in MODIS is much larger than in Landsat.
 
-Let's load the data with `terra`. First, we will save all the files on our disk:
+Let's load the data with `terra`.
+First, we will save all the files on our disk.
+Do not forget to again include the `roi`, else it will download the entire tile (as shown above), rather than what you actually need, and will waste your time and space!
 
 ```{r results='hide'}
 outdir <- "output"
 if (!dir.exists(outdir))
   dir.create(outdir)
-sits_cube_copy(tahitiMODIS, output_dir = outdir)
+sits_cube_copy(tahitiMODIS, output_dir = outdir, roi=c(lon_min=xmin(roi),lat_min=ymin(roi),lon_max=xmax(roi),lat_max=ymax(roi)))
 ```
 
 Now load the files in `terra`:
 
 ```{r}
 (MODISfiles <- list.files(outdir, full.names=TRUE))
-# If you get bogus green files, remove them
-#file.remove(grep("GREEN", MODISfiles, value = TRUE))
-#(MODISfiles <- list.files(outdir, full.names=TRUE))
-
 tahitiMOD = rast(MODISfiles)
 plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
 ```
+
+That looks zoomed in to Tahiti, though the island looks quite distorted!
+This is because MODIS uses a sinusoidal projection that distorts shapes that are far away from the center (Africa), and Tahiti is almost as far away as you can get!
 
 Let's reproject and crop to our region of interest:
 
@@ -516,10 +517,10 @@ tahitiMOD = crop(tahitiMOD, tahiti)
 plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
 ```
 
-It looks a bit more pixelated, but that's certainly the same Tahiti as we saw in the Landsat imagery earlier!
+It looks a bit more pixelated than the Landsat image, but now the shape of the island is no longer distorted!
 
 # Summary
-Today you got a general introduction to the *terra* package, its basic functions, its object classes and methods. They can be categorized as follows:
+Today you got a general introduction to the *terra* package, its basic functions, its object classes and methods. You also learned how to use a few functions from the `sits` package to retrieve data. The functions can be categorized as follows:
 
 ## Terra classes
 
