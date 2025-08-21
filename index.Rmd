@@ -6,6 +6,7 @@ output:
   rmdformats::html_clean:
     title: "Intro to Raster"
     highlight: zenburn
+    md_extensions: -smart
 ---
 
 ```{css, echo=FALSE}
