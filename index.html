@@ -7,7 +7,7 @@
 
         <meta name="author" content="Loïc Dutrieux, Jan Verbesselt, Johannes Eberenz, Dainius Masiliūnas, Sabina Rosca" />
     
-        <meta name="date" content="2025-08-18" />
+        <meta name="date" content="2025-08-28" />
     
     <title>Intro to Raster</title>
 
@@ -905,7 +905,7 @@ margin-left: 0 !important;
       <!-- html_clean authors -->
          <h4 class="author"><em>Loïc Dutrieux, Jan Verbesselt, Johannes
 Eberenz, Dainius Masiliūnas, Sabina Rosca</em></h4>
-            <h4 class="date"><em>2025-08-18</em></h4>
+            <h4 class="date"><em>2025-08-28</em></h4>
       
       
    
@@ -957,10 +957,12 @@ Geoscripting</a></font>
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Raster data is like any image. Although it may portray various
-properties of objects in the real world, these objects don’t exist as
-separate objects; rather, they are represented using pixels of various
-values which are assigned a color.</p>
+<p>Raster data is a type of digital data that uses a grid of cells or
+pixels to represent information. Each cell in the grid represents a
+different value or attribute, such as elevation, temperature or simply
+color. Although a raster may portray various properties of objects in
+the real world, these objects don’t exist as separate objects; rather,
+they are represented using the pixel values to assign colors.</p>
 <p>Today&#39;s tutorial is about constructing a simple spatio-temporal
 analysis using raster data, R, and git.</p>
 <p>In a <a href="../Scripting4GeoIntro/index.html#reading-and-writing-data">previous
@@ -1023,13 +1025,13 @@ processing functionalities.</li>
 the <em>terra</em> package. The package is extremely well documented,
 including vignettes and demos. See also the <a href="https://cran.r-project.org/web/packages/terra/terra.pdf">reference
 manual</a> there. Another useful resource for information on spatial
-data handling with terra can be found <a href="https://rspatial.org/spatial/index.html">here</a>.
+data handling with <em>terra</em> can be found <a href="https://rspatial.org/spatial/index.html">here</a>.
 </p>
 </div>
 <div id="explore-the-terra-objects" class="section level2">
 <h2>Explore the terra objects</h2>
-<p>The terra package produces and uses R objects of two main classes:
-<strong>SpatRaster</strong> and <strong>SpatVector</strong>. A
+<p>The <em>terra</em> package produces and uses R objects of two main
+classes: <strong>SpatRaster</strong> and <strong>SpatVector</strong>. A
 SpatRaster represents a spatially referenced surface divided into three
 dimensional cells (rows, columns, and layers). A SpatVector represents
 geometries as well as attributes (variables) describing the geometries.
@@ -1070,8 +1072,8 @@ in R, as shown in the example below.</p>
 ## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
 ## source(s)   : memory
 ## names       :     lyr.1,     lyr.1,     lyr.1 
-## min values  : -3.297256, -6.594512, -3.297256 
-## max values  :  4.052625,  8.105250,  4.052625</code></pre>
+## min values  : -3.638914, -7.277827, -3.638914 
+## max values  :  3.033620,  6.067240,  3.033620</code></pre>
 <p>Also note that using <code>c()</code> here behaves different from
 using <code>list()</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Create a list of three separate SpatRasters</span></span>
@@ -1087,8 +1089,8 @@ using <code>list()</code>:</p>
 ## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
 ## source(s)   : memory
 ## name        :     lyr.1 
-## min value   : -3.297256 
-## max value   :  4.052625 
+## min value   : -3.638914 
+## max value   :  3.033620 
 ## 
 ## [[2]]
 ## class       : SpatRaster 
@@ -1098,8 +1100,8 @@ using <code>list()</code>:</p>
 ## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
 ## source(s)   : memory
 ## name        :     lyr.1 
-## min value   : -6.594512 
-## max value   :  8.105250 
+## min value   : -7.277827 
+## max value   :  6.067240 
 ## 
 ## [[3]]
 ## class       : SpatRaster 
@@ -1109,8 +1111,8 @@ using <code>list()</code>:</p>
 ## coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
 ## source(s)   : memory
 ## name        :     lyr.1 
-## min value   : -3.297256 
-## max value   :  4.052625</code></pre>
+## min value   : -3.638914 
+## max value   :  3.033620</code></pre>
 </div>
 </div>
 <div id="spatraster-manipulations" class="section level1">
@@ -1204,10 +1206,10 @@ written directly to file.</p>
 </div>
 <div id="cropping-a-spatraster" class="section level2">
 <h2>Cropping a SpatRaster</h2>
-<p><code>crop()</code> is the terra package function that allows you to
-crop data to smaller spatial extents. It accepts objects of classes
-SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining
-such a SpatExtent object interactively is by using the
+<p><code>crop()</code> is the <em>terra</em> package function that
+allows you to crop data to smaller spatial extents. It accepts objects
+of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of
+obtaining such a SpatExtent object interactively is by using the
 <code>draw()</code> function. In the example below, we will manually
 draw a regular extent that we will use later to crop the <em>gewata</em>
 SpatRaster.</p>
@@ -1787,10 +1789,11 @@ shape of the island is no longer distorted!</p>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>Today you got a general introduction to the <em>terra</em> package,
-its basic functions, its object classes and methods. You also learned
-how to use a few functions from the <code>sits</code> package to
-retrieve data. The functions can be categorized as follows:</p>
+<p>Today you received a general introduction to the <em>terra</em>
+package, covering its basic functions, object classes, and methods. You
+also learned how to use a few functions from the <code>sits</code>
+package to retrieve data. The functions can be categorized as
+follows:</p>
 <div id="terra-classes" class="section level2">
 <h2>Terra classes</h2>
 <ul>
