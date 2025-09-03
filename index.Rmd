@@ -34,7 +34,7 @@ code[class^="sourceCode bash"]::before { content: "Bash Source"; }
 * Perform simple raster calculations
 
 ## Introduction
-Raster data is like any image. Although it may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using pixels of various values which are assigned a color.
+Raster data is a type of digital data that uses a grid of cells or pixels to represent information. Each cell in the grid represents a different value or attribute, such as elevation, temperature or simply color. Although a raster may portray various properties of objects in the real world, these objects don’t exist as separate objects; rather, they are represented using the pixel values to assign colors.
 
 Today's tutorial is about constructing a simple spatio-temporal analysis using raster data, R, and git.
 
@@ -64,11 +64,11 @@ Among other things the *terra* package allows to:
 * etc...
 
 ```{block, type="alert alert-info"}
-**Tip**: Check the [home page](http://cran.r-project.org/web/packages/terra/) of the *terra* package. The package is extremely well documented, including vignettes and demos. See also the [reference manual](https://cran.r-project.org/web/packages/terra/terra.pdf) there. Another useful resource for information on spatial data handling with terra can be found [here](https://rspatial.org/spatial/index.html).
+**Tip**: Check the [home page](http://cran.r-project.org/web/packages/terra/) of the *terra* package. The package is extremely well documented, including vignettes and demos. See also the [reference manual](https://cran.r-project.org/web/packages/terra/terra.pdf) there. Another useful resource for information on spatial data handling with *terra* can be found [here](https://rspatial.org/spatial/index.html).
 ```
 
 ## Explore the terra objects
-The terra package produces and uses R objects of two main classes: **SpatRaster** and **SpatVector**. A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). A SpatVector represents geometries as well as attributes (variables) describing the geometries. Note: we will be using *terra* only for raster processing, as you will see in subsequent tutorials.
+The *terra* package produces and uses R objects of two main classes: **SpatRaster** and **SpatVector**. A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). A SpatVector represents geometries as well as attributes (variables) describing the geometries. Note: we will be using *terra* only for raster processing, as you will see in subsequent tutorials.
 
 Let's take a look into the structure of a SpatRaster.
 ```{r}
@@ -163,7 +163,7 @@ When writing files to disk using `writeRaster()` or the `filename =` argument in
 When looking at the documentation of most functions of the *terra* package, you will notice that the list of arguments is almost always ended by `...`. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the `writeRaster()` function; meaning that most geoprocessing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.
 
 ## Cropping a SpatRaster
-`crop()` is the terra package function that allows you to crop data to smaller spatial extents. It accepts objects of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining such a SpatExtent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
+`crop()` is the *terra* package function that allows you to crop data to smaller spatial extents. It accepts objects of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining such a SpatExtent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
 
 ```{r, eval=FALSE}
 # Plot the first layer of the SpatRaster
@@ -521,7 +521,7 @@ plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
 It looks a bit more pixelated than the Landsat image, but now the shape of the island is no longer distorted!
 
 # Summary
-Today you got a general introduction to the *terra* package, its basic functions, its object classes and methods. You also learned how to use a few functions from the `sits` package to retrieve data. The functions can be categorized as follows:
+Today you received a general introduction to the *terra* package, covering its basic functions, object classes, and methods. You also learned how to use a few functions from the `sits` package to retrieve data. The functions can be categorized as follows:
 
 ## Terra classes
 
