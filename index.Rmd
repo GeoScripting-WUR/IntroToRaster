@@ -503,7 +503,7 @@ Now load the files in `terra`:
 
 ```{r}
 (MODISfiles <- list.files(outdir, full.names=TRUE))
-tahitiMOD = rast(MODISfiles)
+tahitiMOD <- rast(MODISfiles)
 plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
 ```
 
@@ -513,8 +513,8 @@ This is because MODIS uses a sinusoidal projection that distorts shapes that are
 Let's reproject and crop to our region of interest:
 
 ```{r}
-tahitiMOD = project(tahitiMOD, tahiti)
-tahitiMOD = crop(tahitiMOD, tahiti)
+tahitiMOD <- project(tahitiMOD, tahiti)
+tahitiMOD <- crop(tahitiMOD, tahiti)
 plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
 ```
 
