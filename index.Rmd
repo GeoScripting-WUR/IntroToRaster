@@ -24,7 +24,7 @@ code[class^="sourceCode python"]::before { content: "Python Source"; }
 code[class^="sourceCode bash"]::before { content: "Bash Source"; }
 ```
 
-<font size="6">[WUR Geoscripting](https://geoscripting-wur.github.io/)</font> <img src="https://www.wur.nl/upload/854757ab-168f-46d7-b415-f8b501eebaa5_WUR_RGB_standard_2021-site.svg" alt="WUR logo" style="height: 35px; margin:inherit;"/>
+<font size="6">[WUR Geoscripting](https://geoscripting-wur.github.io/)</font> <img src="https://geoscripting-wur.github.io/figs/WUR_RGB_standard_2025.svg" alt="WUR logo" style="height: 50px;"/>
 
 # Intro to Raster
 
@@ -163,19 +163,20 @@ When writing files to disk using `writeRaster()` or the `filename =` argument in
 When looking at the documentation of most functions of the *terra* package, you will notice that the list of arguments is almost always ended by `...`. These 'three dots' are called an ellipsis; it means that extra arguments can be passed to the function. Often these arguments are those that can be passed to the `writeRaster()` function; meaning that most geoprocessing functions are able to write their output directly to file, on disk. This reduces the number of steps and is always a good consideration when working with big raster objects that tend to overload the memory if not written directly to file.
 
 ## Cropping a SpatRaster
-`crop()` is the *terra* package function that allows you to crop data to smaller spatial extents. It accepts objects of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining such a SpatExtent object interactively is by using the `draw()` function. In the example below, we will manually draw a regular extent that we will use later to crop the *gewata* SpatRaster.
+`crop()` is the *terra* package function that allows you to crop data to smaller spatial extents. It accepts objects of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining such a SpatExtent object is by using the `ext()` function. We can specify the extent of the boundary as *(xmin, xmax, ymin, ymax)*. In the example below, we will draw a rectangular extent that we will use later to crop the *gewata* SpatRaster.
 
-```{r, eval=FALSE}
-# Plot the first layer of the SpatRaster
+```{r, fig.align='center'}
+# Create the extent
+rect <- ext(835000, 840000, 835000, 840000) # note the coordinates in projected reference system
 plot(gewata, 1)
-e <- draw()
+plot(rect, add = TRUE, border = "red", lwd = 2)
 ```
 
-Now you have to define a rectangular bounding box that will define the spatial extent of the extent object. Click twice, for the two opposite corners of the rectangle. Note that R will wait until you finish drawing before it will let you run any more code (!). Now we can crop the data following the boundaries of this extent.
+ Now we can crop the data following the boundaries of this extent.
 
-```{r, eval=FALSE}
-# Crop gewata using e
-gewataSub <- crop(gewata, e)
+```{r, fig.align='center'}
+# Crop gewata using rect
+gewataSub <- crop(gewata, rect)
 
 # Visualize the new cropped object
 plot(gewataSub, 1)
