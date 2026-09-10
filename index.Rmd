@@ -132,7 +132,7 @@ unzip('data/gewata.zip', exdir = "data")
 *Gewata* is the name of the dataset that we just downloaded. It is a multi-layer GeoTIFF object, and its file name is *LE71700552001036SGS00\_SR\_Gewata\_INT1U.tif*, informing us that this is a subset from a scene acquired by NASA's [Landsat 7 ETM+ sensor](https://www.usgs.gov/landsat-missions/landsat-7). Let's not worry about the region that the data covers for now, we will find a nice way to discover that later on in the tutorial.
 
 Now that we have downloaded and unpacked the GeoTIFF file, it should be present in our working directory. We can investigate the content of the working directory (or any directory) using the `list.files()` function.
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # When passed without arguments, list.files() returns a character vector, listing the content of the working directory
 list.files()
 
@@ -144,12 +144,12 @@ list.files('data', pattern = '^.*\\.tif$')
 ```
 
 We can now load this object in R:
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 gewata <- rast('data/LE71700552001036SGS00_SR_Gewata_INT1U.tif')
 ```
 
 Let's take a look at the structure of this object.
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 gewata
 ```
 The metadata above informs us that the gewata object is a relatively small (593x653 pixels) SpatRaster with 6 layers.
@@ -163,7 +163,7 @@ When looking at the documentation of most functions of the *terra* package, you 
 ## Cropping a SpatRaster
 `crop()` is the *terra* package function that allows you to crop data to smaller spatial extents. It accepts objects of classes SpatRaster, SpatVector or SpatExtent to crop to. One way of obtaining such a SpatExtent object is by using the `ext()` function. We can specify the extent of the boundary as *(xmin, xmax, ymin, ymax)*. In the example below, we will draw a rectangular extent that we will use later to crop the *gewata* SpatRaster.
 
-```{r, eval=FALSE, fig.align='center'}
+```{r, eval=TRUE, fig.align='center'}
 # Create the extent
 rect <- ext(835000, 840000, 835000, 840000) # note the coordinates in projected reference system
 plot(gewata, 1)
@@ -172,7 +172,7 @@ plot(rect, add = TRUE, border = "red", lwd = 2)
 
  Now we can crop the data following the boundaries of this extent.
 
-```{r, eval=FALSE, fig.align='center'}
+```{r, eval=TRUE, fig.align='center'}
 # Crop gewata using rect
 gewataSub <- crop(gewata, rect)
 
@@ -185,7 +185,7 @@ You should see on the resulting plot that the original image has been cropped.
 ## Creating layer stacks
 To end this section on general files and raster object manipulations, we will see how multi-layer objects can be created from multiple single-layer objects. We have already derived the [Normalized Difference Vegetation Index (NDVI)](https://gisgeography.com/ndvi-normalized-difference-vegetation-index/) from the Landsat 7 imagery in advance for you. The resulting product is an image (2-dimensional SpatRaster) where high pixel values represent green vegetated areas. The dataset that we are working with is a series of NDVI images of a region in Tahiti over time. Let's create a multi-layer NDVI object, composed of NDVI layers derived from Landsat acquisitions at different dates. We first need to fetch the data file by file.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Download and unzip the data
 download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/tura.zip', destfile = 'data/tura.zip')
 unzip(zipfile = 'data/tura.zip', exdir = 'data')
@@ -196,20 +196,20 @@ turaList <- list.files(path = 'data/tura/', full.names = TRUE)
 
 The object `turaList` contains the file names of all the single layers we have to stack. Let's open the first one to visualize it.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 plot(rast(turaList[1]))
 ```
 
 We see an NDVI layer, with the clouds masked out. Now let's create a multi-layer SpatRaster.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 turaStack <- rast(turaList)
 turaStack
 ```
 
 Now that we have our SpatRaster with 166 layers in memory, let's write it to disk using the `writeRaster()` function. Note that we adjust the layer names to the original file names (in which information on dates is written). Also note that the data range is comprised between -10000 and +10000, therefore such a file can be stored as signed 2 byte integer (INT2S).
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Create output directory if it does not yet exist
 if (!dir.exists("output")) {
   dir.create("output")
@@ -236,13 +236,13 @@ $$
 
 with NIR and Red being band 4 and 3 of Landsat 7 respectively.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 ndvi <- (gewata[[4]] - gewata[[3]]) / (gewata[[4]] + gewata[[3]])
 ```
 
 The `plot()` function automatically recognises the objects of `terra` classes and returns an appropriate spatial plot.
 
-```{r, eval=FALSE, ndvi, fig.align='center'}
+```{r, eval=TRUE, ndvi, fig.align='center'}
 plot(ndvi)
 ```
 
@@ -250,7 +250,7 @@ The resulting NDVI can be viewed in the figure above. As expected the NDVI range
 
 Although this is a quick way to perform the calculation, directly adding, subtracting, multiplying, etc, the layers of big raster objects is not recommended. When working with big objects, it is advisable to use the `app()` function to perform these types of calculations. The reason is that R needs to load all the data first into its internal memory before performing the calculation and then runs everything in one block. It is really easy to run out of memory when doing that. A big advantage of the `app()` function is that it has a built-in block processing option for any vectorized function, allowing such calculations to be fully "RAM friendly". The example below illustrates how to calculate NDVI from the same date set using the `app()` function.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Define the function to calculate NDVI using app()
 ndviApp <- function(x) {
     ndvi <- (x[[4]] - x[[3]]) / (x[[4]] + x[[3]])
@@ -261,7 +261,7 @@ ndvi2 <- app(x = gewata, fun = ndviApp)
 
 We can verify that the two layers ndvi and ndvi2 are actually identical using the `all.equal()` function from the *terra* package.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 all.equal(ndvi, ndvi2)
 ```
 
@@ -269,7 +269,7 @@ Here we see that only the name of `ndvi2` is different. This is because for the 
 
 ## Simple raster statistics
 The `global()` function allows the extraction of basic global statistics from an entire SpatRaster, such as the mean value, maximum value, the range of values, or the number of NA cells. `global` will return a dataframe, from which we can consequently select the value we need. See also `?global` for more information and documentation. Let's try some of these options for our `ndvi` SpatRaster. 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Calculate the mean (this produces a dataframe)
 mean <- global(ndvi, fun = 'mean')
 mean
@@ -295,7 +295,7 @@ A central place to search for coordinate reference systems is the spatial refere
 
 Instead of specifying a coordinate reference system to convert to, you can also provide `project()` with another SpatRaster, and it will convert your input to the CRS of that SpatRaster.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # One single line is sufficient to project any raster to any CRS
 ndviLL <- project(ndvi, 'epsg:4326')
 ```
@@ -306,7 +306,7 @@ Note that if re-projecting and mosaicking is really a large part of your project
 ## Exporting and inspecting
 By the way, we still don't know where this area is. In order to investigate that, we are going to try displaying it in QGIS. Let's write our NDVI layer in Lat/Long to a .tif file first.
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 # Note that we are using the filename argument, contained in the ellipsis (...) of
 # the function, since we want to write the output directly to file.
 writeRaster(x = ndviLL, filename = 'output/gewataNDVI.tif')
@@ -326,7 +326,7 @@ Since 2014, the USGS has started releasing Landsat data processed to surface ref
 ### About the area
 The area selected for this exercise covers most of the South Pacific island of Tahiti, French Polynesia. It is a mountainous, volcanic island, and according to Wikipedia about 180,000 people live on the island. For convenience, the Landsat scene was subsetted to cover only the area of interest and is stored online.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Download the data
 download.file(url = 'https://github.com/GeoScripting-WUR/IntroToRaster/releases/download/tahiti/tahiti.zip', destfile = 'data/tahiti.zip')
 unzip(zipfile = 'data/tahiti.zip', exdir = 'data')
@@ -343,7 +343,7 @@ plotRGB(tahiti, 3, 4, 5, stretch = "lin")
 ```
 
 We can also visualize the cloud mask layer (layer 7).
-```{r, eval=FALSE, fig.align='center'}
+```{r, eval=TRUE, fig.align='center'}
 plot(tahiti, 7)
 ```
 
@@ -355,7 +355,7 @@ According to the [algorithm description](https://github.com/GERSL/Fmask), water 
 
 We can also plot the two on top of each other, but before that we need to assign no values (NA) to the 'clear land pixels' so that they appear transparent on the overlay plot.
 
-```{r, eval=FALSE, fig.align='center'}
+```{r, eval=TRUE, fig.align='center'}
 # Extract cloud layer from the SpatRaster
 cloud <- tahiti[[7]]
 
@@ -369,7 +369,7 @@ plot(cloud, add = TRUE, legend = FALSE)
 
 Applying a cloud mask to a dataset simply consists in performing value replacement. In this case, a condition on the 7th layer of the stack (the `fmask` layer) will determine whether values in the other layers are kept, or replaced by NA, which is equivalent to masking them. It is more convenient to work on the cloud mask as a separate SpatRaster. We will therefore subset the SpatRaster using the `subset()` function.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Extract cloud mask layer
 fmask <- tahiti[[7]]
 
@@ -379,14 +379,14 @@ tahiti6 <- subset(tahiti, 1:6)
 
 We will first do the masking using simple vector arithmetic, as if `tahiti6` and `fmask` were simple vectors. We want to keep any value with a 'clean land pixel' flag in the cloud mask; or rather, since we are assigning NAs, we want to discard any value of the stack which has a corresponding cloud mask pixel different from 0. This can be done in one line of code.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Perform value replacement
 tahiti6[fmask != 0] <- NA
 ```
 
 However, this is possible here because both objects are relatively small and the values can all be loaded in the computer memory without any risk of overloading it. When working with very large raster objects, you will very likely run into problems if you do that. It is then preferable, as presented earlier in this tutorial to use `app()`.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # First define a value replacement function
 cloud2NA <- function(x) {
     x[1:6][x[7] != 0] <- NA
@@ -396,7 +396,7 @@ cloud2NA <- function(x) {
 
 The value replacement function takes one argument, `x`. `x` corresponds to a SpatRaster, where the 7th layer is our cloud mask.
 
-```{r, eval=FALSE, fig.align='center'}
+```{r, eval=TRUE, fig.align='center'}
 # Apply the function on the two SpatRasters
 tahitiCloudFree <- app(x = tahiti, fun = cloud2NA)
 
@@ -418,7 +418,7 @@ We will not go over most of its functionality (though it can be useful to study 
 
 First, let's get the `sits` package and its dependencies (this can take hours if you are not using `r2u`):
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 if(!"sits" %in% installed.packages()){install.packages("sits")}
 if(!"geojsonsf" %in% installed.packages()){install.packages("geojsonsf")}
 if(!"stars" %in% installed.packages()){install.packages("stars")}
@@ -431,7 +431,7 @@ Next, let's take a look at what kind of satellite data the package lets us downl
 There are several data providers, but the most useful are `AWS` (Amazon Web Services), `MPC` (Microsoft Planetary Computer), `CDSE` (Copernicus Dataspace Ecosystem), and `USGS` (US Geological Survey).
 Let's see what they have:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 sits_list_collections(c("AWS", "MPC", "CDSE", "USGS"))
 ```
 
@@ -443,7 +443,7 @@ First, let's find what area our Tahiti images cover.
 At the moment `sits` requires either the coordinates in the WGS84 CRS, or a vector object, which you will learn about in the next tutorial.
 For now, let's get the WGS84 coordinates by reprojecting the raster.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 tahiti84 <- project(tahiti, "EPSG:4326")
 (roi <- ext(tahiti84))
 ```
@@ -451,7 +451,7 @@ tahiti84 <- project(tahiti, "EPSG:4326")
 We have a Landsat image so far, so let's now get a few MODIS images to compare with.
 It's easiest to get data from Microsoft Planetary Computer, since it does not require authentication.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 tahitiMODIS <- sits_cube("MPC", "MOD13Q1-6.1",
   roi = as.vector(roi), # At the moment SpatExtent objects need to be converted to a vector manually
   bands = c("RED", "NIR", "BLUE"),
@@ -460,20 +460,20 @@ tahitiMODIS <- sits_cube("MPC", "MOD13Q1-6.1",
 
 Let's explore what we got. We can see all details in the `file_info` slot:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 tahitiMODIS$file_info[[1]]
 ```
 
 We got six dates and three bands, that is 18 items in total.  What are the dates of the images we downloaded?
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # This is equivalent to unique(tahitiMODIS$file_info[[1]]$date)
 sits_timeline(tahitiMODIS)
 ```
 
 Let's look at one of these images:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 plot(tahitiMODIS, red="RED", blue="BLUE", green="NIR", date="2023-07-04")
 ```
 
@@ -483,7 +483,7 @@ Let's load the data with `terra`.
 First, we will save all the files on our disk.
 Do not forget to again include the `roi`, else it will download the entire tile (as shown above), rather than what you actually need, and will waste your time and space!
 
-```{r results='hide', eval=FALSE}
+```{r results='hide', eval=TRUE}
 outdir <- "output"
 if (!dir.exists(outdir))
   dir.create(outdir)
@@ -492,7 +492,7 @@ sits_cube_copy(tahitiMODIS, output_dir = outdir, roi=c(lon_min=xmin(roi),lat_min
 
 Now load the files in `terra`:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 (MODISfiles <- list.files(outdir, full.names=TRUE))
 tahitiMOD <- rast(MODISfiles)
 plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
@@ -503,7 +503,7 @@ This is because MODIS uses a sinusoidal projection that distorts shapes that are
 
 Let's reproject and crop to our region of interest:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 tahitiMOD <- project(tahitiMOD, tahiti)
 tahitiMOD <- crop(tahitiMOD, tahiti)
 plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
