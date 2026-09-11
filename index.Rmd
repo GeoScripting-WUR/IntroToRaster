@@ -113,7 +113,7 @@ Writing a SpatRaster to file is achieved using the `writeRaster()` function.
 
 To illustrate the reading and writing of raster files, we will use data subsets that we have prepared for the course and need to be downloaded from the repository. For that, first make sure your working directory is set properly. Then run the following line; it will handle the download:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Positron sets the working directory automatically to the opened folder
 
 # Create data directory if it does not yet exist
@@ -493,7 +493,7 @@ sits_cube_copy(tahitiMODIS, output_dir = outdir, roi=c(lon_min=xmin(roi),lat_min
 Now load the files in `terra`:
 
 ```{r, eval=TRUE}
-(MODISfiles <- list.files(outdir, full.names=TRUE))
+(MODISfiles <- list.files(outdir, pattern = "MODIS", full.names=TRUE))
 tahitiMOD <- rast(MODISfiles)
 plotRGB(tahitiMOD, 13, 7, 1, stretch = "lin")
 ```
